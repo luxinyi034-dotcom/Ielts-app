@@ -36,5 +36,18 @@
     ],
     "commit": "61943a6",
     "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v3/ielts-writing"
+  },
+  {
+    "version": "v4",
+    "title": "第四版：笔记卡片内容更完整",
+    "date": "2026-10-12",
+    "notes": [
+      "表达卡：例句、常用搭配、使用场景、常见错误",
+      "句型卡：可替换位置、适用场景、示例句、常见错误",
+      "语法卡：错误例句与正确例句对照、语法规则、使用限制",
+      "导入笔记时可以在一条下面写“例句：…”等，编辑卡片可逐项补充"
+    ],
+    "commit": "3b6e4ee",
+    "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v4/ielts-writing"
   }
 ]

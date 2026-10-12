@@ -1,0 +1,2492 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="写作表达 v4">
+<meta name="theme-color" content="#EEEAE2">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<title>雅思写作表达</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&family=Noto+Serif+SC:wght@500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap">
+<style>
+/* Layout: iPad 学习桌面 —— 左侧导航落在亚麻底色上，主内容是一张圆角纸面；颜色只负责分组、状态和行动。 */
+:root {
+  --canvas: #EEEAE2;
+  --paper: #FCFBF7;
+  --paper-2: #F7F4EE;
+  --linen: #EBE6DC;
+  --beige: #DFD4C6;
+  --sage: #A5B09B;
+  --sage-deep: #72806D;
+  --sage-soft: #E5E9DF;
+  --blush: #EAD8D0;
+  --blush-soft: #F5ECE7;
+  --ink: #5B665C;
+  --warm: #706D67;
+  --muted: #96918A;
+  --line: #DEDBD3;
+  --wrong: #B06A5B;
+  --wrong-soft: #F4E2DC;
+  --gap: #B08A4E;
+  --gap-soft: #F3EAD9;
+  --on-accent: #FCFBF7;
+  --shadow: 0 1px 2px rgba(91, 102, 92, .05), 0 18px 40px -24px rgba(91, 102, 92, .28);
+  --shadow-sm: 0 1px 2px rgba(91, 102, 92, .07);
+  --f-en: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --f-title: "Noto Serif SC", "Songti SC", "STSong", serif;
+  --f-ui: "Noto Sans SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --r-xl: 28px;
+  --r-lg: 22px;
+  --r-md: 17px;
+  --r-sm: 12px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var(--f-ui); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; touch-action: manipulation; }
+button:disabled { cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--sage-deep); outline-offset: 2px; }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-weight: 600; }
+p { margin: 0; }
+.en { font-family: var(--f-en); letter-spacing: -.003em; }
+.muted { color: var(--muted); }
+.warm { color: var(--warm); }
+.num { font-variant-numeric: tabular-nums; }
+.hidden { display: none !important; }
+
+/* ---------- shell ---------- */
+.shell { display: grid; grid-template-columns: 252px minmax(0, 1fr); min-height: 100vh; min-height: 100dvh; }
+.side { position: sticky; top: 0; height: 100vh; height: 100dvh; padding: 30px 18px 24px 22px; display: flex; flex-direction: column; gap: 26px; overflow-y: auto; }
+.brand { display: flex; align-items: center; gap: 12px; padding-left: 6px; }
+.brand-mark { width: 38px; height: 38px; border-radius: 12px; background: var(--sage-deep); display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 8px; flex: none; }
+.brand-mark i { border-radius: 3px; background: var(--paper); opacity: .92; }
+.brand-mark i:nth-child(2), .brand-mark i:nth-child(3) { opacity: .55; }
+.brand b { display: block; font-family: var(--f-title); font-size: 18px; line-height: 1.2; }
+.brand small { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.nav { display: flex; flex-direction: column; gap: 4px; }
+.nav-label { font-size: 11px; letter-spacing: .14em; color: var(--muted); padding: 14px 12px 4px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; border: 0; background: transparent; color: var(--warm); font-size: 15px; text-align: left; min-height: 44px; transition: background .15s, color .15s; }
+.nav-item svg { width: 21px; height: 21px; flex: none; }
+.nav-item:hover { background: rgba(252, 251, 247, .55); color: var(--ink); }
+.nav-item[aria-current="page"] { background: var(--paper); color: var(--sage-deep); font-weight: 500; box-shadow: var(--shadow-sm); }
+.nav-item .count { margin-left: auto; font-size: 12px; min-width: 22px; padding: 0 7px; border-radius: 999px; background: var(--blush); color: var(--ink); text-align: center; }
+.nav-item.sub { padding-left: 22px; }
+.side-foot { margin-top: auto; padding: 14px; border-radius: var(--r-md); background: var(--paper-2); display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--warm); }
+.side-foot b { color: var(--ink); font-size: 15px; }
+.week-dots { display: flex; gap: 6px; }
+.week-dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--linen); display: grid; place-items: center; font-style: normal; font-size: 10px; color: var(--muted); }
+.week-dots i.on { background: var(--sage); color: var(--on-accent); }
+.week-dots i.today { box-shadow: 0 0 0 1.5px var(--sage-deep); }
+
+.main { padding: 18px 20px 20px 0; min-width: 0; }
+.sheet { background: var(--paper); border-radius: var(--r-xl); min-height: calc(100vh - 38px); min-height: calc(100dvh - 38px); box-shadow: var(--shadow); padding: 26px clamp(20px, 3.4vw, 44px) 56px; display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+
+/* ---------- top bar ---------- */
+.topbar { display: flex; align-items: center; gap: 14px; min-height: 48px; flex-wrap: wrap; }
+.topbar .titles { display: flex; flex-direction: column; min-width: 0; flex: 1 1 260px; }
+.crumb { font-size: 13px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; }
+.crumb span + span::before { content: "/"; margin-right: 6px; color: var(--line); }
+.page-title { font-family: var(--f-title); font-size: clamp(24px, 2.6vw, 30px); line-height: 1.3; color: var(--ink); }
+.search { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); width: min(300px, 100%); }
+.search svg { width: 18px; height: 18px; color: var(--muted); flex: none; }
+.search input { border: 0; background: transparent; outline: none; min-width: 0; flex: 1; font-size: 16px; }
+.icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); display: inline-grid; place-items: center; color: var(--warm); flex: none; transition: transform .15s, border-color .15s, color .15s; }
+.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn:hover { transform: translateY(-1px); color: var(--sage-deep); border-color: var(--sage); }
+.icon-btn.on { color: var(--sage-deep); background: var(--sage-soft); border-color: var(--sage-soft); }
+.icon-btn.on svg { fill: currentColor; }
+
+/* ---------- buttons (胶囊：primary / outline / soft / ghost) ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 22px; border-radius: 999px; border: 1px solid transparent; font-size: 15px; font-weight: 500; white-space: nowrap; transition: transform .15s, background .15s, border-color .15s, opacity .15s; }
+.btn svg { width: 18px; height: 18px; }
+.btn:hover:not(:disabled) { transform: translateY(-1px); }
+.btn:disabled { opacity: .45; }
+.btn-primary { background: var(--sage-deep); color: var(--on-accent); }
+.btn-primary:hover:not(:disabled) { background: #67755F; }
+.btn-outline { background: var(--paper); border-color: var(--line); color: var(--ink); }
+.btn-outline:hover:not(:disabled) { border-color: var(--sage); }
+.btn-soft { background: var(--blush); color: var(--ink); }
+.btn-soft:hover:not(:disabled) { background: #E3CEC4; }
+.btn-ghost { background: transparent; color: var(--warm); padding: 0 12px; }
+.btn-ghost:hover:not(:disabled) { color: var(--ink); }
+.btn-sm { min-height: 36px; padding: 0 15px; font-size: 14px; }
+.btn-danger { color: var(--wrong); }
+.btn-danger.armed { background: var(--wrong); color: var(--on-accent); border-color: var(--wrong); }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* ---------- tags & segmented ---------- */
+.tag { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; background: var(--linen); color: var(--warm); white-space: nowrap; }
+.tag.core { background: var(--sage-soft); color: var(--sage-deep); }
+.tag.know { background: var(--blush-soft); color: #8A6C60; }
+.tag.term { background: var(--linen); color: var(--warm); }
+.tag.fn { background: var(--sage-soft); color: var(--sage-deep); }
+.tag.pattern { background: var(--blush-soft); color: #8A6C60; }
+.tag.grammar { background: #ECE7F0; color: #6E6478; }
+.tag.expr { background: var(--sage-soft); color: var(--sage-deep); }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--warm); white-space: nowrap; }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--line)); }
+.s-wait { --c: var(--beige); }
+.s-learn { --c: var(--blush); }
+.s-first { --c: var(--sage); }
+.s-due { --c: var(--gap); }
+.s-stable { --c: var(--sage-deep); }
+.s-ref { --c: transparent; }
+.s-ref::before { box-shadow: inset 0 0 0 1.5px var(--line); }
+.s-triage { --c: var(--wrong); }
+
+.seg { display: inline-flex; padding: 4px; gap: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); flex-wrap: wrap; }
+.seg button { border: 0; background: transparent; min-height: 36px; padding: 0 16px; border-radius: 999px; font-size: 14px; color: var(--warm); transition: background .15s, color .15s; }
+.seg button[aria-pressed="true"] { background: var(--sage-deep); color: var(--on-accent); font-weight: 500; }
+.seg.small button { min-height: 30px; padding: 0 12px; font-size: 13px; }
+.mode { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: var(--paper-2); border: 1px solid var(--line); flex: none; }
+.mode button { border: 0; background: transparent; min-height: 30px; min-width: 48px; padding: 0 11px; border-radius: 999px; font-size: 13px; color: var(--muted); }
+.mode button[aria-pressed="true"] { background: var(--paper); color: var(--ink); box-shadow: var(--shadow-sm); font-weight: 500; }
+.mode button[data-m="memory"][aria-pressed="true"] { background: var(--sage-deep); color: var(--on-accent); }
+
+.check { width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--paper); display: inline-grid; place-items: center; flex: none; color: transparent; transition: background .15s, border-color .15s; padding: 0; }
+.check svg { width: 15px; height: 15px; }
+.check[aria-checked="true"] { background: var(--sage); border-color: var(--sage); color: var(--on-accent); }
+.radio { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--paper); flex: none; display: grid; place-items: center; }
+.radio[aria-checked="true"] { border-color: var(--sage-deep); }
+.radio[aria-checked="true"]::after { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--sage-deep); }
+
+/* ---------- surfaces ---------- */
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.span-12 { grid-column: span 12; } .span-8 { grid-column: span 8; } .span-7 { grid-column: span 7; } .span-6 { grid-column: span 6; } .span-5 { grid-column: span 5; } .span-4 { grid-column: span 4; }
+.panel { border-radius: var(--r-lg); background: var(--paper-2); padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.panel.sage { background: var(--sage-soft); }
+.panel.sage-strong { background: var(--sage); color: var(--on-accent); }
+.panel.blush { background: var(--blush); }
+.panel.blush-soft { background: var(--blush-soft); }
+.panel.linen { background: var(--linen); }
+.panel.line { background: var(--paper); border: 1px solid var(--line); }
+.panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--warm); font-weight: 500; }
+.eyebrow small { display: block; letter-spacing: .06em; font-weight: 400; color: var(--muted); text-transform: none; font-size: 12px; }
+.big-num { font-family: var(--f-en); font-size: 54px; line-height: 1; font-variant-numeric: tabular-nums; color: var(--ink); }
+.big-num small { font-family: var(--f-ui); font-size: 15px; color: var(--warm); margin-left: 6px; }
+.section { display: flex; flex-direction: column; gap: 12px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.section-head h3 { font-size: 17px; font-family: var(--f-title); }
+.section-head .hint { font-size: 13px; color: var(--muted); }
+.note-line { font-size: 13px; color: var(--muted); }
+.divider { height: 1px; background: var(--line); border: 0; margin: 0; }
+
+/* ---------- list rows ---------- */
+.rows { display: flex; flex-direction: column; gap: 8px; }
+.row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--r-md); background: var(--paper-2); min-width: 0; }
+.row.white { background: var(--paper); border: 1px solid var(--line); }
+.row.tap { border: 0; width: 100%; text-align: left; transition: background .15s, transform .15s; }
+.row.tap:hover { background: var(--linen); }
+.row .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.row .body.tap { border: 0; background: transparent; padding: 0; text-align: left; }
+.row .title { font-size: 16px; font-weight: 500; overflow-wrap: anywhere; }
+.row .en.title { font-size: 18px; font-weight: 500; line-height: 1.35; }
+.row .sub { font-size: 14px; color: var(--warm); overflow-wrap: anywhere; }
+.row .meta { font-size: 13px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row .side-ctl { display: flex; align-items: center; gap: 10px; flex: none; }
+.row .chev { width: 18px; height: 18px; color: var(--muted); flex: none; }
+.bar-left { position: relative; padding-left: 22px; }
+.bar-left::before { content: ""; position: absolute; left: 10px; top: 16px; bottom: 16px; width: 3px; border-radius: 3px; background: var(--c, var(--sage)); }
+
+.empty { padding: 30px 24px; border-radius: var(--r-lg); border: 1.5px dashed var(--line); color: var(--warm); display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.empty h3 { font-family: var(--f-title); font-size: 18px; color: var(--ink); }
+
+/* ---------- cards: topics / functions ---------- */
+.tiles { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.tile { border: 0; text-align: left; border-radius: var(--r-lg); padding: 20px 22px; background: var(--paper-2); display: flex; flex-direction: column; gap: 10px; min-height: 150px; transition: transform .15s, background .15s; }
+.tile:hover { transform: translateY(-1px); background: var(--linen); }
+.tile h3 { font-family: var(--f-title); font-size: 21px; }
+.tile .sub { font-size: 14px; color: var(--warm); }
+.tile .meta { margin-top: auto; font-size: 13px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+.tile.c1 { background: var(--sage-soft); } .tile.c2 { background: var(--blush-soft); } .tile.c3 { background: var(--linen); }
+.tile.c1:hover { background: #DCE2D4; } .tile.c2:hover { background: #F0E2DB; }
+
+/* ---------- group detail ---------- */
+.group-hero { display: flex; flex-direction: column; gap: 14px; padding: 24px 26px; border-radius: var(--r-lg); background: var(--sage-soft); }
+.group-hero.fn { background: var(--blush-soft); }
+.group-hero.notes { background: var(--linen); }
+.group-hero p { color: var(--warm); max-width: 62ch; }
+.stats-line { display: flex; gap: 22px; flex-wrap: wrap; font-size: 14px; color: var(--warm); }
+.stats-line b { font-family: var(--f-en); font-size: 22px; color: var(--ink); font-weight: 500; margin-right: 4px; font-variant-numeric: tabular-nums; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { display: inline-flex; align-items: center; min-height: 34px; padding: 0 14px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: 14px; color: var(--warm); }
+button.chip:hover { border-color: var(--sage); color: var(--ink); }
+.paragraph { font-family: var(--f-en); font-size: 19px; line-height: 1.75; color: var(--ink); max-width: 70ch; padding: 22px 26px; border-radius: var(--r-lg); background: var(--paper-2); }
+.paragraph mark { background: var(--sage-soft); color: inherit; padding: 1px 3px; border-radius: 5px; }
+.paragraph mark.core { background: var(--blush); }
+
+.cmp-wrap { overflow-x: auto; border-radius: var(--r-lg); border: 1px solid var(--line); }
+.cmp { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 14px; }
+.cmp th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; letter-spacing: .08em; padding: 12px 16px; background: var(--paper-2); border-bottom: 1px solid var(--line); }
+.cmp td { padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--warm); }
+.cmp tr:last-child td { border-bottom: 0; }
+.cmp td.expr { color: var(--ink); }
+.cmp td.expr button { border: 0; background: none; padding: 0; text-align: left; font-family: var(--f-en); font-size: 17px; color: var(--ink); }
+.cmp td.expr button:hover { color: var(--sage-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- item detail ---------- */
+.detail { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
+.detail-main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.detail-side { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 18px; }
+.expr-hero { padding: 26px 28px; border-radius: var(--r-lg); background: var(--paper-2); display: flex; flex-direction: column; gap: 12px; }
+.expr-hero .en { font-size: clamp(26px, 3vw, 36px); line-height: 1.25; color: var(--ink); overflow-wrap: anywhere; }
+.expr-hero .zh { font-size: 19px; color: var(--warm); }
+.field-block { display: flex; flex-direction: column; gap: 6px; padding: 16px 20px; border-radius: var(--r-md); background: var(--paper); border: 1px solid var(--line); }
+.field-block .label { font-size: 12px; letter-spacing: .1em; color: var(--muted); }
+.field-block .val { font-size: 15px; overflow-wrap: anywhere; }
+.field-block .val.en { font-size: 18px; }
+.field-block.raw .val { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 14px; color: var(--warm); white-space: pre-wrap; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pair .wrongline { background: var(--wrong-soft); border-color: transparent; }
+.pair .rightline { background: var(--sage-soft); border-color: transparent; }
+textarea.note { width: 100%; min-height: 90px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--paper); padding: 10px 12px; resize: vertical; font-size: 15px; }
+.kv { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--warm); padding: 6px 0; border-bottom: 1px solid var(--line); }
+.kv:last-child { border-bottom: 0; }
+.kv b { color: var(--ink); font-weight: 500; }
+
+/* ---------- forms ---------- */
+.form { display: flex; flex-direction: column; gap: 14px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.fld { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--warm); min-width: 0; }
+.fld.wide { grid-column: 1 / -1; }
+.fld input, .fld textarea, .fld select { border: 1px solid var(--line); background: var(--paper); border-radius: var(--r-sm); padding: 11px 14px; font-size: 16px; color: var(--ink); min-width: 0; width: 100%; }
+.fld textarea { min-height: 220px; resize: vertical; line-height: 1.6; }
+.fld input:focus, .fld textarea:focus, .fld select:focus { outline: none; border-color: var(--sage); box-shadow: 0 0 0 3px var(--sage-soft); }
+.form-msg { font-size: 14px; color: var(--wrong); }
+.privacy { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--warm); background: var(--paper-2); border-radius: var(--r-sm); padding: 12px 14px; }
+.privacy svg { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--sage-deep); }
+.file-btn { position: relative; overflow: hidden; }
+.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+/* ---------- today: new study chooser ---------- */
+.chooser { display: flex; flex-direction: column; gap: 8px; }
+.cgroup { border-radius: var(--r-md); background: var(--paper-2); border: 1.5px solid transparent; transition: border-color .15s, background .15s; }
+.cgroup.selected { border-color: var(--sage); background: var(--paper); }
+.cgroup.disabled { opacity: .62; }
+.cgroup-head { display: flex; align-items: center; gap: 6px; padding: 6px 8px 6px 6px; }
+.cgroup-pick { flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px; border: 0; background: transparent; text-align: left; padding: 10px 12px; border-radius: 14px; min-height: 56px; }
+.cgroup-pick:disabled { cursor: default; }
+.cgroup-pick .body { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cgroup-pick .title { font-weight: 500; font-size: 16px; }
+.cgroup-pick .meta { font-size: 13px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+.expand { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; color: var(--warm); display: grid; place-items: center; flex: none; }
+.expand:hover { background: var(--linen); }
+.expand svg { width: 20px; height: 20px; transition: transform .2s; }
+.expand[aria-expanded="true"] svg { transform: rotate(180deg); }
+.cgroup-items { padding: 0 18px 14px 56px; display: flex; flex-direction: column; }
+.citem { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-top: 1px solid var(--line); }
+.citem .body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.citem .en { font-size: 16px; overflow-wrap: anywhere; }
+.citem .zh { font-size: 13px; color: var(--warm); }
+.sticky-bar { position: sticky; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 5; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: space-between; padding: 12px 12px 12px 22px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.sticky-bar .summary { font-size: 14px; color: var(--warm); min-width: 0; }
+.sticky-bar .summary b { color: var(--ink); font-weight: 600; }
+
+/* ---------- plan list ---------- */
+.plan-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 18px; border-radius: var(--r-md); background: var(--paper); }
+.plan-row .ord { width: 30px; height: 30px; border-radius: 50%; background: var(--blush); display: grid; place-items: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+.plan-row.next .ord { background: var(--sage-deep); color: var(--on-accent); }
+.plan-row .count { font-family: var(--f-en); font-size: 24px; font-variant-numeric: tabular-nums; }
+.plan-row .count small { font-family: var(--f-ui); font-size: 12px; color: var(--muted); margin-left: 3px; }
+
+/* ---------- session (新学 / 复习) ---------- */
+.session { display: flex; flex-direction: column; gap: 20px; max-width: 880px; width: 100%; margin: 0 auto; }
+.session-head { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.step { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px 0 6px; border-radius: 999px; font-size: 13px; color: var(--muted); background: var(--paper-2); }
+.step i { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 12px; background: var(--linen); color: var(--warm); }
+.step.on { color: var(--ink); background: var(--sage-soft); }
+.step.on i { background: var(--sage-deep); color: var(--on-accent); }
+.step.done i { background: var(--sage); color: var(--on-accent); }
+.progress { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--warm); font-variant-numeric: tabular-nums; }
+.pbar { flex: 1; height: 6px; border-radius: 6px; background: var(--linen); overflow: hidden; }
+.pbar i { display: block; height: 100%; background: var(--sage); border-radius: 6px; transition: width .35s ease; }
+.qcard { border-radius: var(--r-lg); background: var(--paper-2); padding: 28px clamp(20px, 3vw, 36px); display: flex; flex-direction: column; gap: 18px; }
+.qtype { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--warm); }
+.prompt-zh { font-family: var(--f-title); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.5; color: var(--ink); }
+.prompt-hint { font-size: 15px; color: var(--warm); display: flex; flex-direction: column; gap: 4px; }
+.prompt-hint .en { font-size: 18px; color: var(--ink); line-height: 1.6; }
+.blank { display: inline-block; min-width: 120px; border-bottom: 2px solid var(--sage); margin: 0 4px; height: 1.2em; vertical-align: -0.15em; }
+.answer { width: 100%; border: 1.5px solid var(--line); background: var(--paper); border-radius: var(--r-md); padding: 14px 18px; font-family: var(--f-en); font-size: 21px; color: var(--ink); }
+.answer:focus { outline: none; border-color: var(--sage); box-shadow: 0 0 0 4px var(--sage-soft); }
+.answer[readonly] { background: var(--paper-2); }
+.fb { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; border-radius: var(--r-md); background: var(--paper); border: 1px solid var(--line); }
+.fb.ok { border-color: var(--sage); }
+.fb .verdict { font-size: 14px; font-weight: 500; }
+.fb.ok .verdict { color: var(--sage-deep); }
+.fb.bad .verdict { color: var(--wrong); }
+.fb .line { font-family: var(--f-en); font-size: 19px; line-height: 1.9; overflow-wrap: anywhere; }
+.fb .line .lbl { font-family: var(--f-ui); font-size: 12px; color: var(--muted); margin-right: 10px; letter-spacing: .06em; }
+.tk-wrong { color: var(--wrong); background: var(--wrong-soft); border-radius: 4px; padding: 0 3px; text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.tk-extra { color: var(--wrong); border-radius: 4px; padding: 0 3px; text-decoration: line-through; text-decoration-style: wavy; text-decoration-thickness: 1px; }
+.tk-miss { display: inline-block; color: var(--gap); background: var(--gap-soft); border-radius: 4px; padding: 0 5px; font-family: var(--f-ui); font-size: 13px; font-weight: 600; vertical-align: 2px; }
+.tk-need { background: var(--sage-soft); color: var(--sage-deep); border-radius: 4px; padding: 0 3px; }
+.rates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.rate { border: 1.5px solid var(--line); background: var(--paper); border-radius: var(--r-md); padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 72px; transition: transform .15s, border-color .15s; }
+.rate:hover { transform: translateY(-1px); border-color: var(--c); }
+.rate b { font-size: 16px; color: var(--c); font-weight: 600; }
+.rate span { font-size: 12px; color: var(--muted); }
+.rate.suggest { border-color: var(--c); background: var(--paper-2); }
+.rate.r-rem { --c: var(--sage-deep); } .rate.r-vag { --c: var(--gap); } .rate.r-fgt { --c: var(--wrong); }
+.intro-list { display: flex; flex-direction: column; gap: 8px; }
+.intro-item { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 16px; padding: 14px 18px; border-radius: var(--r-md); background: var(--paper); align-items: baseline; }
+.intro-item .en { font-size: 18px; overflow-wrap: anywhere; }
+.intro-item .zh { grid-column: 2; font-size: 14px; color: var(--warm); }
+.intro-item .ex { grid-column: 2; font-size: 14px; color: var(--muted); font-family: var(--f-en); font-style: italic; }
+.result-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.result-tiles .panel { align-items: flex-start; }
+
+/* ---------- quick review ---------- */
+.qr-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; padding: 16px 20px; border-radius: var(--r-md); background: var(--paper-2); align-items: center; }
+.qr-cell { min-width: 0; border: 0; background: transparent; text-align: left; padding: 0; border-radius: 10px; overflow-wrap: anywhere; }
+.qr-cell.en { font-size: 18px; color: var(--ink); }
+.qr-cell.zh { font-size: 15px; color: var(--warm); }
+.qr-cell.masked { background: var(--linen); color: transparent; min-height: 28px; position: relative; }
+.qr-cell.masked::after { content: "点按显示"; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-ui); font-size: 12px; color: var(--muted); }
+
+/* ---------- calendar ---------- */
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; text-align: center; }
+.cal .dow { font-size: 12px; color: var(--warm); font-weight: 500; padding-bottom: 4px; }
+.cal .d { aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; border-radius: 50%; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--ink); position: relative; }
+.cal .d.out { color: transparent; }
+.cal .d.act::after { content: ""; position: absolute; bottom: 12%; width: 5px; height: 5px; border-radius: 50%; background: var(--sage-deep); opacity: .6; }
+.cal .d.on { background: var(--sage-deep); color: var(--on-accent); }
+.cal .d.on::after { display: none; }
+.cal .d.today { box-shadow: inset 0 0 0 2px var(--ink); }
+.forecast { display: flex; flex-direction: column; gap: 6px; }
+.fc-row { display: grid; grid-template-columns: 54px minmax(0, 1fr) 36px; gap: 10px; align-items: center; font-size: 13px; color: var(--warm); font-variant-numeric: tabular-nums; }
+.fc-row .track { height: 10px; border-radius: 6px; background: var(--linen); overflow: hidden; }
+.fc-row .track i { display: block; height: 100%; border-radius: 6px; background: var(--sage); }
+.fc-row b { text-align: right; color: var(--ink); font-weight: 500; }
+
+/* ---------- triage ---------- */
+.tcard { display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border-radius: var(--r-md); background: var(--paper); border: 1px solid var(--line); }
+.tcard-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.tcard .fields { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 10px; }
+.tcard input, .tcard select { border: 1px solid var(--line); background: var(--paper-2); border-radius: 10px; padding: 9px 12px; font-size: 16px; min-width: 0; width: 100%; }
+.tcard input.en { font-family: var(--f-en); }
+.tcard .raw { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.tgroup { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: var(--r-lg); background: var(--paper-2); }
+.tgroup-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.tgroup-head input { flex: 1 1 220px; border: 0; border-bottom: 1px dashed var(--line); background: transparent; font-family: var(--f-title); font-size: 18px; padding: 4px 2px; min-width: 0; color: var(--ink); }
+
+/* ---------- toast ---------- */
+.toast { position: fixed; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 16px); background: var(--ink); color: var(--paper); padding: 11px 22px; border-radius: 999px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* ---------- iPad 竖屏：图标导航栏 ---------- */
+@media (max-width: 1080px) {
+  .shell { grid-template-columns: 92px minmax(0, 1fr); }
+  .side { padding: 22px 10px; gap: 18px; align-items: stretch; }
+  .brand { justify-content: center; padding: 0; }
+  .brand > div, .nav-label, .side-foot { display: none; }
+  .nav-item, .nav-item.sub { flex-direction: column; gap: 3px; padding: 9px 4px; font-size: 11px; text-align: center; min-height: 58px; justify-content: center; }
+  .nav-item .count { position: absolute; margin: 0; transform: translate(14px, -14px); font-size: 10px; min-width: 18px; padding: 0 5px; }
+  .nav-item { position: relative; }
+  .detail { grid-template-columns: minmax(0, 1fr); }
+  .detail-side { position: static; }
+  .span-7, .span-5, .span-8, .span-4 { grid-column: span 12; }
+  .span-6 { grid-column: span 6; }
+}
+
+/* ---------- 手机：底部标签栏 ---------- */
+@media (max-width: 720px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .side { position: fixed; top: auto; bottom: 0; left: 0; right: 0; height: auto; z-index: 20; flex-direction: row; padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px)); background: rgba(247, 244, 238, .96); border-top: 1px solid var(--line); overflow: visible; }
+  .brand { display: none; }
+  .nav { flex-direction: row; width: 100%; justify-content: space-around; }
+  .nav .nav-item.lib-sub, .nav .nav-item.optional { display: none; }
+  .nav-item, .nav-item.sub { flex: 1; min-height: 52px; }
+  .main { padding: 0 0 calc(80px + env(safe-area-inset-bottom, 0px)); }
+  .sheet { border-radius: 0; min-height: 100vh; box-shadow: none; padding: 18px 16px 40px; gap: 20px; }
+  .span-6 { grid-column: span 12; }
+  .form-grid, .pair, .tcard .fields { grid-template-columns: minmax(0, 1fr); }
+  .qr-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .intro-item { grid-template-columns: minmax(0, 1fr); }
+  .intro-item .zh, .intro-item .ex { grid-column: 1; }
+  .rates, .result-tiles { gap: 6px; }
+  .sticky-bar { border-radius: var(--r-lg); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  .search { width: 100%; }
+  .big-num { font-size: 44px; }
+}
+
+[hidden] { display: none !important; }
+.tb-left { display: flex; align-items: center; gap: 14px; flex: 1 1 320px; min-width: 0; flex-wrap: wrap; }
+.nav-item.phone-only { display: none; }
+@media (max-width: 720px) {
+  .nav-label { display: none; }
+  .nav-item.phone-only { display: flex; }
+}
+#view { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+.row > svg, .tile > svg { width: 18px; height: 18px; flex: none; color: var(--muted); }
+.toast { top: calc(18px + env(safe-area-inset-top, 0px)); bottom: auto; transform: translate(-50%, -12px); }
+.tcard-top .btn-row { flex-wrap: nowrap; }
+@media (max-width: 720px) { .tcard-top .btn-row { flex-wrap: wrap; } }
+
+/* ---------- v2 首页：三个分区，每个区一块底板（方案 D） ---------- */
+.zone { display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 26px; }
+.zone-learn { background: var(--sage-soft); }
+.zone-lib { background: var(--paper-2); }
+.zone-rec { border: 1px solid var(--line); }
+.zone-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 0 8px; min-height: 36px; }
+.zone-head h2 { font-family: var(--f-title); font-size: 19px; color: var(--ink); }
+.zone-head .hint { font-size: 13px; color: var(--warm); }
+.zone-card { background: var(--paper); box-shadow: var(--shadow-sm); padding: 22px 24px; gap: 10px; }
+.pill { align-self: flex-start; font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 999px; }
+.pill-review { background: var(--blush); color: var(--ink); }
+.pill-new { background: var(--sage-soft); color: var(--sage-deep); }
+.due-row { background: var(--paper-2); padding: 9px 14px; border-radius: 12px; gap: 10px; font-size: 14px; }
+.due-row .title { font-size: 14px; font-weight: 500; }
+.zone-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.zone-tile { display: flex; flex-direction: column; gap: 6px; padding: 20px 22px; border: 0; border-radius: 20px; background: var(--paper); box-shadow: var(--shadow-sm); text-align: left; min-width: 0; transition: transform .15s; }
+.zone-tile:hover { transform: translateY(-1px); }
+.zone-tile .name { font-family: var(--f-title); font-size: 20px; font-weight: 600; color: var(--ink); }
+.zone-tile .sub { font-size: 14px; color: var(--warm); overflow-wrap: anywhere; }
+.zone-tile .meta { font-size: 13px; color: var(--muted); }
+.rec-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.rec-col { padding: 4px 8px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.rec-title { font-size: 14px; color: var(--warm); }
+.rec-title b { color: var(--ink); }
+.week-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; text-align: center; font-size: 12px; color: var(--muted); }
+.week-row .day i { display: block; margin: 0 auto 4px; width: 30px; height: 30px; border-radius: 50%; background: var(--linen); }
+.week-row .day.on i { background: var(--sage); }
+.week-row .day.today i { box-shadow: 0 0 0 2px var(--sage-deep); }
+@media (max-width: 720px) {
+  .zone { padding: 14px; }
+  .zone-tiles, .rec-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+}
+
+/* ---------- v3：高亮颜色统一；笔记详情更紧凑 ---------- */
+mark { background: var(--sage-soft); color: inherit; padding: 0 3px; border-radius: 4px; }
+.detail-main.tight { gap: 12px; }
+.expr-hero.compact { padding: 20px 24px; gap: 8px; }
+.expr-hero.compact .en { font-size: clamp(22px, 2.4vw, 28px); }
+.expr-hero.compact .zh { font-size: 16px; }
+.kv-block, .field-block.drill { gap: 10px; padding: 14px 18px; }
+.kv-line { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.kv-line .label { font-size: 12px; letter-spacing: .1em; color: var(--muted); }
+.kv-line .val { font-size: 15px; overflow-wrap: anywhere; }
+.kv-line .val.muted { font-size: 13px; color: var(--muted); }
+.wrong-text { color: var(--wrong); text-decoration: line-through; text-decoration-thickness: 1px; font-size: 17px; }
+#drill-fb .fb { padding: 12px 16px; }
+@media (max-width: 720px) { .kv-line { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* ---------- v4：笔记卡片按类型展示专属内容 ---------- */
+.info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.info-grid:empty { display: none; }
+.info-grid .wide { grid-column: 1 / -1; }
+.info-grid .field-block { padding: 14px 18px; gap: 4px; }
+.info-grid .field-block .val.en { font-size: 17px; line-height: 1.55; }
+.info-grid .pair { gap: 12px; }
+.fill-hint { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 10px 18px; border: 1.5px dashed var(--line); border-radius: var(--r-md); font-size: 13px; color: var(--muted); }
+@media (max-width: 720px) { .info-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <div class="main">
+    <div class="sheet">
+      <header class="topbar">
+        <div class="tb-left" id="tb-left"></div>
+        <label class="search" id="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><input id="q" type="search" placeholder="搜索表达或中文" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="搜索"></label>
+      </header>
+      <div id="view"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* ============================================================
+   系统预设内容
+   主题表达：大主题 → 细分主题 → 表达组；组内角色 core / know / term
+   功能表达：写作功能 → 功能组 → 近义表达比较
+   ============================================================ */
+
+const TOPIC_GROUPS = [
+  {
+    id: 'edu-critical', topic: '教育', sub: '教育与思维发展', name: '培养批判性思维',
+    scene: '论证学校教育应超越应试，培养学生独立思考和判断能力。',
+    directions: ['课程设计：增加讨论与项目式学习', '考试改革：减少单一分数评价', '教师角色：从讲授者转为引导者'],
+    paragraph: 'Schools should place greater emphasis on developing critical thinking. Under standardised testing, many students rely heavily on rote learning, which may secure high scores but rarely teaches them to evaluate information from multiple sources. Discussion-based lessons, by contrast, encourage students to question assumptions, and this habit is likely to prepare young people for an uncertain job market.',
+    related: ['edu-online', 'crime-prevent'],
+    items: [
+      ['core', 'Schools should place greater emphasis on developing critical thinking.', '学校应更加重视培养批判性思维。', { usage: '可直接作为主体段中心句，后接原因或具体做法。', err: 'place emphasis on，不写 place emphasis in。' }],
+      ['core', 'An exam-oriented system tends to reward memorisation rather than understanding.', '应试教育体制往往奖励死记硬背，而非真正的理解。', { usage: '适合作为让步或反驳段的论点。', err: 'rather than 前后结构保持一致：reward A rather than B。' }],
+      ['know', 'encourage students to question assumptions', '鼓励学生质疑既有假设', { ex: 'Discussion-based lessons encourage students to question assumptions instead of accepting answers passively.', col: 'encourage sb to do sth' }],
+      ['know', 'improve students\' decision-making skills', '提高学生的决策能力', { ex: 'Analysing real cases can improve students\' decision-making skills.', col: 'improve / develop / sharpen skills' }],
+      ['know', 'evaluate information from multiple sources', '从多种来源评估信息', { ex: 'In the digital age, young people must learn to evaluate information from multiple sources.' }],
+      ['know', 'prepare young people for an uncertain job market', '让年轻人为不确定的就业市场做好准备', { ex: 'Flexible thinking helps prepare young people for an uncertain job market.', col: 'prepare sb for sth' }],
+      ['term', 'rote learning', '死记硬背式学习', { ex: 'Many students rely heavily on rote learning before exams.', col: 'rely heavily on rote learning' }],
+      ['term', 'evidence-based learning', '以证据为基础的学习', { ex: 'Evidence-based learning teaches students to support every claim with data.' }],
+      ['term', 'standardised testing', '标准化考试', { ex: 'Critics argue that standardised testing narrows the curriculum.', col: 'rely on / move away from standardised testing' }],
+    ],
+  },
+  {
+    id: 'edu-online', topic: '教育', sub: '线上教育', name: '线上学习的利与弊',
+    scene: '讨论网络课程能否取代传统课堂，或分析远程学习的优缺点。',
+    directions: ['教育公平：偏远地区与低收入家庭', '学习效果：自律与反馈', '折中方案：混合式学习'],
+    paragraph: 'Online learning has made education more accessible than ever before. Digital platforms remove geographical barriers, and recorded lectures allow students to learn at their own pace. However, learners who study alone often lack immediate feedback from teachers, and distance learning can require a high level of self-discipline. For this reason, many institutions now adopt blended learning.',
+    related: ['edu-critical', 'tech-ai'],
+    items: [
+      ['core', 'Online learning has made education more accessible than ever before.', '线上学习让教育比以往任何时候都更容易获得。', { usage: '适合优势段开头；accessible 强调“获得机会”。' }],
+      ['core', 'Online courses cannot fully replace face-to-face interaction in the classroom.', '线上课程无法完全取代课堂上的面对面互动。', { usage: '适合劣势段或折中观点的中心句。', err: 'face-to-face 作定语时要加连字符。' }],
+      ['know', 'remove geographical barriers', '消除地域障碍', { ex: 'Online platforms remove geographical barriers for students in remote areas.' }],
+      ['know', 'learn at their own pace', '按自己的节奏学习', { ex: 'Recorded lectures allow learners to learn at their own pace.', col: 'at one\'s own pace' }],
+      ['know', 'lack immediate feedback from teachers', '缺乏老师的即时反馈', { ex: 'Students who study alone often lack immediate feedback from teachers.', err: 'lack 作动词时直接接宾语，不写 lack of。' }],
+      ['know', 'require a high level of self-discipline', '需要很强的自律能力', { ex: 'Distance learning can require a high level of self-discipline.' }],
+      ['term', 'distance learning', '远程教育', { ex: 'More adults now enrol in distance learning programmes.', col: 'enrol in a distance learning programme' }],
+      ['term', 'the digital divide', '数字鸿沟', { ex: 'Without affordable internet access, online education may widen the digital divide.', col: 'widen / bridge the digital divide' }],
+      ['term', 'blended learning', '混合式学习', { ex: 'Many universities now adopt blended learning, combining online and classroom teaching.' }],
+    ],
+  },
+  {
+    id: 'tech-medical', topic: '科技', sub: '医疗科技与监管', name: '监管必要性',
+    scene: '论证新兴医疗技术需要审批、数据保护和伦理监管。',
+    directions: ['安全：临床试验与审批', '隐私：医疗数据保护', '公平：昂贵技术的可及性'],
+    paragraph: 'Medical technology should be carefully regulated. Although robotic-assisted surgery can improve surgical precision, new devices and drugs must undergo rigorous clinical trials before they gain regulatory approval. Regulation is also needed to protect sensitive patient data and to ensure that patients give informed consent.',
+    related: ['tech-ai', 'health-diet'],
+    items: [
+      ['core', 'Medical technology should be carefully regulated.', '医疗科技应受到严格监管。', { usage: '简洁的立场句，后接安全、隐私、公平三个展开方向。' }],
+      ['core', 'Without proper oversight, new treatments may put patients at risk.', '缺乏适当监管，新疗法可能使患者面临风险。', { usage: '适合作为原因句或段首论点。', err: 'put sb at risk，不写 put sb in risk。' }],
+      ['know', 'improve surgical precision', '提高手术精准度', { ex: 'Robotic systems can improve surgical precision in complex operations.' }],
+      ['know', 'undergo rigorous clinical trials', '经过严格的临床试验', { ex: 'New drugs must undergo rigorous clinical trials before approval.' }],
+      ['know', 'protect sensitive patient data', '保护敏感的患者数据', { ex: 'Hospitals have a duty to protect sensitive patient data.' }],
+      ['know', 'widen the gap in access to healthcare', '加大医疗服务获取上的差距', { ex: 'Expensive treatments may widen the gap in access to healthcare.', col: 'access to sth' }],
+      ['term', 'robotic-assisted surgery', '机器人辅助手术', { ex: 'Robotic-assisted surgery shortens recovery time for many patients.' }],
+      ['term', 'regulatory approval', '监管审批', { ex: 'The device has not yet gained regulatory approval.', col: 'gain / obtain regulatory approval' }],
+      ['term', 'informed consent', '知情同意', { ex: 'Patients must give informed consent before any experimental treatment.', col: 'give / obtain informed consent' }],
+    ],
+  },
+  {
+    id: 'tech-ai', topic: '科技', sub: '人工智能与就业', name: '自动化对工作的影响',
+    scene: '讨论机器和人工智能取代工作岗位，以及社会应如何应对。',
+    directions: ['冲击：制造业与客服岗位', '机遇：新兴行业', '应对：再培训与终身学习'],
+    paragraph: 'Automation is likely to replace many routine jobs, because machines can perform repetitive tasks more efficiently than humans. Job displacement is therefore a real concern. However, artificial intelligence will also create new job opportunities, provided that workers acquire new skills through retraining.',
+    related: ['edu-online', 'tech-medical'],
+    items: [
+      ['core', 'Automation is likely to replace many routine jobs.', '自动化很可能取代许多重复性工作。', { usage: '用 is likely to 避免绝对化。' }],
+      ['core', 'Governments should help workers adapt to technological change.', '政府应帮助劳动者适应技术变革。', { usage: '适合解决方案段的中心句。', err: 'adapt to + 名词，不写 adapt technological change。' }],
+      ['know', 'perform repetitive tasks more efficiently', '更高效地完成重复性任务', { ex: 'Machines can perform repetitive tasks more efficiently than humans.' }],
+      ['know', 'create new job opportunities', '创造新的就业机会', { ex: 'The technology sector continues to create new job opportunities.' }],
+      ['know', 'acquire new skills through retraining', '通过再培训掌握新技能', { ex: 'Displaced workers need to acquire new skills through retraining.' }],
+      ['term', 'artificial intelligence', '人工智能', { ex: 'Artificial intelligence is already used to screen job applications.' }],
+      ['term', 'lifelong learning', '终身学习', { ex: 'Lifelong learning is essential in a rapidly changing economy.' }],
+      ['term', 'job displacement', '工作岗位被取代', { ex: 'Job displacement is most common in manufacturing.' }],
+    ],
+  },
+  {
+    id: 'env-climate', topic: '环境', sub: '气候变化应对', name: '政府与个人的责任',
+    scene: '讨论应对气候变化主要靠政府还是个人。',
+    directions: ['政府：税收与基础设施', '个人：日常消费选择', '结论：两者需要配合'],
+    paragraph: 'Tackling climate change requires action from both governments and individuals. Governments are in a better position to bring about large-scale change: they can impose heavy taxes on polluting industries, invest in public transport and help the economy reduce reliance on fossil fuels. At the same time, individuals can make environmentally friendly choices that shrink their carbon footprint.',
+    related: ['city-traffic'],
+    items: [
+      ['core', 'Tackling climate change requires action from both governments and individuals.', '应对气候变化需要政府和个人共同行动。', { usage: '适合讨论双方观点题的立场句。' }],
+      ['core', 'Governments are in a better position to bring about large-scale change.', '政府更有能力推动大规模的改变。', { usage: 'be in a better position to do 比 can do 更具论证感。' }],
+      ['know', 'reduce reliance on fossil fuels', '减少对化石燃料的依赖', { ex: 'Countries must reduce reliance on fossil fuels within the next decade.', col: 'reliance on sth' }],
+      ['know', 'impose heavy taxes on polluting industries', '对污染行业征收重税', { ex: 'Some argue that governments should impose heavy taxes on polluting industries.', col: 'impose a tax on sth' }],
+      ['know', 'invest in public transport', '投资公共交通', { ex: 'Cities that invest in public transport see fewer cars on the road.' }],
+      ['know', 'make environmentally friendly choices', '做出环保的选择', { ex: 'Individuals can make environmentally friendly choices in daily life.' }],
+      ['term', 'carbon emissions', '碳排放', { ex: 'Air travel is a major source of carbon emissions.', col: 'cut / reduce carbon emissions' }],
+      ['term', 'renewable energy', '可再生能源', { ex: 'Subsidies have made renewable energy more affordable.' }],
+      ['term', 'carbon footprint', '碳足迹', { ex: 'Eating less meat can reduce a person\'s carbon footprint.' }],
+    ],
+  },
+  {
+    id: 'crime-prevent', topic: '犯罪', sub: '犯罪预防', name: '降低犯罪',
+    scene: '比较惩罚与预防、改造在减少犯罪中的作用。',
+    directions: ['预防：社区与教育', '惩罚：威慑的局限', '改造：减少再次犯罪'],
+    paragraph: 'Prevention is more effective than punishment in reducing crime. Longer prison sentences do not necessarily deter potential offenders, whereas education and employment programmes tackle the root causes of crime. Similarly, rehabilitation programmes help ex-offenders reintegrate into society and reduce the risk of reoffending.',
+    related: ['edu-critical'],
+    items: [
+      ['core', 'Prevention is more effective than punishment in reducing crime.', '在减少犯罪方面，预防比惩罚更有效。', { usage: '适合作为全文立场或主体段中心句。' }],
+      ['core', 'Longer prison sentences do not necessarily deter crime.', '更长的刑期并不一定能遏制犯罪。', { usage: 'not necessarily 让观点更有分寸。' }],
+      ['know', 'reduce crime rates', '降低犯罪率', { ex: 'Better street lighting has helped reduce crime rates in some cities.', usage: '最中性、最常用的说法。' }],
+      ['know', 'deter potential offenders', '震慑潜在的犯罪者', { ex: 'Visible police patrols may deter potential offenders.', usage: '强调“威慑”，对象是还没有犯罪的人。' }],
+      ['know', 'tackle the root causes of crime', '从根源上解决犯罪问题', { ex: 'Education and employment programmes tackle the root causes of crime.', usage: '强调长期、根本性的解决。' }],
+      ['know', 'help ex-offenders reintegrate into society', '帮助刑满释放人员重新融入社会', { ex: 'Vocational training can help ex-offenders reintegrate into society.' }],
+      ['term', 'rehabilitation programmes', '改造项目', { ex: 'Rehabilitation programmes lower the chance of reoffending.' }],
+      ['term', 'reoffending', '再次犯罪', { ex: 'Education in prison reduces the risk of reoffending.', col: 'reduce the risk of reoffending' }],
+      ['term', 'juvenile delinquency', '青少年犯罪', { ex: 'Poverty is closely linked to juvenile delinquency.' }],
+    ],
+  },
+  {
+    id: 'city-traffic', topic: '城市化', sub: '城市交通', name: '缓解交通拥堵',
+    scene: '讨论修路、公共交通和收费等缓解城市拥堵的办法。',
+    directions: ['公共交通：地铁与公交', '经济手段：拥堵费与停车费', '城市规划：控制无序扩张'],
+    paragraph: 'Expanding public transport is the most effective way to ease traffic congestion. Building more roads only encourages more people to drive, while a reliable metro system can shorten commuting time and discourage private car use. Fewer vehicles during rush hour would also improve air quality in urban areas.',
+    related: ['env-climate'],
+    items: [
+      ['core', 'Expanding public transport is the most effective way to ease traffic congestion.', '扩大公共交通是缓解交通拥堵最有效的方式。', { usage: '动名词短语作主语，结构稳定。' }],
+      ['core', 'Building more roads only encourages more people to drive.', '修更多的路只会鼓励更多人开车。', { usage: '适合反驳“多修路”的观点。' }],
+      ['know', 'ease traffic congestion', '缓解交通拥堵', { ex: 'Congestion charges have helped ease traffic congestion in London.' }],
+      ['know', 'discourage private car use', '抑制私家车使用', { ex: 'High parking fees discourage private car use in city centres.' }],
+      ['know', 'shorten commuting time', '缩短通勤时间', { ex: 'A reliable metro system can shorten commuting time significantly.' }],
+      ['know', 'improve air quality in urban areas', '改善城市空气质量', { ex: 'Fewer cars would improve air quality in urban areas.' }],
+      ['term', 'congestion charge', '拥堵费', { ex: 'Drivers must pay a congestion charge to enter the city centre.' }],
+      ['term', 'urban sprawl', '城市无序扩张', { ex: 'Urban sprawl forces people to depend on cars.' }],
+      ['term', 'rush hour', '高峰时段', { ex: 'Trains are overcrowded during rush hour.' }],
+    ],
+  },
+  {
+    id: 'health-diet', topic: '健康', sub: '公共健康', name: '肥胖与饮食',
+    scene: '讨论肥胖问题应由政府还是个人负责，以及可行的干预手段。',
+    directions: ['政府：税收与广告限制', '个人：饮食与运动习惯', '影响：医疗体系负担'],
+    paragraph: 'The government should take greater responsibility for public health. Many people lead a sedentary lifestyle and eat large amounts of processed food, which increases the risk of chronic diseases and can place a heavy burden on the healthcare system. Measures such as a sugar tax or rules that restrict the advertising of junk food can therefore be justified.',
+    related: ['tech-medical'],
+    items: [
+      ['core', 'The government should take greater responsibility for public health.', '政府应对公共健康承担更大责任。', { usage: 'take responsibility for sth。' }],
+      ['core', 'Individuals are ultimately responsible for their own diet.', '个人最终要对自己的饮食负责。', { usage: '适合对立观点段。' }],
+      ['know', 'raise public awareness of healthy eating', '提高公众对健康饮食的认识', { ex: 'Campaigns can raise public awareness of healthy eating.', col: 'raise awareness of sth' }],
+      ['know', 'restrict the advertising of junk food', '限制垃圾食品广告', { ex: 'Several countries restrict the advertising of junk food to children.' }],
+      ['know', 'lead a sedentary lifestyle', '过着久坐少动的生活', { ex: 'Office workers often lead a sedentary lifestyle.' }],
+      ['know', 'place a heavy burden on the healthcare system', '给医疗体系带来沉重负担', { ex: 'Obesity-related diseases place a heavy burden on the healthcare system.' }],
+      ['term', 'sugar tax', '糖税', { ex: 'The sugar tax led manufacturers to cut sugar in soft drinks.' }],
+      ['term', 'processed food', '加工食品', { ex: 'Processed food is often high in salt and fat.' }],
+      ['term', 'chronic diseases', '慢性疾病', { ex: 'Poor diet increases the risk of chronic diseases.' }],
+    ],
+  },
+];
+
+/* 功能表达：[英文, 中文, 句法, 语气与边界, 近义区别, 示例, 常见错误] */
+const FUNCTION_GROUPS = [
+  { id: 'fn-opinion', fn: '表达观点', scene: '在开头段或结论段表明自己的立场。', items: [
+    ['I firmly believe that ...', '我坚信……', 'I firmly believe that + 完整句子', '立场鲜明；适合同意/反对类题目', '比 In my view 更坚定，全文只宜出现一次', 'I firmly believe that schools should teach practical life skills.', '不写 I firmly believe in that ...'],
+    ['In my view, ...', '在我看来', 'In my view, + 完整句子', '中性，正式程度适中', '语气比 I firmly believe 温和，可在结论段重申立场', 'In my view, the benefits of tourism outweigh its drawbacks.', '不写 In my point of view。'],
+    ['It seems to me that ...', '在我看来似乎……', 'It seems to me that + 完整句子', '较委婉，带推测', '适合有保留的观点，不适合需要鲜明立场的开头', 'It seems to me that public libraries are still essential.', '不与 I think 叠用。'],
+    ['I partly agree with this view.', '我部分同意这一观点。', '独立成句，后文分两方面展开', '中立，表示部分同意', '只适合真正讨论两方面的文章', 'I partly agree with this view, as both sides have merit.', '不写 I partly agree this view（缺 with）。'],
+  ] },
+  { id: 'fn-main', fn: '引出主要观点', scene: '在主体段首句引出分论点。', items: [
+    ['The main reason why ... is that ...', '……的主要原因是……', 'The main reason why + 主谓 + is that + 完整句子', '正式，直接点明原因', '比 One reason is ... 更强调“最主要”', 'The main reason why people move to cities is that they offer better jobs.', '不写 The main reason is because ...'],
+    ['One major advantage of ... is that ...', '……的一个主要优点是……', 'One major advantage of + 名词/动名词 + is that + 句子', '中性，适合利弊题', '用于优势段；劣势段换成 disadvantage / drawback', 'One major advantage of online shopping is that it saves time.', 'advantage of doing，不写 advantage to do。'],
+    ['Firstly, it is worth considering ...', '首先，值得考虑……', 'it is worth considering + 名词/动名词', '引导式，略正式', '适合先摆出考虑因素再展开', 'Firstly, it is worth considering the financial cost of space exploration.', 'worth 后接 doing 或名词，不接 to do。'],
+  ] },
+  { id: 'fn-add', fn: '补充信息', scene: '在同一方向上补充新的理由或信息。', items: [
+    ['In addition, ...', '此外', 'In addition, + 完整句子；In addition to + 名词/动名词', '中性，最常用', '注意 In addition to 后接名词或动名词', 'In addition, cycling reduces air pollution.', 'In addition to reduce → In addition to reducing。'],
+    ['Moreover, ...', '而且', 'Moreover, + 完整句子', '正式，递进', '强调新信息比前文更有分量', 'Moreover, the scheme would create local jobs.', '不写 and moreover。'],
+    ['Not only ... but also ...', '不仅……而且……', 'Not only + 倒装 ..., but ... also ...', '强调，书面', '放在句首时必须倒装', 'Not only does exercise improve health, but it also reduces stress.', 'Not only exercise improves ...（句首未倒装）。'],
+    ['Another factor to consider is ...', '另一个需要考虑的因素是……', 'Another factor to consider is + 名词 / that 从句', '中性，用于段落间过渡', '适合引出新的分论点，而不是补充细节', 'Another factor to consider is the cost of housing.', '不写 Another factor need to consider。'],
+  ] },
+  { id: 'fn-contrast', fn: '转折与对比', scene: '提出相反信息，或对比两个对象。', items: [
+    ['However, ...', '然而', 'However, + 完整句子（前句以句号结束）', '中性', '连接两个句子，不能像 but 一样连接两个分句', 'Cars are convenient. However, they cause pollution.', '逗号拼接：..., however they ...'],
+    ['On the other hand, ...', '另一方面', 'On the other hand, + 完整句子', '中性，对照另一面', '与前文的另一面对照，不表示纠正前文', 'On the other hand, public transport is cheaper.', '不写 On the other side。'],
+    ['By contrast, ...', '相比之下', 'By contrast, + 完整句子', '正式', '强调两个对象的差异，而不是观点转折', 'Rural areas are quiet. By contrast, cities are crowded and noisy.', '不写 By contrary。'],
+    ['whereas', '而（对比）', '分句 + , whereas + 分句', '正式，同一句内对比', '是连词，连接两个分句', 'Some students prefer group work, whereas others learn better alone.', '不能单独成句。'],
+  ] },
+  { id: 'fn-concession', fn: '让步', scene: '先承认对方观点的合理之处，再提出自己的看法。', items: [
+    ['Although ..., ...', '虽然……，但是……', 'Although + 从句, 主句', '中性', '不能与 but 同时使用', 'Although technology saves time, it can isolate people.', 'Although ..., but ...'],
+    ['Admittedly, ...', '诚然', 'Admittedly, + 完整句子（常后接 However）', '正式，先承认后反驳', '用于“让步—反驳”结构的前半部分', 'Admittedly, zoos help protect endangered species.', '让步后忘记转回自己的观点。'],
+    ['Despite ..., ...', '尽管', 'Despite + 名词/动名词, 主句', '正式', '后接名词或动名词，不接完整句子', 'Despite the high cost, many families choose private schools.', 'Despite it is expensive → Despite being expensive。'],
+    ['While it is true that ..., ...', '虽然……确实如此，但……', 'While it is true that + 句子, 主句', '正式，常用于反驳段开头', '比 Although 更强调“承认事实”', 'While it is true that fast food is convenient, it is often unhealthy.', '主句缺失，只写了 While 从句。'],
+  ] },
+  { id: 'fn-cause', fn: '原因与解释', scene: '解释某个现象或观点成立的原因。', items: [
+    ['This is because ...', '这是因为……', 'This is because + 完整句子', '中性，解释上一句', '后接完整句子；接名词要用 because of', 'Many young people rent homes. This is because property prices are high.', 'This is because the high prices（缺谓语）。'],
+    ['due to ...', '由于', 'due to + 名词/名词短语', '正式', '后接名词，不接完整句子', 'Many flights were cancelled due to bad weather.', 'due to the weather is bad。'],
+    ['... can be attributed to ...', '……可以归因于……', '结果 + can be attributed to + 名词/动名词', '正式，学术', '主语是结果，to 后是原因', 'The rise in obesity can be attributed to poor diet.', '把原因和结果的位置写反。'],
+    ['A key factor behind ... is ...', '……背后的关键因素是……', 'A key factor behind + 名词 + is + 名词 / that 从句', '中性偏正式', '强调多个原因中最关键的一个', 'A key factor behind urban migration is the search for work.', 'factor of → factor behind / in。'],
+  ] },
+  { id: 'fn-result', fn: '结果与影响', scene: '说明某个原因或做法带来的结果。', items: [
+    ['This can lead to ...', '这可能导致……', 'This can lead to + 名词/动名词', '中性，强调可能产生的结果', '后接名词或动名词，不接完整句子', 'This can lead to higher levels of stress.', 'lead to increase → lead to an increase。'],
+    ['This may result in ...', '这可能造成……', 'This may result in + 名词/动名词', '更正式，强调可能性', '与 lead to 接近但更书面', 'This may result in a shortage of skilled workers.', 'result in（导致）与 result from（源于）方向相反。'],
+    ['As a result, ...', '因此', 'As a result, + 完整句子', '中性', '连接已经成立的结果', 'Housing became unaffordable. As a result, many young people left the city.', '把 As a result 当作 lead to 使用，后接名词。'],
+    ['Consequently, ...', '因此', 'Consequently, + 完整句子', '更正式', '与 As a result 功能相同，语域更正式', 'Consequently, the government raised taxes.', '同一段反复使用。'],
+  ] },
+  { id: 'fn-example', fn: '举例与证据', scene: '用例子或证据支撑论点。', items: [
+    ['For example, ...', '例如', 'For example, + 完整句子', '中性', '后接完整句子；列举名词用 such as', 'For example, many companies now allow staff to work from home.', 'For example, cars, buses.（只列名词）'],
+    ['such as ...', '例如（列举）', '名词 + such as + 名词', '中性', '在句中列举名词，不接完整句子', 'Outdoor activities such as hiking and cycling are popular.', 'such as 后接完整句子。'],
+    ['A case in point is ...', '一个恰当的例子是……', 'A case in point is + 名词', '正式', '适合引出一个典型例子', 'A case in point is the rapid growth of electric car sales.', '不写 A case in point is that ...（多数情况下接名词更自然）'],
+    ['Research suggests that ...', '研究表明……', 'Research suggests that + 句子', '学术', '雅思中不要编造具体研究名称和数字', 'Research suggests that regular exercise improves concentration.', 'Researches suggest（research 不可数）。'],
+  ] },
+  { id: 'fn-emphasis', fn: '强调与限定', scene: '突出重点，或给观点加上合理的范围。', items: [
+    ['It is particularly important to ...', '尤其重要的是……', 'It is particularly important to + 动词原形', '中性，强调', '突出一个最重要的做法', 'It is particularly important to protect children online.', 'It is particularly important that to ...'],
+    ['to some extent', '在某种程度上', '句首或句中插入', '限定，降低绝对性', '用于避免过度概括', 'To some extent, social media has improved communication.', 'in some extent。'],
+    ['in most cases', '在大多数情况下', '句首或句末', '限定', '代替 always / never 式的绝对表达', 'In most cases, prevention is cheaper than treatment.', 'in most case（缺复数）。'],
+    ['Indeed, ...', '确实', 'Indeed, + 完整句子', '正式，强调', '补充一条更强的证据', 'Indeed, some cities have banned cars from their centres entirely.', '用 Indeed 引出相反信息。'],
+  ] },
+  { id: 'fn-sequence', fn: '顺序与展开', scene: '按顺序列出要点，或解释上一句的含义。', items: [
+    ['To begin with, ...', '首先', 'To begin with, + 完整句子', '中性', '用于列举第一点', 'To begin with, the policy is expensive.', 'To begin with, firstly ...（重复）'],
+    ['Secondly, ...', '其次', 'Secondly, + 完整句子', '中性', '与 Firstly / To begin with 配合', 'Secondly, it may not reduce traffic.', '不写 Second time。'],
+    ['Finally, ...', '最后', 'Finally, + 完整句子', '中性', '列举的最后一点，不等于结论', 'Finally, the policy would be difficult to enforce.', '用 At last 表示列举最后一点（At last 是“终于”）。'],
+    ['This means that ...', '这意味着……', 'This means that + 完整句子', '中性，展开解释', '解释上一句的具体含义或后果', 'This means that students have less time for hobbies.', 'This is mean that ...'],
+  ] },
+  { id: 'fn-conclusion', fn: '总结与结论', scene: '在结尾段重申立场，不引入新论点。', items: [
+    ['In conclusion, ...', '总之', 'In conclusion, + 重申观点', '正式', '结尾段开头最常用，不引入新论点', 'In conclusion, the advantages of remote work outweigh the disadvantages.', 'In a conclusion / As a conclusion。'],
+    ['To sum up, ...', '总而言之', 'To sum up, + 完整句子', '略口语', '也可用于结尾段', 'To sum up, both approaches have their merits.', 'To summary。'],
+    ['Overall, ...', '总体而言', 'Overall, + 完整句子', '中性', '也常用于小作文概述段', 'Overall, I believe that governments should fund the arts.', 'In overall。'],
+    ['On balance, ...', '权衡之下', 'On balance, + 完整句子', '正式', '适合讨论双方观点后给出判断', 'On balance, the benefits of tourism outweigh its costs.', 'In balance。'],
+  ] },
+];
+
+/* 示例写作笔记（首次打开时作为“示例”笔记组载入，可删除）
+   每条下面缩进的“标签：内容”会整理进卡片的对应字段 */
+const SAMPLE_NOTE = `# 强调深远影响
+- have a profound impact on 对……产生深远影响
+  - 例句：Social media has had a profound impact on the way young people communicate.
+  - 搭配：have a profound / significant / lasting impact on sth
+  - 场景：强调影响深远且持久，比 affect 更正式，适合主体段的结果句
+  - 常见错误：impact 后用 on，不写 have a profound impact to
+- exert a considerable influence on 对……施加相当大的影响（更正式）
+  - 例句：Parents exert a considerable influence on their children's career choices.
+  - 搭配：exert influence / pressure / control on sb
+  - 场景：语气最正式，主语通常是人、机构或社会因素
+  - 常见错误：influence 后用 on，不写 exert influence to
+- play a pivotal role in 在……中起关键作用
+  - 例句：Teachers play a pivotal role in shaping students' values.
+  - 搭配：play a key / crucial / pivotal role in doing sth
+  - 场景：强调“关键作用”而不是“影响”，in 后接名词或动名词
+  - 常见错误：不写 play a pivotal role to do sth
+- shape the way people think 塑造人们的思维方式
+  - 例句：The internet has shaped the way people think about privacy.
+  - 搭配：shape the way + 主语 + 动词
+  - 场景：比 change 更具体，强调长期、逐渐的塑造
+  - 常见错误：the way 后直接接句子，不写 the way how people think
+
+# 表达原因的句型
+- One reason for this is that ... 其中一个原因是……
+  - 可替换：this 可换成具体现象；that 后接完整的原因句
+  - 例句：One reason for this is that housing in big cities is expensive.
+  - 场景：主体段列举多个原因时，引出其中一个
+  - 常见错误：不写 One reason is because ...（reason 与 because 重复）
+- This is largely due to the fact that ... 这在很大程度上是因为……
+  - 可替换：largely 可换成 partly / mainly；that 后接完整句子
+  - 例句：This is largely due to the fact that more people now work from home.
+  - 场景：解释上一句现象的主要原因，语气正式
+  - 常见错误：只接名词时用 due to + 名词，不加 the fact that
+
+# 我的语法错误
+- ❌ have a great influence to → ✅ have a great influence on 介词搭配：influence on
+  - 规则：influence 作名词表示“对……的影响”时，介词用 on
+  - 例句：Advertising has a great influence on what children want to buy.
+  - 限制：influence 作动词时直接接宾语（influence sb），不加 on
+- ❌ The number of cars are increasing. → ✅ The number of cars is increasing. 主语是 the number，谓语用单数
+  - 规则：the number of + 复数名词作主语时，真正的主语是 number，谓语用单数
+  - 例句：The number of international students has doubled since 2010.
+  - 限制：a number of（许多）+ 复数名词，谓语用复数：A number of cars are parked outside.
+- ❌ It can help people to know more knowledge. → ✅ It can help people gain more knowledge. know 不与 knowledge 搭配
+  - 规则：knowledge 常与 gain / acquire / broaden 搭配
+  - 例句：Travelling helps young people broaden their knowledge of other cultures.
+  - 限制：learn 可接 skills / a language，一般不说 learn knowledge
+
+# 零散积累
+- a double-edged sword 一把双刃剑
+  - 例句：Technology is a double-edged sword: it connects people but can also isolate them.
+  - 搭配：prove to be / be a double-edged sword
+  - 场景：开头段或让步段引出利弊讨论
+  - 常见错误：同一篇文章里不要反复使用，避免显得套用模板
+`;
+
+(function () {
+'use strict';
+
+/* ============================================================
+   工具
+   ============================================================ */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const DAY = 864e5;
+function dayStart(t = Date.now()) { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); }
+function addDays(t, n) { const d = new Date(dayStart(t)); d.setDate(d.getDate() + n); return d.getTime(); }
+function dayKey(t = Date.now()) { const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function diffDays(t) { return Math.round((dayStart(t) - dayStart()) / DAY); }
+function relDay(t) {
+  const d = diffDays(t);
+  if (d === 0) return '今天';
+  if (d === 1) return '明天';
+  if (d === 2) return '后天';
+  if (d > 0) return d + ' 天后';
+  return '逾期 ' + (-d) + ' 天';
+}
+function agoDay(t) { const d = -diffDays(t); return d <= 0 ? '今天' : d === 1 ? '昨天' : d + ' 天前'; }
+function fmtMD(t) { const d = new Date(t); return (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日'; }
+const WD = '日一二三四五六';
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const chunk = (a, n) => { const r = []; for (let i = 0; i < a.length; i += n) r.push(a.slice(i, i + n)); return r; };
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+
+const ICON = {
+  home: '<path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/>',
+  today: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M9 15l2 2 4-4"/>',
+  library: '<path d="M5 5.5A1.5 1.5 0 0 1 6.5 4H19v13H6.5A1.5 1.5 0 0 0 5 18.5z"/><path d="M5 18.5A1.5 1.5 0 0 0 6.5 20H19v-3"/>',
+  topic: '<path d="m12 4 8 4-8 4-8-4z"/><path d="m4 12 8 4 8-4"/><path d="m4 16 8 4 8-4"/>',
+  fn: '<path d="M4 8h12M13 5l3 3-3 3"/><path d="M20 16H8M11 13l-3 3 3 3"/>',
+  notes: '<path d="M13 4H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/><path d="m17.5 3.5 3 3-7.5 7.5-3.5 1 1-3.5z"/>',
+  star: '<path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/>',
+  record: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M8.5 14h.01M12 14h.01M15.5 14h.01M8.5 17h.01M12 17h.01"/>',
+  search: '<circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/>',
+  back: '<path d="M15 5l-7 7 7 7"/>',
+  chev: '<path d="m9 6 6 6-6 6"/>',
+  down: '<path d="m6 9 6 6 6-6"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  upload: '<path d="M12 15V4M7 9l5-5 5 5"/><path d="M5 15v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4"/>',
+  eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
+};
+const svg = (k, sw = 1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ============================================================
+   本地存储
+   ============================================================ */
+const KEY = 'ielts-writing-app.v2';
+function defaults() {
+  return { v: 2, user: { name: 'Emily' }, items: {}, custom: { groups: [], items: [] }, notes: { sets: [], groups: [], items: [] }, newSession: null, reviewSession: null, log: {}, seeded: false };
+}
+function load() {
+  try {
+    const r = JSON.parse(localStorage.getItem(KEY));
+    if (r && r.v === 2) {
+      const d = defaults();
+      return Object.assign(d, r, { custom: Object.assign(d.custom, r.custom || {}), notes: Object.assign(d.notes, r.notes || {}), user: Object.assign(d.user, r.user || {}) });
+    }
+  } catch (e) {}
+  return defaults();
+}
+let S = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ============================================================
+   内容组装：系统预设 + 自己添加 + 写作笔记
+   ============================================================ */
+const TYPE_LABEL = { core: '核心论点', know: '知识表达', term: '专业词汇', fn: '功能表达', expr: '表达卡', pattern: '句型卡', grammar: '语法卡' };
+const PROMPT_LABEL = { core: '中文观点 → 完整英文句子', know: '中文含义 / 句子填空 → 短语', term: '中文场景 → 术语和搭配', fn: '写作功能 → 表达', expr: '中文提示 → 英文写出', pattern: '结构提示 → 写出句型', grammar: '错误句 → 改正' };
+const KIND_LABEL = { expr: '表达组', pattern: '句型组', grammar: '语法组' };
+const STATUS_CLS = { '待整理': 's-triage', '等待学习': 's-wait', '学习中': 's-learn', '初次完成': 's-first', '待复习': 's-due', '近期稳定': 's-stable', '资料': 's-ref', '暂缓': 's-ref' };
+const LADDER = [1, 3, 7, 14, 30];
+
+let ITEMS = new Map(), GROUPS = new Map();
+function assemble() {
+  ITEMS = new Map(); GROUPS = new Map();
+  for (const g of TOPIC_GROUPS) {
+    const G = { id: g.id, lib: 'topic', topic: g.topic, sub: g.sub, name: g.name, scene: g.scene, directions: g.directions, paragraph: g.paragraph, related: g.related, ids: [] };
+    GROUPS.set(G.id, G);
+    for (const [type, en, zh, x] of g.items) {
+      const id = 't:' + g.id + ':' + slug(en);
+      ITEMS.set(id, { id, lib: 'topic', type, gid: g.id, en, zh, ex: x.ex || '', col: x.col || '', usage: x.usage || '', err: x.err || '', src: '系统预设 · ' + g.topic + ' / ' + g.sub, builtin: true });
+      G.ids.push(id);
+    }
+  }
+  for (const g of FUNCTION_GROUPS) {
+    const G = { id: g.id, lib: 'function', fn: g.fn, name: g.fn, scene: g.scene, ids: [] };
+    GROUPS.set(G.id, G);
+    for (const [en, zh, syntax, tone, diffNote, ex, err] of g.items) {
+      const id = 'f:' + slug(en);
+      ITEMS.set(id, { id, lib: 'function', type: 'fn', gid: g.id, en, zh, syntax, tone, diff: diffNote, ex, err, src: '系统预设 · 功能表达', builtin: true });
+      G.ids.push(id);
+    }
+  }
+  for (const g of S.custom.groups) GROUPS.set(g.id, Object.assign({}, g, { ids: [] }));
+  for (const it of S.custom.items) {
+    const G = GROUPS.get(it.gid); if (!G) continue;
+    ITEMS.set(it.id, Object.assign({}, it, { custom: true })); G.ids.push(it.id);
+  }
+  for (const g of S.notes.groups) GROUPS.set(g.id, Object.assign({}, g, { lib: 'notes', ids: [] }));
+  for (const it of S.notes.items) {
+    const G = GROUPS.get(it.gid); if (!G) continue;
+    ITEMS.set(it.id, Object.assign({}, it, { lib: 'notes' })); G.ids.push(it.id);
+  }
+}
+
+function noteSet(id) { return S.notes.sets.find(s => s.id === id); }
+function defMode(it) { if (!it) return 'reference'; if (it.defMode) return it.defMode; return it.type === 'core' ? 'memory' : 'reference'; }
+function st(id) { return S.items[id] || (S.items[id] = { hist: [], wrong: 0 }); }
+function modeOf(id) { const s = S.items[id]; return (s && s.mode) || defMode(ITEMS.get(id)); }
+function studied(id) { const s = S.items[id]; return !!(s && s.stage != null); }
+function confirmedItem(it) { if (!it) return false; if (it.lib !== 'notes') return true; const set = noteSet(it.setId); return !set || set.confirmed; }
+function active(id) { return confirmedItem(ITEMS.get(id)); }
+function isDue(id) { const s = S.items[id]; return active(id) && modeOf(id) === 'memory' && studied(id) && s.next <= dayStart(); }
+
+function itemStatus(id) {
+  const it = ITEMS.get(id);
+  if (!confirmedItem(it)) return '待整理';
+  const m = modeOf(id);
+  if (m === 'reference') return '资料';
+  if (m === 'paused') return '暂缓';
+  const s = S.items[id];
+  if (!s || s.stage == null) return S.newSession && S.newSession.ids.includes(id) ? '学习中' : '等待学习';
+  if (s.next <= dayStart()) return '待复习';
+  const reviews = s.hist.filter(h => h.p !== 'new');
+  if (!reviews.length) return '初次完成';
+  const last2 = reviews.slice(-2);
+  if (s.stage >= 3 && last2.length === 2 && last2.every(h => h.r === 'rem')) return '近期稳定';
+  return '学习中';
+}
+const statusHTML = label => `<span class="status ${STATUS_CLS[label] || ''}">${label}</span>`;
+
+function gstats(G) {
+  const r = { total: 0, mem: 0, ref: 0, paused: 0, fresh: 0, due: 0, stable: 0, first: 0, studied: 0, last: 0, next: Infinity };
+  for (const id of G.ids) {
+    if (!active(id)) continue;
+    r.total++;
+    const m = modeOf(id);
+    if (m === 'reference') { r.ref++; continue; }
+    if (m === 'paused') { r.paused++; continue; }
+    r.mem++;
+    if (!studied(id)) { r.fresh++; continue; }
+    r.studied++;
+    const s = S.items[id];
+    r.last = Math.max(r.last, s.last || 0);
+    r.next = Math.min(r.next, s.next);
+    const lab = itemStatus(id);
+    if (lab === '待复习') r.due++;
+    if (lab === '近期稳定') r.stable++;
+    if (lab === '初次完成') r.first++;
+  }
+  if (G.lib === 'notes') { const set = noteSet(G.setId); if (set && !set.confirmed) { r.status = '待整理'; return r; } }
+  if (r.due) r.status = '待复习';
+  else if (!r.mem) r.status = '资料';
+  else if (r.fresh === r.mem) r.status = '等待学习';
+  else if (r.fresh) r.status = '学习中';
+  else if (r.stable === r.mem) r.status = '近期稳定';
+  else if (r.first === r.mem) r.status = '初次完成';
+  else r.status = '学习中';
+  return r;
+}
+
+function groupCrumb(G) {
+  if (G.lib === 'topic') return [G.topic, G.sub];
+  if (G.lib === 'function') return ['功能表达', G.fn];
+  const set = noteSet(G.setId);
+  return ['我的写作笔记', set ? set.title : ''];
+}
+function typeTag(type) { return `<span class="tag ${type}">${TYPE_LABEL[type] || ''}</span>`; }
+
+/* ============================================================
+   间隔复习
+   ============================================================ */
+function bumpLog(field, n = 1) { const k = dayKey(); const l = S.log[k] || (S.log[k] = {}); l[field] = (l[field] || 0) + n; }
+function markLearned(id, firstOk) {
+  const s = st(id);
+  s.stage = 0; s.next = addDays(Date.now(), LADDER[0]); s.last = Date.now();
+  s.hist.push({ r: firstOk ? 'rem' : 'fgt', t: Date.now(), p: 'new' });
+  if (!firstOk) s.wrong = (s.wrong || 0) + 1;
+  bumpLog('learned');
+}
+function nextIntervalLabel(id, r) {
+  const s = S.items[id] || { stage: 0 };
+  if (r === 'rem') return '约 ' + LADDER[Math.min((s.stage || 0) + 1, LADDER.length - 1)] + ' 天后';
+  if (r === 'vag') return ((s.stage || 0) >= 2 ? 2 : 1) + ' 天后再现';
+  return '明天优先复习';
+}
+function applyRating(id, r, prompt) {
+  const s = st(id), now = Date.now();
+  if (r === 'rem') { s.stage = Math.min((s.stage || 0) + 1, LADDER.length - 1); s.next = addDays(now, LADDER[s.stage]); }
+  else if (r === 'vag') { const d = (s.stage || 0) >= 2 ? 2 : 1; s.stage = Math.max(0, (s.stage || 0) - 1); s.next = addDays(now, d); }
+  else { s.stage = 0; s.next = addDays(now, 1); s.wrong = (s.wrong || 0) + 1; }
+  s.last = now;
+  s.hist.push({ r, t: now, p: prompt });
+  bumpLog(r);
+}
+function dueQueue() {
+  const map = new Map();
+  for (const [id, it] of ITEMS) {
+    if (!isDue(id)) continue;
+    if (!map.has(it.gid)) map.set(it.gid, []);
+    map.get(it.gid).push(id);
+  }
+  const arr = [];
+  for (const [gid, ids] of map) {
+    if (!GROUPS.has(gid)) continue;
+    ids.sort((a, b) => (S.items[b].wrong || 0) - (S.items[a].wrong || 0) || S.items[a].next - S.items[b].next);
+    arr.push({ gid, ids, minNext: Math.min(...ids.map(i => S.items[i].next)), wrong: ids.reduce((a, i) => a + (S.items[i].wrong || 0), 0) });
+  }
+  arr.sort((a, b) => a.minNext - b.minNext || b.wrong - a.wrong);
+  return arr;
+}
+const dueCount = () => dueQueue().reduce((a, g) => a + g.ids.length, 0);
+function todayLog() { return S.log[dayKey()] || {}; }
+function canCheckin() {
+  const l = todayLog();
+  const did = (l.rem || 0) + (l.vag || 0) + (l.fgt || 0) + (l.learned || 0);
+  return !l.checked && did > 0 && dueCount() === 0;
+}
+function checkin() {
+  const k = dayKey(); const l = S.log[k] || (S.log[k] = {});
+  l.checked = true; l.checkedAt = Date.now(); save();
+  toast('已打卡，写入 ' + fmtMD(Date.now()) + ' 的学习记录');
+}
+function streak() {
+  let n = 0, t = Date.now();
+  if (!(S.log[dayKey(t)] || {}).checked) t = addDays(t, -1);
+  while ((S.log[dayKey(t)] || {}).checked) { n++; t = addDays(t, -1); }
+  return n;
+}
+
+/* ============================================================
+   默写判定：在用户答案里标出错误 / 缺失 / 多余
+   ============================================================ */
+function tok(s) {
+  return String(s || '').replace(/[’‘`]/g, "'").replace(/[“”]/g, '"').trim().split(/\s+/).filter(Boolean)
+    .map(raw => ({ raw, n: raw.toLowerCase().replace(/[^a-z0-9'\-]/g, '').replace(/^['-]+|['-]+$/g, '') }));
+}
+function diff(user, correct) {
+  const Ua = tok(user), Ca = tok(correct);
+  const U = Ua.map((t, i) => Object.assign({ i }, t)).filter(t => t.n);
+  const C = Ca.map((t, i) => Object.assign({ i }, t)).filter(t => t.n);
+  const m = U.length, n = C.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = m - 1; i >= 0; i--) for (let j = n - 1; j >= 0; j--) dp[i][j] = U[i].n === C[j].n ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const ops = [];
+  let i = 0, j = 0;
+  while (i < m || j < n) {
+    if (i < m && j < n && U[i].n === C[j].n) { ops.push({ t: 'eq', u: U[i], c: C[j] }); i++; j++; }
+    else if (j < n && (i === m || dp[i][j + 1] >= dp[i + 1][j])) { ops.push({ t: 'del', c: C[j] }); j++; }
+    else { ops.push({ t: 'ins', u: U[i] }); i++; }
+  }
+  const uCls = new Array(Ua.length).fill(''), cCls = new Array(Ca.length).fill(''), miss = {};
+  let k = 0, eq = 0;
+  while (k < ops.length) {
+    if (ops[k].t === 'eq') { eq++; k++; continue; }
+    const ins = [], del = [];
+    while (k < ops.length && ops[k].t !== 'eq') { (ops[k].t === 'ins' ? ins : del).push(ops[k]); k++; }
+    del.forEach(o => { cCls[o.c.i] = 'tk-need'; });
+    if (ins.length && del.length) {
+      ins.forEach(o => { uCls[o.u.i] = 'tk-wrong'; });
+      if (del.length > ins.length) { const p = ins[ins.length - 1].u.i + 1; miss[p] = (miss[p] || 0) + del.length - ins.length; }
+    } else if (ins.length) {
+      ins.forEach(o => { uCls[o.u.i] = 'tk-extra'; });
+    } else {
+      const p = k < ops.length ? ops[k].u.i : Ua.length;
+      miss[p] = (miss[p] || 0) + del.length;
+    }
+  }
+  const missTag = c => `<span class="tk-miss" title="这里缺少 ${c} 个词">缺${c > 1 ? c : ''}</span>`;
+  let userHTML = '';
+  for (let x = 0; x <= Ua.length; x++) {
+    if (miss[x]) userHTML += missTag(miss[x]) + ' ';
+    if (x < Ua.length) userHTML += (uCls[x] ? `<span class="${uCls[x]}">${esc(Ua[x].raw)}</span>` : esc(Ua[x].raw)) + ' ';
+  }
+  const correctHTML = Ca.map((t, x) => cCls[x] ? `<span class="${cCls[x]}">${esc(t.raw)}</span>` : esc(t.raw)).join(' ');
+  return { ok: m > 0 && ops.every(o => o.t === 'eq'), empty: m === 0, score: n ? eq / n : 0, userHTML: userHTML.trim(), correctHTML };
+}
+
+/* ============================================================
+   笔记解析：粘贴文字 / Markdown → 表达卡、句型卡、语法卡
+   ============================================================ */
+const CJK = /[㐀-鿿　-〿（：，；]/;
+function stripTail(s) { return String(s).trim().replace(/[\s\-–—:：|=,，;；]+$/, '').trim(); }
+function splitEnZh(s) {
+  const i = s.search(CJK);
+  if (i < 0) return { en: stripTail(s), zh: '' };
+  return { en: stripTail(s.slice(0, i)), zh: s.slice(i).trim() };
+}
+const isPattern = en => /\.\.\.|…|_{2,}|\bsb\b|\bsth\b|\[[^\]]+\]/i.test(en);
+/* 卡片专属字段：导入时写在一条下面的“标签：内容” */
+const NOTE_FIELDS = [
+  ['ex', /^(?:例句|例子|示例|示例句|正确例句|example)$/i],
+  ['col', /^(?:搭配|常用搭配|collocations?)$/i],
+  ['usage', /^(?:场景|使用场景|适用场景|用法|使用提醒|usage)$/i],
+  ['err', /^(?:常见错误|易错|易错点|个人错误)$/],
+  ['slots', /^(?:可替换|可替换位置|替换)$/],
+  ['rule', /^(?:规则|语法规则|rule)$/i],
+  ['limit', /^(?:限制|使用限制)$/],
+];
+function fieldLine(line) {
+  const m = line.match(/^([^:：\s]{1,8})\s*[:：]\s*(.+)$/);
+  if (!m) return null;
+  const f = NOTE_FIELDS.find(([, re]) => re.test(m[1].trim()));
+  return f ? { key: f[0], val: m[2].trim() } : null;
+}
+function parseNotes(text) {
+  const lines = String(text || '').replace(/\r/g, '').split('\n');
+  const secs = []; let cur = { heading: '', cards: [] }; secs.push(cur);
+  const wrongMark = /^(?:❌|✗|✘|×|错误\s*[:：]|wrong\s*[:：])\s*/i;
+  const arrow = /\s*(?:→|->|=>|⇒)\s*|\s*(?:✅|✓|✔|√|正确\s*[:：])\s*/;
+  lines.forEach((rawLine, idx) => {
+    let line = rawLine.trim();
+    if (!line) return;
+    const h = line.match(/^#{1,6}\s+(.+)$/);
+    if (h) { cur = { heading: h[1].trim(), cards: [] }; secs.push(cur); return; }
+    line = line.replace(/^>\s*/, '').replace(/^(?:[-*+•·]|\d+[.)、])\s+/, '').replace(/^\[[ xX]\]\s+/, '').trim();
+    if (!line) return;
+    const fl = fieldLine(line);
+    const last = cur.cards[cur.cards.length - 1];
+    if (fl && last) { last.fields = last.fields || {}; last.fields[fl.key] = last.fields[fl.key] ? last.fields[fl.key] + '；' + fl.val : fl.val; return; }
+    let card = null;
+    if (wrongMark.test(line)) {
+      const parts = line.replace(wrongMark, '').split(arrow).filter(s => s && s.trim());
+      if (parts.length >= 2) {
+        const { en, zh } = splitEnZh(parts.slice(1).join(' '));
+        if (en) card = { kind: 'grammar', wrong: stripTail(parts[0]), en, zh };
+      }
+    } else {
+      const { en, zh } = splitEnZh(line);
+      if (en && /[A-Za-z]/.test(en)) card = { kind: isPattern(en) ? 'pattern' : 'expr', en, zh };
+    }
+    if (card) { card.raw = rawLine.trim(); card.line = idx + 1; card.flag = /[!！]|常错|易错/.test(line); cur.cards.push(card); }
+  });
+  return secs.filter(s => s.cards.length);
+}
+function addNoteItem(c, setId, gid, grouped) {
+  const def = c.kind === 'expr' ? (grouped || c.flag ? 'memory' : 'reference') : 'memory';
+  const f = c.fields || {};
+  // 句型卡的“场景”存为适用场景
+  if (c.kind === 'pattern' && f.usage && !f.scene) { f.scene = f.usage; delete f.usage; }
+  S.notes.items.push(Object.assign({ id: 'n:' + uid(), setId, gid, type: c.kind, en: c.en, zh: c.zh, wrong: c.wrong || '', usage: '', err: '', raw: c.raw, line: c.line, defMode: def }, f));
+}
+function createNoteSet(text, title, opts = {}) {
+  const secs = parseNotes(text);
+  const setId = 'ns:' + uid();
+  let count = 0;
+  for (const sec of secs) {
+    for (const kind of ['expr', 'pattern', 'grammar']) {
+      const cards = sec.cards.filter(c => c.kind === kind);
+      if (!cards.length) continue;
+      if (sec.heading && cards.length >= 2) {
+        const gid = 'ng:' + uid();
+        S.notes.groups.push({ id: gid, setId, kind, name: sec.heading });
+        cards.forEach(c => addNoteItem(c, setId, gid, true));
+      } else {
+        cards.forEach(c => { const gid = 'ng:' + uid(); S.notes.groups.push({ id: gid, setId, kind, name: c.en }); addNoteItem(c, setId, gid, false); });
+      }
+      count += cards.length;
+    }
+  }
+  if (!count) return null;
+  S.notes.sets.push({ id: setId, title, created: Date.now(), confirmed: !!opts.confirmed, source: opts.source || '粘贴的文字' });
+  return setId;
+}
+function pruneNoteGroups() {
+  const used = new Set(S.notes.items.map(i => i.gid));
+  S.notes.groups = S.notes.groups.filter(g => used.has(g.id));
+}
+
+/* ============================================================
+   路由：保留来源页面，返回时回到原处
+   ============================================================ */
+let stack = [{ v: 'home' }];
+const cur = () => stack[stack.length - 1];
+function go(r) { stack.push(r); render(true); }
+function goRoot(r) { stack = [r]; const q = document.getElementById('q'); if (q) q.value = ''; render(true); }
+function back() { if (stack.length > 1) stack.pop(); else stack = [{ v: 'home' }]; render(true); }
+function replaceRoute(r) { stack[stack.length - 1] = r; render(true); }
+function parseRoute(s) { const i = s.indexOf(':'); return i < 0 ? { v: s } : { v: s.slice(0, i), id: s.slice(i + 1) }; }
+
+/* 页面内的临时状态（不持久） */
+const ui = {
+  todayCat: 'topic', todaySel: null, todayOpen: new Set(),
+  notesFilter: 'all', qrMode: 'all', qrShown: new Set(), qrGid: null,
+  calMonth: null, lastNew: null, lastReview: null, practice: null,
+};
+
+/* ============================================================
+   渲染
+   ============================================================ */
+const NAV = [
+  ['home', '首页', 'home', ''],
+  ['today', '今日学习', 'today', ''],
+  ['label', '表达库'],
+  ['topics', '主题表达', 'topic', 'sub lib-sub'],
+  ['funcs', '功能表达', 'fn', 'sub lib-sub'],
+  ['notes', '我的写作笔记', 'notes', 'sub lib-sub'],
+  ['library', '表达库', 'library', 'phone-only'],
+  ['label', '我的'],
+  ['favs', '收藏表达', 'star', 'optional'],
+  ['records', '学习记录', 'record', ''],
+];
+function renderSide() {
+  const root = stack[0].v;
+  const due = dueCount();
+  const libRoots = ['topics', 'funcs', 'notes'];
+  const nav = NAV.map(([v, label, icon, cls]) => {
+    if (v === 'label') return `<div class="nav-label">${label}</div>`;
+    const on = root === v || (v === 'library' && libRoots.includes(root));
+    const count = v === 'today' && due ? `<span class="count num">${due}</span>` : '';
+    return `<button class="nav-item ${cls}" type="button" data-nav="${v}" ${on ? 'aria-current="page"' : ''}>${svg(icon)}<span>${label}</span>${count}</button>`;
+  }).join('');
+  const t0 = dayStart(), dow = (new Date(t0).getDay() + 6) % 7, mon = addDays(t0, -dow);
+  let dots = '';
+  for (let i = 0; i < 7; i++) {
+    const t = addDays(mon, i), l = S.log[dayKey(t)] || {};
+    dots += `<i class="${l.checked ? 'on' : ''} ${t === t0 ? 'today' : ''}">${'一二三四五六日'[i]}</i>`;
+  }
+  $('#side').innerHTML = `
+    <div class="brand"><div class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div><b>写作表达</b><small>IELTS Writing</small></div></div>
+    <nav class="nav" aria-label="主导航">${nav}</nav>
+    <div class="side-foot"><span>本周打卡</span><div class="week-dots">${dots}</div><span>连续打卡 <b class="num">${streak()}</b> 天</span></div>`;
+}
+
+function render(scroll) {
+  const r = cur();
+  const fn = VIEWS[r.v] || VIEWS.home;
+  let out;
+  try { out = fn(r); } catch (e) { console.error(e); stack = [{ v: 'home' }]; out = VIEWS.home({ v: 'home' }); }
+  if (out && out.redirect) { stack[stack.length - 1] = out.redirect; return render(scroll); }
+  renderSide();
+  const backBtn = stack.length > 1 ? `<button class="icon-btn" type="button" data-a="back" aria-label="返回">${svg('back', 2)}</button>` : '';
+  const crumb = (out.crumb || []).filter(Boolean).map(c => `<span>${esc(c)}</span>`).join('');
+  $('#tb-left').innerHTML = `${backBtn}<div class="titles">${crumb ? `<div class="crumb">${crumb}</div>` : ''}<h1 class="page-title">${esc(out.title)}</h1></div>${out.actions || ''}`;
+  $('#searchbox').hidden = !!out.focus;
+  $('#view').innerHTML = out.body;
+  if (scroll) window.scrollTo(0, 0);
+  const a = $('#view .answer:not([readonly])');
+  if (a && out.focus) { try { a.focus({ preventScroll: true }); } catch (e) {} }
+}
+
+/* ---------- 共享片段 ---------- */
+function modeToggle(id, three) {
+  const m = modeOf(id);
+  const opts = three ? [['memory', '记忆'], ['reference', '资料'], ['paused', '暂缓']] : [['memory', '记忆'], ['reference', '资料']];
+  return `<div class="mode" role="group" aria-label="学习方式">${opts.map(([k, t]) => `<button type="button" data-a="mode" data-id="${esc(id)}" data-m="${k}" aria-pressed="${m === k}">${t}</button>`).join('')}</div>`;
+}
+function favBtn(id) {
+  const on = !!(S.items[id] && S.items[id].fav);
+  return `<button class="icon-btn ${on ? 'on' : ''}" type="button" data-a="fav" data-id="${esc(id)}" aria-label="${on ? '取消收藏' : '收藏'}" aria-pressed="${on}">${svg('star')}</button>`;
+}
+function itemRow(id, opts = {}) {
+  const it = ITEMS.get(id);
+  const sub = it.type === 'grammar' ? `<span class="sub">原句：<span class="en">${esc(it.wrong)}</span></span>` : '';
+  const ex = opts.ex && it.ex ? `<span class="meta en" style="font-style:italic">${esc(it.ex)}</span>` : '';
+  return `<div class="row white">
+    <button class="body tap" type="button" data-go="item:${esc(id)}">
+      <span class="meta">${opts.tag ? typeTag(it.type) : ''}${statusHTML(itemStatus(id))}</span>
+      <span class="en title">${esc(it.en)}</span>
+      <span class="sub">${esc(it.zh)}</span>${sub}${ex}
+    </button>
+    <div class="side-ctl">${opts.noMode ? '' : modeToggle(id)}${favBtn(id)}</div>
+  </div>`;
+}
+function markText(text, specs) {
+  const lower = String(text || '').toLowerCase(), ranges = [];
+  for (const sp of specs) {
+    if (!sp.p) continue;
+    const i = lower.indexOf(sp.p.toLowerCase());
+    if (i < 0 || ranges.some(r => i < r.e && i + sp.p.length > r.s)) continue;
+    ranges.push({ s: i, e: i + sp.p.length, cls: sp.cls || '' });
+  }
+  ranges.sort((a, b) => a.s - b.s);
+  let out = '', pos = 0;
+  for (const r of ranges) { out += esc(text.slice(pos, r.s)) + `<mark class="${r.cls}">` + esc(text.slice(r.s, r.e)) + '</mark>'; pos = r.e; }
+  return out + esc(String(text || '').slice(pos));
+}
+const highlightIn = (text, phrases) => markText(text, phrases.map(p => ({ p })));
+const fixedPart = en => en.split(/\s*(?:\.\.\.|…)\s*/).map(x => x.replace(/^[,.\s]+|[,.\s]+$/g, '')).filter(Boolean)[0] || en;
+function blankIn(sentence, phrase) {
+  const i = sentence.toLowerCase().indexOf(phrase.toLowerCase());
+  if (i < 0) return null;
+  return esc(sentence.slice(0, i)) + '<span class="blank"></span>' + esc(sentence.slice(i + phrase.length));
+}
+function stableIds(G) { return G.ids.filter(active); }
+function groupStatusLine(G, s) {
+  const parts = [`${s.total} 条`, `记忆 ${s.mem}`, `资料 ${s.ref}`];
+  if (s.paused) parts.push(`暂缓 ${s.paused}`);
+  return parts.join(' · ');
+}
+
+/* ============================================================
+   首页
+   ============================================================ */
+function installHint() {
+  if (S.user.hintClosed) return '';
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  let framed = false;
+  try { framed = window.top !== window.self; } catch (e) { framed = true; }
+  if (!ios || standalone || framed || location.protocol !== 'https:') return '';
+  return `<section class="panel line" style="flex-direction:row;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="flex:1 1 320px;min-width:0"><div class="eyebrow">装到主屏幕，全屏使用</div>
+    <p class="warm" style="margin-top:4px">点 Safari 地址栏右侧的分享按钮，选择“添加到主屏幕”。之后从主屏幕图标打开，就是全屏 App，断网也能用。</p></div>
+    <button class="btn btn-outline btn-sm" type="button" data-a="hidehint">知道了</button></section>`;
+}
+function vHome() {
+  const q = dueQueue(), dueN = q.reduce((a, g) => a + g.ids.length, 0);
+  const l = todayLog();
+  const h = new Date().getHours();
+  const greet = h < 5 ? '夜深了' : h < 11 ? '早上好' : h < 13 ? '中午好' : h < 18 ? '下午好' : '晚上好';
+  const did = (l.rem || 0) + (l.vag || 0) + (l.fgt || 0);
+  const hasData = Object.values(S.items).some(s => s.stage != null);
+
+  let review;
+  if (S.reviewSession) {
+    const G = GROUPS.get(S.reviewSession.gid);
+    review = `<div class="big-num">${dueN}<small>条待复习</small></div>
+      <p class="warm">上次停在「${esc(G ? G.name : '')}」第 ${S.reviewSession.i + 1} 条。</p>
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="resumereview">继续复习</button></div>`;
+  } else if (dueN) {
+    review = `<div class="big-num">${dueN}<small>条 · ${q.length} 个表达组</small></div>
+      <div class="rows">${q.slice(0, 3).map(g => { const G = GROUPS.get(g.gid); return `<div class="row due-row"><span class="title">${esc(G.name)}</span><span class="meta">${esc(groupCrumb(G)[0])}</span><span class="num" style="margin-left:auto">${g.ids.length} 条</span></div>`; }).join('')}</div>
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="startreview">开始今日复习</button><span class="note-line">按到期时间和错误记录排序</span></div>`;
+  } else if (l.checked) {
+    review = `<div class="big-num">${did}<small>条已复习</small></div><p class="warm">今天已打卡。复习结果：记得 ${l.rem || 0}，模糊 ${l.vag || 0}，忘记 ${l.fgt || 0}。</p>`;
+  } else if (did || l.learned) {
+    review = `<div class="big-num">0<small>条待复习</small></div><p class="warm">今天到期的内容已经全部完成。${canCheckin() ? '确认打卡后会写入学习记录和日历。' : ''}</p>
+      ${canCheckin() ? '<div class="btn-row"><button class="btn btn-primary" type="button" data-a="checkin">完成复习并打卡</button></div>' : ''}`;
+  } else if (hasData) {
+    review = `<div class="big-num">0<small>条待复习</small></div><p class="warm">今天没有到期的复习。可以开始一组新学。</p>`;
+  } else {
+    review = `<p class="warm" style="max-width:44ch">还没有复习任务。完成第一组新学后，系统会在次日、约 3 天、7 天、14 天和 30 天后安排复习。</p>`;
+  }
+
+  let nw;
+  if (S.newSession) {
+    const ns = S.newSession, G = GROUPS.get(ns.gid);
+    const done = ns.ids.filter(studied).length;
+    nw = `<div class="note-line">${esc(groupCrumb(G).join(' / '))}</div>
+      <h3 style="font-family:var(--f-title);font-size:22px">${esc(G.name)}</h3>
+      <div class="progress"><span>${done} / ${ns.ids.length}</span><div class="pbar"><i style="width:${Math.round(done / ns.ids.length * 100)}%"></i></div></div>
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="resumenew">继续本组新学</button></div>`;
+  } else {
+    const rec = [...GROUPS.values()].find(G => G.lib === 'topic' && gstats(G).fresh > 0);
+    if (rec) {
+      const s = gstats(rec);
+      nw = `<div class="note-line">${esc(groupCrumb(rec).join(' / '))}</div>
+        <h3 style="font-family:var(--f-title);font-size:22px">${esc(rec.name)}</h3>
+        <p class="warm">${esc(rec.scene)}</p>
+        <p class="note-line">${s.fresh} 条记忆 · ${s.ref} 条资料（资料不计入学习量）</p>
+        <div class="btn-row"><button class="btn btn-primary" type="button" data-go="today:${esc(rec.id)}">开始今日新学</button><button class="btn btn-outline" type="button" data-go="group:${esc(rec.id)}">查看表达组</button></div>`;
+    } else {
+      nw = `<p class="warm">主题表达里的核心论点都已学过。可以在功能表达或写作笔记里把内容加入记忆。</p>
+        <div class="btn-row"><button class="btn btn-outline" type="button" data-nav="today">选择表达组</button></div>`;
+    }
+  }
+
+  const topicGroups = [...GROUPS.values()].filter(G => G.lib === 'topic');
+  const topics = new Set(topicGroups.map(G => G.topic));
+  const fnItems = [...ITEMS.values()].filter(i => i.lib === 'function').length;
+  const sets = S.notes.sets;
+  const noteCards = S.notes.items.length;
+  const pending = sets.filter(s => !s.confirmed).length;
+
+  // 打卡与记录：本周打卡 + 接下来几天的复习
+  const t0 = dayStart(), mon = addDays(t0, -((new Date(t0).getDay() + 6) % 7));
+  let week = '';
+  for (let i = 0; i < 7; i++) {
+    const t = addDays(mon, i), on = (S.log[dayKey(t)] || {}).checked;
+    week += `<span class="day ${on ? 'on' : ''} ${t === t0 ? 'today' : ''}"><i></i>${'一二三四五六日'[i]}</span>`;
+  }
+  const fc = [];
+  for (let d = 1; d <= 4; d++) {
+    const t = addDays(Date.now(), d);
+    fc.push([t, [...ITEMS.keys()].filter(id => active(id) && modeOf(id) === 'memory' && studied(id) && S.items[id].next === t).length]);
+  }
+  const fmax = Math.max(1, ...fc.map(x => x[1]));
+  const latest = sets.slice().sort((a, b) => b.created - a.created)[0];
+  const tile = (nav, name, sub, meta) => `<button class="zone-tile" type="button" data-nav="${nav}"><span class="name">${name}</span><span class="sub">${sub}</span><span class="meta">${meta}</span></button>`;
+
+  return {
+    title: `${greet}，${S.user.name}`,
+    crumb: [fmtMD(Date.now()) + ' · 星期' + WD[new Date().getDay()]],
+    body: `${installHint()}
+      <section class="zone zone-learn">
+        <div class="zone-head"><h2>今天的学习</h2><span class="hint">复习节点：次日 · 3 天 · 7 天 · 14 天 · 30 天</span></div>
+        <div class="grid">
+          <section class="panel zone-card span-7"><span class="pill pill-review">今日复习</span>${review}</section>
+          <section class="panel zone-card span-5"><span class="pill pill-new">${S.newSession ? '进行中的新学' : '今日新学'}</span>${nw}</section>
+        </div>
+      </section>
+      <section class="zone zone-lib">
+        <div class="zone-head"><h2>表达库</h2><span class="hint">查阅、收藏，把需要的内容加入记忆</span></div>
+        <div class="zone-tiles">
+          ${tile('topics', '主题表达', '大主题 → 细分主题 → 表达组', `${topics.size} 个大主题 · ${topicGroups.length} 个表达组`)}
+          ${tile('funcs', '功能表达', '比较语气、句法和使用边界', `${FUNCTION_GROUPS.length} 个写作功能 · ${fnItems} 条`)}
+          ${tile('notes', '我的写作笔记', latest ? '最近：' + esc(latest.title) : '表达组 · 句型组 · 语法组', `${sets.length} 个笔记组 · ${noteCards} 张卡片${pending ? ` · ${pending} 个待整理` : ''}`)}
+        </div>
+      </section>
+      <section class="zone zone-rec">
+        <div class="zone-head"><h2>打卡与记录</h2><button class="btn btn-ghost btn-sm" type="button" data-nav="records">查看学习记录</button></div>
+        <div class="rec-grid">
+          <div class="rec-col"><div class="rec-title">本周打卡 · 连续 <b>${streak()}</b> 天</div><div class="week-row">${week}</div></div>
+          <div class="rec-col"><div class="rec-title">接下来的复习</div>
+            <div class="forecast">${fc.map(([t, v]) => `<div class="fc-row"><span>${diffDays(t) === 1 ? '明天' : '周' + WD[new Date(t).getDay()]}</span><div class="track"><i style="width:${v / fmax * 100}%"></i></div><b>${v}</b></div>`).join('')}</div></div>
+        </div>
+      </section>`,
+  };
+}
+
+/* ============================================================
+   今日学习：复习计划 + 今日新学
+   ============================================================ */
+function groupsForCat(cat) {
+  const all = [...GROUPS.values()];
+  if (cat === 'topic') return all.filter(G => G.lib === 'topic');
+  if (cat === 'function') return all.filter(G => G.lib === 'function');
+  return all.filter(G => G.lib === 'notes' && (noteSet(G.setId) || {}).confirmed);
+}
+function vToday(r) {
+  if (r.id && !r.applied) {
+    const G = GROUPS.get(r.id);
+    if (G) { ui.todayCat = G.lib; ui.todaySel = G.id; ui.todayOpen.add(G.id); }
+    r.applied = true;
+  }
+  const q = dueQueue(), dueN = q.reduce((a, g) => a + g.ids.length, 0);
+  let review;
+  if (S.reviewSession) {
+    const G = GROUPS.get(S.reviewSession.gid);
+    review = `<div class="row" style="background:var(--paper)"><div class="body"><span class="title">继续「${esc(G ? G.name : '')}」</span><span class="meta">第 ${S.reviewSession.i + 1} / ${S.reviewSession.ids.length} 条 · 退出时已保存位置</span></div><button class="btn btn-primary" type="button" data-a="resumereview">继续复习</button></div>`;
+  } else if (q.length) {
+    review = `<div class="rows">${q.map((g, i) => {
+      const G = GROUPS.get(g.gid);
+      const comp = {};
+      g.ids.forEach(id => { const t = ITEMS.get(id).type; comp[t] = (comp[t] || 0) + 1; });
+      const wrong = g.ids.filter(id => (S.items[id].wrong || 0) > 0).length;
+      return `<div class="plan-row ${i === 0 ? 'next' : ''}"><span class="ord">${i + 1}</span>
+        <div style="min-width:0"><div class="title" style="font-weight:500">${esc(G.name)}</div>
+        <div class="meta" style="font-size:13px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center">${esc(groupCrumb(G).join(' / '))} · ${relDay(g.minNext)}${wrong ? ` · ${wrong} 条曾写错` : ''} ${Object.entries(comp).map(([t, c]) => `<span class="tag ${t}">${TYPE_LABEL[t]} ${c}</span>`).join('')}</div></div>
+        <span class="count">${g.ids.length}<small>条</small></span></div>`;
+    }).join('')}</div>
+    <div class="btn-row"><button class="btn btn-primary" type="button" data-a="startreview">开始今日复习</button><span class="note-line">从第 1 组开始，一次完成一个组${q.some(g => g.ids.length > 20) ? '；超过 20 条的组在今天分轮完成' : ''}</span></div>`;
+  } else {
+    const l = todayLog();
+    review = `<p class="warm">${(l.rem || l.vag || l.fgt) ? '今天到期的复习已经全部完成。' : '今天没有到期的复习。'}</p>${canCheckin() ? '<div class="btn-row"><button class="btn btn-primary" type="button" data-a="checkin">完成复习并打卡</button></div>' : ''}`;
+  }
+
+  let newPart;
+  if (S.newSession) {
+    const ns = S.newSession, G = GROUPS.get(ns.gid), done = ns.ids.filter(studied).length;
+    newPart = `<div class="row" style="background:var(--paper)"><div class="body"><span class="title">「${esc(G.name)}」新学进行中</span><span class="meta">已完成 ${done} / ${ns.ids.length} 条${ns.rounds.length > 1 ? ` · 第 ${ns.round + 1} / ${ns.rounds.length} 轮` : ''}</span></div>
+      <div class="btn-row"><button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="dropnew" data-confirm="确认放弃">放弃本次进度</button><button class="btn btn-primary" type="button" data-a="resumenew">继续本组新学</button></div></div>`;
+  } else {
+    const cats = [['topic', '主题表达'], ['function', '功能表达'], ['notes', '我的写作笔记']];
+    const groups = groupsForCat(ui.todayCat);
+    const list = groups.map(G => {
+      const s = gstats(G), sel = ui.todaySel === G.id, open = ui.todayOpen.has(G.id);
+      const ids = stableIds(G);
+      const items = open ? `<div class="cgroup-items">${ids.map(id => {
+        const it = ITEMS.get(id), m = modeOf(id);
+        return `<div class="citem"><button class="check" type="button" role="checkbox" aria-checked="${m === 'memory'}" data-a="mem" data-id="${esc(id)}" aria-label="加入记忆：${esc(it.en)}">${svg('check', 2.6)}</button>
+          <div class="body"><span class="en">${esc(it.en)}</span><span class="zh">${esc(it.zh)}</span></div>${typeTag(it.type)}${studied(id) || m !== 'memory' ? statusHTML(itemStatus(id)) : ''}</div>`;
+      }).join('')}</div>` : '';
+      return `<div class="cgroup ${sel ? 'selected' : ''}">
+        <div class="cgroup-head">
+          <button class="cgroup-pick" type="button" data-a="pick" data-id="${esc(G.id)}" role="radio" aria-checked="${sel}">
+            <span class="radio" aria-checked="${sel}"></span>
+            <span class="body"><span class="title">${esc(G.lib === 'notes' && G.ids.length < 2 ? (ITEMS.get(G.ids[0]) || {}).en : G.name)}</span>
+            <span class="meta"><span>${esc(groupCrumb(G).join(' / '))}</span><span>${s.fresh ? `待新学 ${s.fresh}` : '无待新学内容'} · 资料 ${s.ref}</span>${statusHTML(s.status)}</span></span>
+          </button>
+          <button class="expand" type="button" data-a="expand" data-id="${esc(G.id)}" aria-expanded="${open}" aria-label="展开组内内容">${svg('down')}</button>
+        </div>${items}</div>`;
+    }).join('');
+    const G = ui.todaySel && GROUPS.get(ui.todaySel);
+    const valid = G && G.lib === (ui.todayCat === 'function' ? 'function' : ui.todayCat);
+    const s = valid ? gstats(G) : null;
+    const summary = valid
+      ? `已选「${esc(G.name)}」：<b>${s.fresh}</b> 条记忆、<b>${s.ref}</b> 条资料（资料不进入任务）${s.fresh > 20 ? ` · 将分 ${Math.ceil(s.fresh / 20)} 轮在今天完成` : ''}${!s.fresh ? ' · 展开后勾选要记忆的内容' : ''}`
+      : '选择一个表达组；展开可以逐条决定记忆或资料';
+    newPart = `<div class="seg" role="group" aria-label="内容分类">${cats.map(([k, t]) => `<button type="button" data-a="cat" data-c="${k}" aria-pressed="${ui.todayCat === k}">${t}</button>`).join('')}</div>
+      ${ui.todayCat === 'function' ? '<p class="note-line">功能表达默认作为资料。勾选后才会进入新学和复习。</p>' : ''}
+      ${groups.length ? `<div class="chooser" role="radiogroup" aria-label="表达组">${list}</div>` : `<div class="empty"><h3>还没有可学习的写作笔记</h3><p>导入并确认整理后，笔记组会出现在这里。</p><button class="btn btn-soft" type="button" data-go="import">导入笔记</button></div>`}
+      <div class="sticky-bar"><span class="summary">${summary}</span><button class="btn btn-primary" type="button" data-a="startnew" ${valid && s.fresh ? '' : 'disabled'}>开始今日新学</button></div>`;
+  }
+
+  return {
+    title: '今日学习', crumb: [fmtMD(Date.now())],
+    body: `<section class="panel blush-soft"><div class="section-head"><h3>今日复习</h3><span class="hint">${dueN ? `${q.length} 组 · ${dueN} 条到期，按到期时间和错误记录排序` : '由系统按到期日期生成'}</span></div>${review}</section>
+      <section class="section"><div class="section-head"><h3>今日新学</h3><span class="hint">每次学习一个完整的表达组，建议 15–20 条记忆内容</span></div>${newPart}</section>`,
+  };
+}
+
+/* ============================================================
+   新学流程：理解场景 → 主动写出 → 句子应用
+   ============================================================ */
+function startNew(gid) {
+  const G = GROUPS.get(gid); if (!G) return;
+  const ids = stableIds(G).filter(id => modeOf(id) === 'memory' && !studied(id));
+  if (!ids.length) { toast('这个组没有待新学的记忆内容'); return; }
+  S.newSession = { gid, ids, rounds: chunk(ids, 20), round: 0, step: 'intro', queue: [], first: {}, again: {}, apply: [], ai: 0, fb: null };
+  save();
+  go({ v: 'learn' });
+}
+function pickApply(ids) {
+  return shuffle(ids.filter(id => { const it = ITEMS.get(id); return it && it.type !== 'core' && it.type !== 'grammar' && it.ex && it.ex.toLowerCase().includes(it.en.toLowerCase()); })).slice(0, 3);
+}
+function finishNew() {
+  const ns = S.newSession;
+  ui.lastNew = { gid: ns.gid, ids: ns.ids.slice(), firstOk: ns.ids.filter(id => ns.first[id]).length };
+  S.newSession = null;
+  save();
+}
+function answerOf(it) { return it.en; }
+
+function promptHTML(it, ctx) {
+  const G = GROUPS.get(it.gid) || {};
+  const zh = `<div class="prompt-zh">${esc(it.zh)}</div>`;
+  if (ctx === 'apply') {
+    return `<div class="prompt-hint"><span>把表达放进句子：${esc(it.zh)}</span><span class="en">${blankIn(it.ex, it.en)}</span></div>`;
+  }
+  switch (it.type) {
+    case 'core':
+      return `${zh}<div class="prompt-hint"><span>写出完整的英文中心句 · 表达组：${esc(G.name || '')}</span></div>`;
+    case 'know': {
+      const b = it.ex && blankIn(it.ex, it.en);
+      return `${zh}${b ? `<div class="prompt-hint"><span>补全句子中的短语</span><span class="en">${b}</span></div>` : ''}`;
+    }
+    case 'term': {
+      const col = it.col && it.col.toLowerCase() !== it.en.toLowerCase() ? (blankIn(it.col, it.en) || esc(it.col)) : '';
+      return `${zh}<div class="prompt-hint"><span>场景：${esc(G.name || '')}</span>${col ? `<span>搭配提示：<span class="en">${col}</span></span>` : ''}</div>`;
+    }
+    case 'fn':
+      return `<div class="prompt-hint"><span>写作功能：${esc(G.fn || '')}</span></div>${zh}<div class="prompt-hint"><span>语气：${esc(it.tone || '')}</span></div>`;
+    case 'pattern':
+      return `${zh}<div class="prompt-hint"><span>写出句型结构，可替换部分用 ... 表示</span></div>`;
+    case 'grammar':
+      return `<div class="prompt-hint"><span>改正下面的句子</span></div><div class="prompt-zh en" style="font-family:var(--f-en)">${esc(it.wrong)}</div>`;
+    default:
+      return `${zh}<div class="prompt-hint"><span>写出对应的英文表达</span></div>`;
+  }
+}
+function fbHTML(d, it, revealed) {
+  const verdict = revealed ? '正确答案' : d.ok ? '完全正确' : '有几处不同';
+  const extra = [];
+  if (it.type === 'grammar' && it.zh) extra.push(`<span class="warm" style="font-size:14px">${esc(it.zh)}</span>`);
+  else if (it.type !== 'grammar' && it.zh && revealed) extra.push(`<span class="warm" style="font-size:14px">${esc(it.zh)}</span>`);
+  return `<div class="fb ${d.ok && !revealed ? 'ok' : 'bad'}"><div class="verdict">${verdict}</div>
+    ${revealed || d.empty ? '' : `<div class="line"><span class="lbl">你的答案</span>${d.userHTML}</div>`}
+    <div class="line"><span class="lbl">正确表达</span>${d.correctHTML}</div>${extra.join('')}</div>`;
+}
+function answerForm(fb, multiline) {
+  return `<form data-form="answer" class="form" autocomplete="off">
+    <input class="answer" id="answer" name="answer" type="text" value="${fb ? esc(fb.input) : ''}" ${fb ? 'readonly' : ''} placeholder="${multiline ? '写出完整句子' : '写出英文'}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="输入答案">
+    ${fb ? '' : `<div class="btn-row"><button class="btn btn-primary" type="submit">提交答案</button><button class="btn btn-ghost" type="button" data-a="reveal">直接看答案</button></div>`}
+  </form>`;
+}
+
+function vLearn() {
+  const ns = S.newSession;
+  if (!ns) return ui.lastNew ? vLearnDone() : { redirect: { v: 'today' } };
+  const G = GROUPS.get(ns.gid);
+  if (!G) { S.newSession = null; save(); return { redirect: { v: 'today' } }; }
+  const roundIds = ns.rounds[ns.round];
+  const stepIdx = { intro: 0, write: 1, apply: 2, rounddone: 3 }[ns.step];
+  const steps = ['理解场景', '主动写出', '句子应用'].map((t, i) => `<span class="step ${i === stepIdx ? 'on' : i < stepIdx ? 'done' : ''}"><i>${i < stepIdx ? '✓' : i + 1}</i>${t}</span>`).join('');
+  const roundTxt = ns.rounds.length > 1 ? `第 ${ns.round + 1} / ${ns.rounds.length} 轮 · ` : '';
+  const head = `<div class="session-head"><div class="steps">${steps}</div><button class="btn btn-outline btn-sm" type="button" data-a="exit">退出并保存</button></div>`;
+  let body = '';
+
+  if (ns.step === 'intro') {
+    const intro = roundIds.map(id => { const it = ITEMS.get(id); return it ? `<div class="intro-item">${typeTag(it.type)}<span class="en">${esc(it.en)}</span><span class="zh">${esc(it.zh)}</span>${it.ex ? `<span class="ex">${esc(it.ex)}</span>` : it.type === 'grammar' ? `<span class="ex">原句：${esc(it.wrong)}</span>` : ''}</div>` : ''; }).join('');
+    body = `<div class="qcard"><div class="eyebrow">${roundTxt}先理解这个组<small>${esc(groupCrumb(G).join(' / '))}</small></div>
+      <p class="prompt-zh" style="font-size:20px">${esc(G.scene || G.name)}</p>
+      ${G.directions ? `<div class="chips">${G.directions.map(d => `<span class="chip">${esc(d)}</span>`).join('')}</div>` : ''}
+      <div class="intro-list">${intro}</div>
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="beginwrite" data-enter>开始主动写出</button><span class="note-line">本轮 ${roundIds.length} 条记忆内容；资料不进入任务</span></div></div>`;
+  } else if (ns.step === 'write' || ns.step === 'apply') {
+    const isApply = ns.step === 'apply';
+    const id = isApply ? ns.apply[ns.ai] : ns.queue[0];
+    const it = ITEMS.get(id);
+    if (!it) {
+      if (isApply) { ns.ai++; if (ns.ai >= ns.apply.length) endRound(); }
+      else { ns.queue.shift(); if (!ns.queue.length) { ns.apply = pickApply(roundIds); ns.ai = 0; if (ns.apply.length) ns.step = 'apply'; else endRound(); } }
+      save(); return vLearn();
+    }
+    const doneN = isApply ? ns.ai : roundIds.filter(x => studied(x)).length;
+    const totalN = isApply ? ns.apply.length : roundIds.length;
+    const fb = ns.fb;
+    const d = fb ? diff(fb.input, answerOf(it)) : null;
+    const contLabel = !fb ? '' : isApply ? (ns.ai + 1 < ns.apply.length ? '下一句' : '完成句子应用') : (d.ok && !fb.revealed ? '下一条' : '本轮稍后重写');
+    body = `<div class="progress"><span>${roundTxt}${isApply ? '句子应用' : '主动写出'} ${doneN} / ${totalN}</span><div class="pbar"><i style="width:${totalN ? doneN / totalN * 100 : 0}%"></i></div></div>
+      <div class="qcard">
+        <div class="qtype">${typeTag(it.type)}<span>${isApply ? '受控句子 → 填入表达' : PROMPT_LABEL[it.type]}</span>${!isApply && ns.again[id] ? '<span class="tag" style="background:var(--wrong-soft);color:var(--wrong)">重写</span>' : ''}</div>
+        ${promptHTML(it, isApply ? 'apply' : 'learn')}
+        ${answerForm(fb, it.type === 'core' || it.type === 'grammar')}
+        ${fb ? fbHTML(d, it, fb.revealed) + `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="cont" data-enter>${contLabel}</button>${!isApply && !(d.ok && !fb.revealed) ? '<span class="note-line">写错的内容会留在本轮，稍后重新默写</span>' : ''}</div>` : ''}
+      </div>`;
+  } else if (ns.step === 'rounddone') {
+    body = `<div class="qcard"><div class="eyebrow">第 ${ns.round + 1} 轮完成</div><p class="prompt-zh" style="font-size:20px">本组还有 ${ns.rounds.length - ns.round - 1} 轮，保持同一组的语境，在今天内完成。</p>
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="nextround" data-enter>开始第 ${ns.round + 2} 轮</button><button class="btn btn-outline" type="button" data-a="exit">稍后继续</button></div></div>`;
+  }
+  return { title: G.name, crumb: ['今日新学', ...groupCrumb(G)], focus: true, body: `<div class="session">${head}${body}</div>` };
+}
+function vLearnDone() {
+  const r = ui.lastNew, G = GROUPS.get(r.gid);
+  const dueN = dueCount();
+  const ck = canCheckin();
+  return {
+    title: '本组新学完成', crumb: ['今日新学', G ? G.name : ''], focus: true,
+    body: `<div class="session">
+      <div class="result-tiles">
+        <div class="panel sage"><span class="eyebrow">本组记忆</span><span class="big-num">${r.ids.length}<small>条</small></span></div>
+        <div class="panel"><span class="eyebrow">第一次就写对</span><span class="big-num">${r.firstOk}<small>条</small></span></div>
+        <div class="panel blush-soft"><span class="eyebrow">首次复习</span><span class="big-num" style="font-size:32px;line-height:1.6">${fmtMD(addDays(Date.now(), 1))}</span></div>
+      </div>
+      <div class="qcard"><p class="prompt-zh" style="font-size:20px">「${esc(G ? G.name : '')}」已完成新学。</p>
+        <p class="warm">明天会第一次复习这 ${r.ids.length} 条内容，之后按约 3 天、7 天、14 天和 30 天继续安排。写错过的内容会在复习中优先出现。</p>
+        ${dueN ? `<p class="note-line">今天还有 ${dueN} 条复习到期，完成后可以打卡。</p>` : ''}
+        <div class="btn-row">
+          ${ck ? '<button class="btn btn-primary" type="button" data-a="checkin-back">完成学习并打卡</button>' : dueN ? '<button class="btn btn-primary" type="button" data-a="startreview-replace">开始今日复习</button>' : ''}
+          <button class="btn btn-outline" type="button" data-a="quick-replace" data-id="${esc(r.gid)}">快速复习本组</button>
+          <button class="btn btn-ghost" type="button" data-a="donenew">返回</button>
+        </div></div></div>`,
+  };
+}
+
+/* ============================================================
+   复习流程：按组进行，记得 / 模糊 / 忘记
+   ============================================================ */
+function startReview(gid, replace) {
+  const q = dueQueue();
+  const g = gid ? q.find(x => x.gid === gid) : q[0];
+  if (!g) { toast('今天没有到期的复习'); return; }
+  const order = q.findIndex(x => x.gid === g.gid);
+  S.reviewSession = { gid: g.gid, ids: g.ids.slice(0, 20), i: 0, fb: null, ratings: {}, groupNo: order + 1, groupTotal: q.length, more: g.ids.length > 20 };
+  save();
+  (replace ? replaceRoute : go)({ v: 'review' });
+}
+function vReview() {
+  const rs = S.reviewSession;
+  if (!rs) return ui.lastReview ? vReviewDone() : { redirect: { v: 'today' } };
+  const G = GROUPS.get(rs.gid);
+  let id = rs.ids[rs.i], it = ITEMS.get(id);
+  while (rs.i < rs.ids.length && !it) { rs.i++; id = rs.ids[rs.i]; it = ITEMS.get(id); }
+  if (!it || !G) { finishReview(); return vReviewDone(); }
+  const fb = rs.fb;
+  const d = fb ? diff(fb.input, answerOf(it)) : null;
+  let rates = '';
+  if (fb) {
+    const sug = fb.revealed ? 'fgt' : d.ok ? 'rem' : d.score >= 0.6 ? 'vag' : 'fgt';
+    rates = `<div class="rates">${[['rem', '记得', 'r-rem'], ['vag', '模糊', 'r-vag'], ['fgt', '忘记', 'r-fgt']].map(([k, t, c], i) => `<button class="rate ${c} ${sug === k ? 'suggest' : ''}" type="button" data-a="rate" data-r="${k}" ${sug === k ? 'data-enter' : ''}><b>${t}</b><span>${nextIntervalLabel(id, k)}</span></button>`).join('')}</div>
+      <p class="note-line">评分只记录这一次的表现，不会直接把内容改成永久掌握。</p>`;
+  }
+  const s = S.items[id] || {};
+  return {
+    title: G.name, crumb: ['今日复习', `第 ${rs.groupNo} / ${rs.groupTotal} 组`, ...groupCrumb(G)], focus: true,
+    body: `<div class="session">
+      <div class="session-head"><div class="progress" style="flex:1"><span>${rs.i + 1} / ${rs.ids.length}${rs.more ? ' · 本组分轮' : ''}</span><div class="pbar"><i style="width:${rs.i / rs.ids.length * 100}%"></i></div></div><button class="btn btn-outline btn-sm" type="button" data-a="exit">退出并保存</button></div>
+      <div class="qcard">
+        <div class="qtype">${typeTag(it.type)}<span>${PROMPT_LABEL[it.type]}</span>${s.wrong ? `<span class="tag" style="background:var(--wrong-soft);color:var(--wrong)">曾写错 ${s.wrong} 次</span>` : ''}</div>
+        ${promptHTML(it, 'review')}
+        ${answerForm(fb, it.type === 'core' || it.type === 'grammar')}
+        ${fb ? fbHTML(d, it, fb.revealed) + rates : ''}
+      </div></div>`,
+  };
+}
+function finishReview() {
+  const rs = S.reviewSession;
+  const ratings = rs.ratings;
+  const ids = Object.keys(ratings);
+  const fgt = ids.filter(id => ratings[id] === 'fgt').length;
+  let pulled = false;
+  if (ids.length >= 4 && fgt / ids.length >= 0.5) {
+    const cap = addDays(Date.now(), 3);
+    ids.filter(id => ratings[id] === 'rem').forEach(id => { const s = st(id); if (s.next > cap) { s.next = cap; pulled = true; } });
+  }
+  ui.lastReview = { gid: rs.gid, ratings, ids, pulled, practiced: false };
+  S.reviewSession = null;
+  save();
+}
+function vReviewDone() {
+  const r = ui.lastReview, G = GROUPS.get(r.gid);
+  const c = { rem: 0, vag: 0, fgt: 0 };
+  r.ids.forEach(id => c[r.ratings[id]]++);
+  const wrongIds = r.ids.filter(id => r.ratings[id] !== 'rem' && ITEMS.has(id));
+  const q = dueQueue();
+  const ck = canCheckin();
+  const l = todayLog();
+  let main;
+  if (q.length) main = `<button class="btn btn-primary" type="button" data-a="startreview-replace">继续下一组（还剩 ${q.length} 组）</button>`;
+  else if (ck) main = `<button class="btn btn-primary" type="button" data-a="checkin-back">完成复习并打卡</button>`;
+  else if (l.checked) main = `<span class="tag core">今天已打卡</span>`;
+  else main = '';
+  return {
+    title: '本组复习完成', crumb: ['今日复习', G ? G.name : ''], focus: true,
+    body: `<div class="session">
+      <div class="result-tiles">
+        <div class="panel sage"><span class="eyebrow">记得</span><span class="big-num">${c.rem}</span></div>
+        <div class="panel linen"><span class="eyebrow">模糊</span><span class="big-num">${c.vag}</span></div>
+        <div class="panel blush"><span class="eyebrow">忘记</span><span class="big-num">${c.fgt}</span></div>
+      </div>
+      ${r.pulled ? '<p class="note-line">本组错误较多，记得的内容也提前到 3 天内复习。</p>' : ''}
+      ${wrongIds.length ? `<section class="section"><div class="section-head"><h3>需要再看一眼</h3><span class="hint">忘记的内容明天优先复习</span></div><div class="rows">${wrongIds.map(id => { const it = ITEMS.get(id); return `<div class="row"><div class="body"><span class="en title">${esc(it.en)}</span><span class="sub">${esc(it.zh)}</span></div><span class="tag ${r.ratings[id] === 'fgt' ? 'know' : 'term'}">${r.ratings[id] === 'fgt' ? '忘记' : '模糊'}</span></div>`; }).join('')}</div></section>` : ''}
+      <div class="qcard"><p class="warm">${q.length ? '今天还有其他到期的表达组。每组单独完成，保持各自的语境。' : ck ? '今天到期的复习已经全部完成。确认后写入学习记录和月度日历。' : '今天到期的复习已经全部完成。'}</p>
+        <div class="btn-row">${main}${wrongIds.length && !r.practiced ? '<button class="btn btn-soft" type="button" data-a="practice">再练一次错题</button>' : ''}<button class="btn btn-ghost" type="button" data-a="donereview">返回</button></div></div>
+    </div>`,
+  };
+}
+function vPractice() {
+  const p = ui.practice;
+  if (!p) return { redirect: { v: 'home' } };
+  const id = p.ids[p.i], it = ITEMS.get(id);
+  if (!it) { back(); return vReviewDone(); }
+  const fb = p.fb, d = fb ? diff(fb.input, answerOf(it)) : null;
+  return {
+    title: '再练一次错题', crumb: ['今日复习'], focus: true,
+    body: `<div class="session">
+      <div class="session-head"><div class="progress" style="flex:1"><span>${p.i + 1} / ${p.ids.length} · 练习不改变复习安排</span><div class="pbar"><i style="width:${p.i / p.ids.length * 100}%"></i></div></div><button class="btn btn-outline btn-sm" type="button" data-a="back">结束练习</button></div>
+      <div class="qcard"><div class="qtype">${typeTag(it.type)}<span>${PROMPT_LABEL[it.type]}</span></div>
+        ${promptHTML(it, 'review')}${answerForm(fb, it.type === 'core' || it.type === 'grammar')}
+        ${fb ? fbHTML(d, it, fb.revealed) + `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="cont" data-enter>${p.i + 1 < p.ids.length ? '下一条' : '完成练习'}</button></div>` : ''}
+      </div></div>`,
+  };
+}
+
+/* ============================================================
+   快速复习：遮挡中文 / 遮挡英文 / 显示全部（不改变学习状态）
+   ============================================================ */
+function vQuick(r) {
+  const G = GROUPS.get(r.id);
+  if (!G) return { redirect: { v: 'home' } };
+  if (ui.qrGid !== G.id) { ui.qrGid = G.id; ui.qrShown = new Set(); }
+  const ids = stableIds(G);
+  const m = ui.qrMode;
+  const rows = ids.map(id => {
+    const it = ITEMS.get(id);
+    const hideEn = m === 'hide-en' && !ui.qrShown.has(id + ':en');
+    const hideZh = m === 'hide-zh' && !ui.qrShown.has(id + ':zh');
+    return `<div class="qr-row">
+      <button class="qr-cell en ${hideEn ? 'masked' : ''}" type="button" data-a="qr" data-k="${esc(id)}:en" ${hideEn ? '' : 'tabindex="-1"'}>${esc(it.en)}</button>
+      <button class="qr-cell zh ${hideZh ? 'masked' : ''}" type="button" data-a="qr" data-k="${esc(id)}:zh" ${hideZh ? '' : 'tabindex="-1"'}>${typeTag(it.type)} ${esc(it.zh)}${it.type === 'grammar' ? `<br><span class="muted">原句：${esc(it.wrong)}</span>` : ''}</button>
+    </div>`;
+  }).join('');
+  return {
+    title: '快速复习', crumb: groupCrumb(G).concat(G.name),
+    body: `<div class="section-head"><div class="seg" role="group" aria-label="遮挡方式">${[['all', '显示全部'], ['hide-zh', '遮挡中文'], ['hide-en', '遮挡英文']].map(([k, t]) => `<button type="button" data-a="qrmode" data-m="${k}" aria-pressed="${m === k}">${t}</button>`).join('')}</div>
+      <span class="hint">只用于回顾，不改变正式掌握状态。点按遮挡处逐条显示。</span></div>
+      <div class="rows">${rows}</div>
+      ${m !== 'all' ? '<div class="btn-row"><button class="btn btn-outline btn-sm" type="button" data-a="qrreset">重新遮挡</button></div>' : ''}`,
+  };
+}
+
+/* ============================================================
+   表达库
+   ============================================================ */
+function vLibrary() {
+  const topicGroups = [...GROUPS.values()].filter(G => G.lib === 'topic');
+  return {
+    title: '表达库', crumb: [],
+    body: `<div class="tiles">
+      <button class="tile c1" type="button" data-nav="topics"><h3>主题表达</h3><span class="sub">围绕 Task 2 场景建立段落论点和相关表达</span><span class="meta">${topicGroups.length} 个表达组</span></button>
+      <button class="tile c2" type="button" data-nav="funcs"><h3>功能表达</h3><span class="sub">比较观点、因果、让步等写作作用的不同表达</span><span class="meta">${FUNCTION_GROUPS.length} 个写作功能</span></button>
+      <button class="tile c3" type="button" data-nav="notes"><h3>我的写作笔记</h3><span class="sub">个人错误、句型、语法提醒和临时积累</span><span class="meta">${S.notes.sets.length} 个笔记组</span></button>
+      <button class="tile" type="button" data-nav="favs"><h3>收藏表达</h3><span class="sub">三类内容里收藏的条目</span></button>
+    </div>`,
+  };
+}
+function vTopics() {
+  const topics = [];
+  for (const G of GROUPS.values()) if (G.lib === 'topic' && !topics.includes(G.topic)) topics.push(G.topic);
+  return {
+    title: '主题表达', crumb: ['表达库'],
+    body: `<p class="warm" style="max-width:64ch">大主题 → 细分主题 → 表达组。组内区分核心论点、知识表达和专业词汇：核心论点默认记忆，知识表达和专业词汇默认作为资料，可以逐条切换。</p>
+    <div class="tiles">${topics.map((t, i) => {
+      const gs = [...GROUPS.values()].filter(G => G.lib === 'topic' && G.topic === t);
+      const subs = [...new Set(gs.map(G => G.sub))];
+      const n = gs.reduce((a, G) => a + G.ids.length, 0);
+      const due = gs.reduce((a, G) => a + gstats(G).due, 0);
+      return `<button class="tile c${(i % 3) + 1}" type="button" data-go="topic:${esc(t)}"><h3>${esc(t)}</h3><span class="sub">${subs.map(esc).join(' · ')}</span><span class="meta"><span>${gs.length} 个表达组</span><span>${n} 条</span>${due ? `<span>${due} 条待复习</span>` : ''}</span></button>`;
+    }).join('')}</div>`,
+  };
+}
+function vTopic(r) {
+  const gs = [...GROUPS.values()].filter(G => G.lib === 'topic' && G.topic === r.id);
+  const subs = [...new Set(gs.map(G => G.sub))];
+  return {
+    title: r.id, crumb: ['主题表达'],
+    body: subs.map(sub => `<section class="section"><div class="section-head"><h3>${esc(sub)}</h3></div><div class="rows">${gs.filter(G => G.sub === sub).map(G => {
+      const s = gstats(G);
+      return `<button class="row tap" type="button" data-go="group:${esc(G.id)}"><div class="body"><span class="title">${esc(G.name)}${G.independent ? ' <span class="tag">独立项</span>' : ''}</span><span class="sub">${esc(G.scene || '')}</span><span class="meta"><span>${groupStatusLine(G, s)}</span>${statusHTML(s.status)}${s.last ? `<span>上次学习 ${agoDay(s.last)}</span>` : ''}${s.next < Infinity ? `<span>下次复习 ${relDay(s.next)}</span>` : ''}</span></div>${svg('chev')}</button>`;
+    }).join('')}</div></section>`).join(''),
+  };
+}
+function vFuncs() {
+  const colors = ['var(--sage)', 'var(--blush)', 'var(--beige)'];
+  const fns = FUNCTION_GROUPS.map(f => GROUPS.get(f.id));
+  return {
+    title: '功能表达', crumb: ['表达库'],
+    body: `<p class="warm" style="max-width:64ch">功能表达是可迁移的写作表达，不是万能模板。默认作为资料查阅；需要主动写出的条目，切换为“记忆”后才进入新学和复习。</p>
+    <div class="rows">${fns.map((G, i) => {
+      const s = gstats(G);
+      const extra = [...GROUPS.values()].filter(x => x.lib === 'function' && x.independent && x.parent === G.id);
+      return `<button class="row tap bar-left" style="--c:${colors[i % 3]}" type="button" data-go="group:${esc(G.id)}"><div class="body"><span class="title">${esc(G.fn)}</span><span class="sub">${esc(G.scene)}</span><span class="meta"><span>${s.total} 条表达</span><span>记忆 ${s.mem}</span>${s.due ? statusHTML('待复习') : ''}</span></div>${svg('chev')}</button>` +
+        extra.map(X => `<button class="row tap" style="margin-left:28px" type="button" data-go="group:${esc(X.id)}"><div class="body"><span class="title en">${esc(X.name)} <span class="tag">独立项</span></span><span class="meta">${esc(G.fn)} · ${statusHTML(gstats(X).status)}</span></div>${svg('chev')}</button>`).join('');
+    }).join('')}</div>`,
+  };
+}
+
+function groupActions(G, s) {
+  const btns = [];
+  if (s.due) btns.push(`<button class="btn btn-primary" type="button" data-a="reviewgroup" data-id="${esc(G.id)}">复习本组（${s.due} 条到期）</button>`);
+  if (s.fresh) btns.push(`<button class="btn ${s.due ? 'btn-outline' : 'btn-primary'}" type="button" data-go="today:${esc(G.id)}">开始本组新学</button>`);
+  if (S.newSession && S.newSession.gid === G.id) btns.unshift(`<button class="btn btn-primary" type="button" data-a="resumenew">继续本组新学</button>`);
+  btns.push(`<button class="btn btn-outline" type="button" data-go="quick:${esc(G.id)}">快速复习</button>`);
+  btns.push(`<button class="btn btn-soft" type="button" data-go="add:${esc(G.id)}">${svg('plus', 2)}${G.lib === 'notes' ? '添加卡片' : '添加表达'}</button>`);
+  return `<div class="btn-row">${btns.join('')}</div>`;
+}
+function groupHero(G, s, cls, desc) {
+  return `<section class="group-hero ${cls}">
+    ${desc ? `<p>${esc(desc)}</p>` : ''}
+    <div class="stats-line"><span><b>${s.total}</b>条</span><span><b>${s.mem}</b>记忆</span><span><b>${s.ref}</b>资料</span>${s.last ? `<span>上次学习 ${agoDay(s.last)}</span>` : ''}${s.next < Infinity ? `<span>下次复习 ${relDay(s.next)}</span>` : ''}<span>${statusHTML(s.status)}</span></div>
+    ${groupActions(G, s)}</section>`;
+}
+function vGroup(r) {
+  const G = GROUPS.get(r.id);
+  if (!G) return { redirect: { v: 'home' } };
+  const s = gstats(G);
+  const ids = stableIds(G);
+  let body;
+  if (G.lib === 'topic') {
+    const by = t => ids.filter(id => ITEMS.get(id).type === t);
+    const sec = (title, hint, list, opts) => list.length ? `<section class="section"><div class="section-head"><h3>${title}</h3><span class="hint">${hint}</span></div><div class="rows">${list.map(id => itemRow(id, opts)).join('')}</div></section>` : '';
+    const phr = ids.map(id => ITEMS.get(id)).filter(it => it.type !== 'core').map(it => it.en);
+    const cores = ids.map(id => ITEMS.get(id)).filter(it => it.type === 'core').map(it => it.en.replace(/\.$/, ''));
+    body = groupHero(G, s, '', G.scene) +
+      sec('核心论点', '可作为主体段中心句 · 默认记忆', by('core'), {}) +
+      (G.directions ? `<section class="section"><div class="section-head"><h3>可展开方向</h3><span class="hint">这一条观点可以写什么</span></div><div class="chips">${G.directions.map(d => `<span class="chip">${esc(d)}</span>`).join('')}</div></section>` : '') +
+      sec('知识表达', '解释论点的作用、机制和结果 · 默认资料', by('know'), { ex: true }) +
+      sec('专业词汇 / 固定搭配', '具体场景中的术语和搭配 · 默认资料', by('term'), { ex: true }) +
+      (G.paragraph ? `<section class="section"><div class="section-head"><h3>示例段落</h3><span class="hint">浅绿为组内表达，浅粉为核心论点</span></div><div class="paragraph">${markText(G.paragraph, cores.map(p => ({ p, cls: 'core' })).concat(phr.map(p => ({ p }))))}</div></section>` : '') +
+      (G.related && G.related.length ? `<section class="section"><div class="section-head"><h3>相关表达</h3></div><div class="chips">${G.related.map(x => GROUPS.get(x)).filter(Boolean).map(X => `<button class="chip" type="button" data-go="group:${esc(X.id)}">${esc(X.topic)} · ${esc(X.name)}</button>`).join('')}</div></section>` : '');
+  } else if (G.lib === 'function') {
+    const rows = ids.map(id => {
+      const it = ITEMS.get(id);
+      return `<tr><td class="expr"><button type="button" data-go="item:${esc(id)}">${esc(it.en)}</button><div class="muted" style="font-size:13px">${esc(it.zh)}</div></td><td>${esc(it.syntax || '')}</td><td>${esc(it.tone || '')}</td><td>${esc(it.diff || '')}</td><td>${modeToggle(id)}</td></tr>`;
+    }).join('');
+    body = groupHero(G, s, 'fn', G.scene + ' 功能表达默认作为资料，切换为记忆后才进入新学和复习。') +
+      `<section class="section"><div class="section-head"><h3>近义表达比较</h3><span class="hint">横向滑动查看完整表格</span></div><div class="cmp-wrap"><table class="cmp"><thead><tr><th>表达</th><th>句法</th><th>语气和边界</th><th>近义区别</th><th>学习方式</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+      <section class="section"><div class="section-head"><h3>示例句与常见错误</h3></div><div class="rows">${ids.map(id => { const it = ITEMS.get(id); return `<div class="row white"><div class="body"><span class="en" style="font-size:17px">${highlightIn(it.ex || '', [fixedPart(it.en)])}</span>${it.err ? `<span class="meta">常见错误：${esc(it.err)}</span>` : ''}</div>${favBtn(id)}</div>`; }).join('')}</div></section>`;
+  } else {
+    const set = noteSet(G.setId);
+    body = groupHero(G, s, 'notes', (set ? set.title : '') + ' · ' + KIND_LABEL[G.kind]) +
+      `<section class="section"><div class="section-head"><h3>组内卡片</h3><span class="hint">${G.ids.length} 张${KIND_LABEL[G.kind].replace('组', '卡')}</span></div><div class="rows">${ids.map(id => itemRow(id, { tag: true })).join('')}</div></section>`;
+  }
+  const title = G.lib === 'notes' && G.ids.length < 2 ? '独立卡片' : G.name;
+  return { title, crumb: groupCrumb(G), body };
+}
+
+/* ---------- 条目详情 ---------- */
+function vItem(r) {
+  const it = ITEMS.get(r.id);
+  if (!it) return { redirect: { v: 'home' } };
+  const G = GROUPS.get(it.gid);
+  const s = S.items[it.id] || {};
+  const block = (label, val, cls = '') => val ? `<div class="field-block ${cls}"><span class="label">${label}</span><div class="val ${cls.includes('en') ? 'en' : ''}">${val}</div></div>` : '';
+  let main = `<div class="expr-hero"><div class="qtype">${typeTag(it.type)}${it.lib === 'function' ? `<span class="tag">${esc(G.fn)}</span>` : ''}${statusHTML(itemStatus(it.id))}</div>
+    <div class="en">${esc(it.en)}</div><div class="zh">${esc(it.zh)}</div></div>`;
+  if (it.lib === 'topic') {
+    main += block('例句', it.ex ? highlightIn(it.ex, [it.en]) : '', 'en') +
+      block('常用搭配', esc(it.col)) + block('使用提醒', esc(it.usage)) + block('常见错误', esc(it.err)) +
+      block('来源', esc(it.src || (it.custom ? '自己添加 · ' + G.topic + ' / ' + G.sub : '')));
+  } else if (it.lib === 'function') {
+    const others = G.ids.filter(x => x !== it.id).map(x => ITEMS.get(x));
+    main += block('写作功能', esc(G.fn) + ' · ' + esc(G.scene || '')) +
+      block('句法结构', esc(it.syntax)) + block('语气和使用边界', esc(it.tone)) +
+      (others.length ? `<div class="field-block"><span class="label">近义表达比较</span><div class="rows" style="margin-top:6px">${it.diff ? `<div class="row" style="background:var(--sage-soft)"><div class="body"><span class="en title">${esc(it.en)}</span><span class="sub">${esc(it.diff)}</span></div></div>` : ''}${others.map(o => `<button class="row tap" type="button" data-go="item:${esc(o.id)}"><div class="body"><span class="en title">${esc(o.en)}</span><span class="sub">${esc(o.diff || o.zh)}</span></div>${svg('chev')}</button>`).join('')}</div></div>` : '') +
+      block('示例句', it.ex ? highlightIn(it.ex, [fixedPart(it.en)]) : '', 'en') + block('常见错误', esc(it.err));
+  } else {
+    const set = noteSet(it.setId);
+    const src = `来源：${esc(set ? set.title : '手动添加')}${it.line ? ` · 第 ${it.line} 行` : ''}`;
+    const info = (label, val, wide, cls = '') => `<div class="field-block ${wide ? 'wide' : ''}"><span class="label">${label}</span><div class="val ${cls}">${val}</div></div>`;
+    let blocks = [], missing = [];
+    const add = (label, raw, html, wide, cls) => { if (raw) blocks.push(info(label, html, wide, cls)); else missing.push(label); };
+    if (it.type === 'expr') {
+      add('例句', it.ex, highlightIn(it.ex || '', [it.en]), true, 'en');
+      add('常用搭配', it.col, esc(it.col), false);
+      add('使用场景', it.usage, esc(it.usage), false);
+      add('常见错误', it.err, esc(it.err), true);
+    } else if (it.type === 'pattern') {
+      add('可替换位置', it.slots, esc(it.slots), false);
+      add('适用场景', it.scene, esc(it.scene), false);
+      add('示例句', it.ex, highlightIn(it.ex || '', [fixedPart(it.en)]), true, 'en');
+      add('常见错误', it.err, esc(it.err), true);
+    } else {
+      blocks.push(`<div class="pair wide"><div class="field-block wrongline"><span class="label">错误例句</span><div class="val en">${esc(it.wrong)}</div></div><div class="field-block rightline"><span class="label">正确例句</span><div class="val en">${esc(it.en)}</div></div></div>`);
+      add('语法规则', it.rule, esc(it.rule), true);
+      add('更多正确例句', it.ex, esc(it.ex), true, 'en');
+      add('使用限制', it.limit, esc(it.limit), true);
+    }
+    main = `<div class="expr-hero compact"><div class="qtype">${typeTag(it.type)}${statusHTML(itemStatus(it.id))}</div>
+      <div class="en">${esc(it.en)}</div>${it.zh ? `<div class="zh">${it.type === 'grammar' ? '中文解释：' : it.type === 'pattern' ? '中文功能：' : ''}${esc(it.zh)}</div>` : ''}
+      <div class="note-line">${src}</div></div>
+      <div class="info-grid">${blocks.join('')}</div>` +
+      (missing.length ? `<div class="fill-hint"><span>还可以补充：${missing.join('、')}</span><button class="btn btn-soft btn-sm" type="button" data-go="edit:${esc(it.id)}">补充内容</button></div>` : '') +
+      `<div class="field-block drill">
+        <div class="kv-line"><span class="label">受控练习</span><span class="val muted">${it.type === 'grammar' ? '不看上面，改写错误例句' : PROMPT_LABEL[it.type]} · 不影响学习记录</span></div>
+        <form data-form="drill" data-id="${esc(it.id)}" class="btn-row" style="align-items:stretch"><input class="answer" id="drill-in" style="flex:1 1 260px;font-size:18px;padding:10px 16px" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="${it.type === 'grammar' ? '写出改正后的句子' : '写出英文'}"><button class="btn btn-outline" type="submit">检查</button></form>
+        <div id="drill-fb"></div></div>`;
+  }
+  const idx = G.ids.indexOf(it.id), nextId = G.ids[(idx + 1) % G.ids.length];
+  const hist = (s.hist || []).slice(-6).reverse();
+  const RL = { rem: '记得', vag: '模糊', fgt: '忘记' };
+  const side = `<section class="panel line">
+      <div class="eyebrow">学习方式</div>${modeToggle(it.id, true)}
+      <p class="note-line">资料只用于查阅，不计入每日学习量和复习队列。</p>
+      <div><div class="kv"><span>状态</span><b>${itemStatus(it.id)}</b></div>
+      <div class="kv"><span>下次复习</span><b>${s.next != null && modeOf(it.id) === 'memory' ? relDay(s.next) : '—'}</b></div>
+      <div class="kv"><span>上次学习</span><b>${s.last ? agoDay(s.last) : '—'}</b></div>
+      <div class="kv"><span>写错次数</span><b class="num">${s.wrong || 0}</b></div></div>
+      ${hist.length ? `<div class="chips">${hist.map(h => `<span class="tag ${h.r === 'rem' ? 'core' : h.r === 'fgt' ? 'know' : ''}">${agoDay(h.t)} · ${h.p === 'new' ? '新学' : RL[h.r]}</span>`).join('')}</div>` : ''}
+    </section>
+    <section class="panel line"><div class="panel-head"><div class="eyebrow">个人备注</div>${favBtn(it.id)}</div>
+      <textarea class="note" id="note-${esc(it.id)}" data-note="${esc(it.id)}" placeholder="记录自己的用法、易错点或出处">${esc(s.note || '')}</textarea></section>
+    <div class="btn-row">${G.ids.length > 1 ? `<button class="btn btn-outline" type="button" data-a="nextitem" data-id="${esc(nextId)}">组内下一条</button>` : ''}
+      ${it.lib === 'notes' ? `<button class="btn btn-soft" type="button" data-go="edit:${esc(it.id)}">编辑卡片</button>` : ''}
+      ${it.custom || it.lib === 'notes' ? `<button class="btn btn-ghost btn-danger" type="button" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button>` : ''}</div>`;
+  return { title: G.lib === 'notes' && G.ids.length < 2 ? '独立卡片' : G.name, crumb: groupCrumb(G), body: `<div class="detail"><div class="detail-main ${it.lib === 'notes' ? 'tight' : ''}">${main}</div><aside class="detail-side">${side}</aside></div>` };
+}
+
+/* ---------- 添加 / 编辑 ---------- */
+function segHTML(name, opts, val) {
+  return `<div class="seg small" role="group" data-seg="${name}" data-value="${val}">${opts.map(([k, t]) => `<button type="button" data-a="seg" data-v="${k}" aria-pressed="${k === val}">${t}</button>`).join('')}</div>`;
+}
+function vAdd(r) {
+  const G = GROUPS.get(r.id);
+  if (!G) return { redirect: { v: 'home' } };
+  const lib = G.lib;
+  let typeSeg = '', extra = '';
+  if (lib === 'topic') typeSeg = `<div class="fld">组内角色${segHTML('type', [['core', '核心论点'], ['know', '知识表达'], ['term', '专业词汇']], 'know')}</div>`;
+  if (lib === 'notes') typeSeg = `<div class="fld">卡片类型${segHTML('type', [['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']], G.kind)}</div>`;
+  if (lib === 'function') extra = `<label class="fld">句法结构<input name="syntax" placeholder="例如 This can lead to + 名词"></label><label class="fld">语气和使用边界<input name="tone" placeholder="例如 中性，强调可能结果"></label><label class="fld wide">近义区别<input name="diff"></label>`;
+  if (lib === 'notes') extra = 'NOTES';
+  return {
+    title: lib === 'notes' ? '添加卡片' : '添加表达', crumb: groupCrumb(G).concat(G.name),
+    body: `<form class="form panel line" data-form="add" data-id="${esc(G.id)}" style="max-width:820px">
+      ${typeSeg}
+      <div class="form-grid">${extra === 'NOTES' ? noteFields(null, G.kind) : `
+        <label class="fld wide">英文表达<input name="en" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="font-family:var(--f-en);font-size:18px"></label>
+        <label class="fld wide">中文含义${lib === 'notes' ? ' / 修改原因' : ''}<input name="zh" required></label>
+        <label class="fld wide">例句或使用场景<input name="ex" autocapitalize="off"></label>
+        ${extra}`}
+      </div>
+      <div class="form-grid">
+        <div class="fld">加入位置${segHTML('target', [['group', '加入当前组'], ['solo', '作为独立项']], 'group')}</div>
+        <div class="fld">学习方式${segHTML('mode', [['memory', '记忆'], ['reference', '资料']], lib === 'topic' || lib === 'function' ? 'reference' : 'memory')}</div>
+      </div>
+      <p class="note-line">保存后回到「${esc(G.name)}」。新增内容默认保存到当前表达组；卡片类型与当前组不同时会作为独立项保存。</p>
+      <div class="form-msg" id="form-msg"></div>
+      <div class="btn-row"><button class="btn btn-primary" type="submit">保存</button><button class="btn btn-ghost" type="button" data-a="back">取消</button></div>
+    </form>`,
+  };
+}
+const NOTE_FORM = [
+  ['en', '英文表达 / 句型 / 正确例句', 'expr pattern grammar', true],
+  ['zh', '中文含义 / 中文功能 / 中文解释', 'expr pattern grammar', false],
+  ['wrong', '错误例句', 'grammar', true],
+  ['ex', '例句', 'expr pattern grammar', true],
+  ['col', '常用搭配', 'expr', true],
+  ['usage', '使用场景', 'expr', false],
+  ['slots', '可替换位置', 'pattern', false],
+  ['scene', '适用场景', 'pattern', false],
+  ['rule', '语法规则', 'grammar', false],
+  ['limit', '使用限制', 'grammar', false],
+  ['err', '常见错误', 'expr pattern', false],
+];
+function noteFields(it, type) {
+  return NOTE_FORM.map(([k, label, types, en]) => `<label class="fld ${en || k === 'ex' || k === 'err' ? 'wide' : ''}" data-for="${types}" ${types.split(' ').includes(type) ? '' : 'hidden'}>${label}<input name="${k}" value="${esc((it && it[k]) || '')}" ${en ? 'autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="font-family:var(--f-en);font-size:17px"' : ''}></label>`).join('');
+}
+function vEdit(r) {
+  const it = ITEMS.get(r.id);
+  if (!it || it.lib !== 'notes') return { redirect: { v: 'home' } };
+  return {
+    title: '编辑卡片', crumb: groupCrumb(GROUPS.get(it.gid)),
+    body: `<form class="form panel line" data-form="edit" data-id="${esc(it.id)}" style="max-width:860px">
+      <div class="fld">卡片类型${segHTML('type', [['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']], it.type)}</div>
+      <div class="form-grid">${noteFields(it, it.type)}</div>
+      <div class="form-msg" id="form-msg"></div>
+      <div class="btn-row"><button class="btn btn-primary" type="submit">保存修改</button><button class="btn btn-ghost" type="button" data-a="back">取消</button></div>
+    </form>`,
+  };
+}
+
+/* ---------- 我的写作笔记 ---------- */
+function vNotes() {
+  const f = ui.notesFilter;
+  const sets = S.notes.sets.slice().sort((a, b) => b.created - a.created);
+  const filters = [['all', '全部'], ['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']];
+  const body = sets.map(set => {
+    const groups = S.notes.groups.filter(g => g.setId === set.id && (f === 'all' || g.kind === f)).map(g => GROUPS.get(g.id)).filter(Boolean);
+    const sem = groups.filter(G => G.ids.length >= 2), solo = groups.filter(G => G.ids.length < 2);
+    const total = S.notes.items.filter(i => i.setId === set.id).length;
+    return `<section class="section panel">
+      <div class="section-head"><div><h3>${esc(set.title)}</h3><span class="hint">${fmtMD(set.created)} · ${esc(set.source || '')} · ${total} 张卡片</span></div>
+        <div class="btn-row">${set.confirmed ? '' : `${statusHTML('待整理')}<button class="btn btn-primary btn-sm" type="button" data-go="triage:${esc(set.id)}">继续整理</button>`}<button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="delset" data-id="${esc(set.id)}" data-confirm="确认删除笔记组">删除</button></div></div>
+      ${sem.length ? `<div class="rows">${sem.map(G => { const s = gstats(G); return `<button class="row tap" style="background:var(--paper)" type="button" data-go="group:${esc(G.id)}"><div class="body"><span class="title">${esc(G.name)}</span><span class="meta"><span class="tag ${G.kind}">${KIND_LABEL[G.kind]}</span><span>${G.ids.length} 张${KIND_LABEL[G.kind].replace('组', '卡')}</span><span>记忆 ${s.mem} · 资料 ${s.ref}</span>${statusHTML(s.status)}</span></div>${svg('chev')}</button>`; }).join('')}</div>` : ''}
+      ${solo.length ? `<div class="section-head" style="margin-top:4px"><span class="hint">独立卡片</span></div><div class="rows">${solo.map(G => { const id = G.ids[0], it = ITEMS.get(id); return `<button class="row tap" style="background:var(--paper)" type="button" data-go="item:${esc(id)}"><div class="body"><span class="en title">${esc(it.en)}</span><span class="sub">${esc(it.zh)}</span></div><span class="side-ctl">${typeTag(it.type)}${statusHTML(itemStatus(id))}</span></button>`; }).join('')}</div>` : ''}
+      ${!sem.length && !solo.length ? '<p class="note-line">这个笔记组里没有该类型的卡片。</p>' : ''}
+    </section>`;
+  }).join('');
+  return {
+    title: '我的写作笔记', crumb: ['表达库'],
+    actions: `<button class="btn btn-soft" type="button" data-go="import">${svg('upload')}导入笔记</button>`,
+    body: `<div class="section-head"><div class="seg" role="group" aria-label="卡片类型">${filters.map(([k, t]) => `<button type="button" data-a="nfilter" data-f="${k}" aria-pressed="${f === k}">${t}</button>`).join('')}</div><span class="hint">先按语义组展示，展开后查看具体卡片</span></div>
+      ${sets.length ? body : `<div class="empty"><h3>还没有写作笔记</h3><p>粘贴文字或导入 Markdown 文件，系统会把内容分成表达卡、句型卡和语法卡，并建议语义分组。</p><button class="btn btn-soft" type="button" data-go="import">导入笔记</button></div>`}`,
+  };
+}
+function vImport() {
+  return {
+    title: '导入写作笔记', crumb: ['我的写作笔记'],
+    body: `<form class="form" data-form="import" style="max-width:860px">
+      <div class="privacy">${svg('lock')}<span>文件只在这台设备上读取和整理，不会上传到网络。整理结果需要你确认后才会进入学习。</span></div>
+      <label class="fld">笔记组名称<input name="title" value="${esc(dayKey())} 写作笔记"></label>
+      <label class="fld">笔记内容<textarea name="text" id="import-text" placeholder="# 降低犯罪\n- reduce crime rates 降低犯罪率\n  - 例句：Better street lighting can reduce crime rates.\n  - 搭配：reduce / lower crime rates\n- curb criminal activity 遏制犯罪活动\n\n# 我的语法错误\n- ❌ have a great influence to → ✅ have a great influence on 介词搭配\n  - 规则：influence 作名词时介词用 on"></textarea></label>
+      <p class="note-line">识别规则：# 标题下的相近内容会建议组成同义组；含 ... 或 sb / sth 的视为句型卡；“❌ 错误 → ✅ 正确”视为语法卡；其余视为表达卡。在一条下面另起一行写“例句：…”“搭配：…”“场景：…”“常见错误：…”“可替换：…”“规则：…”“限制：…”，会整理进这张卡片。</p>
+      <div class="form-msg" id="form-msg"></div>
+      <div class="btn-row"><button class="btn btn-primary" type="submit">整理笔记</button>
+        <label class="btn btn-outline file-btn">${svg('upload')}导入 Markdown 文件<input type="file" id="md-file" accept=".md,.markdown,.txt,text/markdown,text/plain"></label>
+        <button class="btn btn-ghost" type="button" data-a="sample">填入示例笔记</button></div>
+    </form>`,
+  };
+}
+function vTriage(r) {
+  const set = noteSet(r.id);
+  if (!set) return { redirect: { v: 'notes' } };
+  const groups = S.notes.groups.filter(g => g.setId === set.id);
+  const itemsOf = gid => S.notes.items.filter(i => i.gid === gid);
+  const card = it => {
+    const sameKind = groups.filter(g => g.kind === it.type && itemsOf(g.id).length >= 2);
+    return `<div class="tcard">
+      <div class="tcard-top">
+        <div class="seg small" role="group" aria-label="卡片类型">${[['expr', '表达'], ['pattern', '句型'], ['grammar', '语法']].map(([k, t]) => `<button type="button" data-a="ttype" data-id="${esc(it.id)}" data-t="${k}" aria-pressed="${it.type === k}">${t}</button>`).join('')}</div>
+        <div class="btn-row">${modeToggle(it.id)}
+          <select data-tmove="${esc(it.id)}" aria-label="所属语义组" style="border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--paper);font-size:14px;max-width:180px">
+            ${sameKind.map(g => `<option value="${esc(g.id)}" ${g.id === it.gid ? 'selected' : ''}>${esc(g.name)}</option>`).join('')}
+            <option value="solo" ${sameKind.some(g => g.id === it.gid) ? '' : 'selected'}>独立项</option>
+            <option value="new">新建语义组</option>
+          </select>
+          <button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="tdel" data-id="${esc(it.id)}">删除</button></div>
+      </div>
+      <div class="fields">
+        <input class="en" data-tf="en" data-id="${esc(it.id)}" value="${esc(it.en)}" aria-label="英文" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input data-tf="zh" data-id="${esc(it.id)}" value="${esc(it.zh)}" aria-label="中文">
+        ${it.type === 'grammar' ? `<input class="en" data-tf="wrong" data-id="${esc(it.id)}" value="${esc(it.wrong)}" aria-label="错误写法" placeholder="原来的错误写法" style="grid-column:1/-1">` : ''}
+      </div>
+      <div class="raw">原始：${esc(it.raw || '')}${it.line ? ` · 第 ${it.line} 行` : ''}</div>
+    </div>`;
+  };
+  const sem = groups.filter(g => itemsOf(g.id).length >= 2);
+  const solo = groups.filter(g => itemsOf(g.id).length === 1);
+  const all = S.notes.items.filter(i => i.setId === set.id);
+  const mem = all.filter(i => modeOf(i.id) === 'memory').length;
+  return {
+    title: set.confirmed ? '整理笔记' : '确认整理结果', crumb: ['我的写作笔记', set.title],
+    body: `<p class="warm" style="max-width:68ch">系统已把内容分成表达卡、句型卡和语法卡，并按标题建议了语义组。可以修改文字、更改类型、移动到其他组或删除。语法错误和句型默认记忆，同组表达默认记忆，零散表达默认资料。</p>
+      ${sem.map(g => `<section class="tgroup"><div class="tgroup-head"><span class="tag ${g.kind}">${KIND_LABEL[g.kind]}</span><input data-gname="${esc(g.id)}" value="${esc(g.name)}" aria-label="语义组名称"><span class="note-line">${itemsOf(g.id).length} 张</span></div>${itemsOf(g.id).map(card).join('')}</section>`).join('')}
+      ${solo.length ? `<section class="tgroup"><div class="tgroup-head"><span class="tag">独立卡片</span><span class="note-line">没有相近内容的卡片保留为独立项</span></div>${solo.map(g => card(itemsOf(g.id)[0])).join('')}</section>` : ''}
+      ${all.length ? '' : '<div class="empty"><h3>卡片已全部删除</h3><p>可以放弃这次导入，重新粘贴内容。</p></div>'}
+      <div class="sticky-bar"><span class="summary">共 <b>${all.length}</b> 张卡片 · <b>${mem}</b> 条记忆、<b>${all.length - mem}</b> 条资料</span>
+        <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="tdiscard" data-id="${esc(set.id)}" data-confirm="确认放弃">放弃导入</button>${set.confirmed ? '' : `<button class="btn btn-primary" type="button" data-a="tconfirm" data-id="${esc(set.id)}" ${all.length ? '' : 'disabled'}>确认整理结果</button>`}</div></div>`,
+  };
+}
+
+/* ---------- 收藏、搜索、学习记录 ---------- */
+function libLabel(lib) { return { topic: '主题表达', function: '功能表达', notes: '我的写作笔记' }[lib]; }
+function resultRows(ids) {
+  return `<div class="rows">${ids.map(id => { const it = ITEMS.get(id), G = GROUPS.get(it.gid); return `<button class="row tap" type="button" data-go="item:${esc(id)}"><div class="body"><span class="en title">${esc(it.en)}</span><span class="sub">${esc(it.zh)}</span><span class="meta">${typeTag(it.type)}<span>${esc(libLabel(it.lib))} · ${esc(G.lib === 'notes' ? (noteSet(G.setId) || {}).title || '' : G.name)}</span>${statusHTML(itemStatus(id))}</span></div>${svg('chev')}</button>`; }).join('')}</div>`;
+}
+function vFavs() {
+  const ids = [...ITEMS.keys()].filter(id => S.items[id] && S.items[id].fav);
+  const libs = ['topic', 'function', 'notes'];
+  return {
+    title: '收藏表达', crumb: [],
+    body: ids.length ? libs.map(l => { const x = ids.filter(id => ITEMS.get(id).lib === l); return x.length ? `<section class="section"><div class="section-head"><h3>${libLabel(l)}</h3><span class="hint">${x.length} 条</span></div>${resultRows(x)}</section>` : ''; }).join('')
+      : `<div class="empty"><h3>还没有收藏</h3><p>在表达组或详情页点星标收藏，三类内容的收藏都会集中在这里。收藏不会改变学习方式。</p><button class="btn btn-outline" type="button" data-nav="topics">浏览主题表达</button></div>`,
+  };
+}
+function vSearch(r) {
+  const q = (r.id || '').trim().toLowerCase();
+  const ids = q ? [...ITEMS.values()].filter(it => (it.en + ' ' + it.zh + ' ' + (it.wrong || '')).toLowerCase().includes(q)).map(it => it.id) : [];
+  return { title: '搜索', crumb: [q ? `“${r.id}”` : ''], body: q ? (ids.length ? `<p class="note-line">找到 ${ids.length} 条</p>${resultRows(ids.slice(0, 80))}` : '<div class="empty"><h3>没有找到匹配的表达</h3><p>可以试试英文里的一个词，或中文的关键字。</p></div>') : '<p class="warm">输入英文或中文关键词搜索三类内容。</p>' };
+}
+function vRecords() {
+  const now = new Date();
+  if (!ui.calMonth) ui.calMonth = [now.getFullYear(), now.getMonth()];
+  const [y, m] = ui.calMonth;
+  const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate(), lead = first.getDay();
+  let cells = '日一二三四五六'.split('').map(d => `<span class="dow">${d}</span>`).join('');
+  for (let i = 0; i < lead; i++) cells += '<span class="d out">.</span>';
+  let checkedMonth = 0;
+  for (let d = 1; d <= days; d++) {
+    const t = new Date(y, m, d).getTime(), l = S.log[dayKey(t)] || {};
+    const act = (l.rem || 0) + (l.vag || 0) + (l.fgt || 0) + (l.learned || 0);
+    if (l.checked) checkedMonth++;
+    cells += `<span class="d ${l.checked ? 'on' : act ? 'act' : ''} ${t === dayStart() ? 'today' : ''}" title="${dayKey(t)}${act ? ` · 学习 ${act} 条` : ''}">${d}</span>`;
+  }
+  const mem = [...ITEMS.keys()].filter(id => active(id) && modeOf(id) === 'memory');
+  const stable = mem.filter(id => itemStatus(id) === '近期稳定').length;
+  const studiedN = mem.filter(studied).length;
+  const recent = Object.keys(S.log).sort().reverse().slice(0, 10);
+  const fc = [];
+  for (let d = 0; d < 7; d++) {
+    const t = addDays(Date.now(), d);
+    fc.push([t, mem.filter(id => { const s = S.items[id]; return s && s.stage != null && (d === 0 ? s.next <= t : dayStart(s.next) === t); }).length]);
+  }
+  const fmax = Math.max(1, ...fc.map(x => x[1]));
+  return {
+    title: `${S.user.name} 的学习记录`, crumb: [],
+    body: `<div class="grid">
+      <section class="panel blush span-7">
+        <div class="panel-head"><div class="eyebrow">学习打卡<small>${y} 年 ${m + 1} 月 · 本月打卡 ${checkedMonth} 天</small></div>
+          <div class="btn-row"><button class="icon-btn" type="button" data-a="calprev" aria-label="上个月">${svg('back', 2)}</button><button class="icon-btn" type="button" data-a="calnext" aria-label="下个月"><span style="transform:rotate(180deg);display:grid">${svg('back', 2)}</span></button></div></div>
+        <div class="cal">${cells}</div>
+        <p class="note-line" style="color:var(--warm)">实心圆为已打卡；小圆点表示有学习但未打卡。打卡在完成复习后的结果页确认。</p>
+      </section>
+      <section class="panel span-5">
+        <div class="tiles" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <div><span class="eyebrow">连续打卡</span><div class="big-num">${streak()}<small>天</small></div></div>
+          <div><span class="eyebrow">记忆内容</span><div class="big-num">${mem.length}<small>条</small></div></div>
+          <div><span class="eyebrow">已学过</span><div class="big-num">${studiedN}<small>条</small></div></div>
+          <div><span class="eyebrow">近期稳定</span><div class="big-num">${stable}<small>条</small></div></div>
+        </div>
+        <p class="note-line">“近期稳定”只表示近期多次复习表现良好，不代表永久掌握。</p>
+      </section>
+      <section class="panel span-6"><div class="section-head"><h3>未来 7 天的复习</h3><span class="hint">今天含逾期内容</span></div>
+        <div class="forecast">${fc.map(([t, v], d) => `<div class="fc-row"><span>${d === 0 ? '今天' : d === 1 ? '明天' : '周' + WD[new Date(t).getDay()]}</span><div class="track"><i style="width:${v / fmax * 100}%"></i></div><b>${v}</b></div>`).join('')}</div></section>
+      <section class="panel span-6"><div class="section-head"><h3>最近的学习</h3></div>
+        ${recent.length ? `<div>${recent.map(k => { const l = S.log[k]; return `<div class="kv"><span>${k.slice(5).replace('-', ' 月 ')} 日${l.checked ? ' · 已打卡' : ''}</span><b class="num">新学 ${l.learned || 0} · 记得 ${l.rem || 0} · 模糊 ${l.vag || 0} · 忘记 ${l.fgt || 0}</b></div>`; }).join('')}</div>` : '<p class="warm">还没有学习记录。</p>'}</section>
+    </div>`,
+  };
+}
+
+const VIEWS = {
+  home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
+  library: vLibrary, topics: vTopics, topic: vTopic, funcs: vFuncs, group: vGroup, item: vItem,
+  add: vAdd, edit: vEdit, notes: vNotes, import: vImport, triage: vTriage,
+  favs: vFavs, search: vSearch, records: vRecords,
+};
+
+/* ============================================================
+   交互
+   ============================================================ */
+function setSessionFb(input, revealed) {
+  const r = cur();
+  if (r.v === 'learn') {
+    const ns = S.newSession;
+    const id = ns.step === 'apply' ? ns.apply[ns.ai] : ns.queue[0];
+    const it = ITEMS.get(id);
+    ns.fb = { input, revealed };
+    if (ns.step === 'write' && ns.first[id] === undefined) ns.first[id] = !revealed && diff(input, answerOf(it)).ok;
+    save();
+  } else if (r.v === 'review') {
+    S.reviewSession.fb = { input, revealed }; save();
+  } else if (r.v === 'practice') {
+    ui.practice.fb = { input, revealed };
+  }
+  render();
+}
+function continueLearn() {
+  const ns = S.newSession;
+  if (ns.step === 'apply') {
+    ns.ai++; ns.fb = null;
+    if (ns.ai >= ns.apply.length) endRound();
+  } else {
+    const id = ns.queue[0], it = ITEMS.get(id), fb = ns.fb;
+    const ok = fb && !fb.revealed && diff(fb.input, answerOf(it)).ok;
+    ns.fb = null;
+    if (ok) { markLearned(id, !!ns.first[id]); ns.queue.shift(); }
+    else { ns.again[id] = true; ns.queue.push(ns.queue.shift()); }
+    if (!ns.queue.length) {
+      ns.apply = pickApply(ns.rounds[ns.round]); ns.ai = 0;
+      if (ns.apply.length) ns.step = 'apply'; else endRound();
+    }
+  }
+  if (S.newSession) save();
+  render(true);
+}
+function endRound() {
+  const ns = S.newSession;
+  if (ns.round + 1 < ns.rounds.length) ns.step = 'rounddone';
+  else finishNew();
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a],[data-go],[data-nav]');
+  if (!el || el.disabled) return;
+  if (el.dataset.confirm && !el.classList.contains('armed')) {
+    el.classList.add('armed');
+    el.dataset.label = el.textContent;
+    el.textContent = el.dataset.confirm;
+    setTimeout(() => { if (el.isConnected) { el.classList.remove('armed'); el.textContent = el.dataset.label; } }, 3500);
+    return;
+  }
+  if (el.dataset.nav) {
+    const v = el.dataset.nav;
+    if (v === 'today') { ui.todaySel = ui.todaySel || null; }
+    goRoot({ v }); return;
+  }
+  if (el.dataset.go) { go(parseRoute(el.dataset.go)); return; }
+  const a = el.dataset.a, id = el.dataset.id;
+  switch (a) {
+    case 'back': back(); break;
+    case 'hidehint': S.user.hintClosed = true; save(); render(); break;
+    case 'mode': {
+      S.items[id] = S.items[id] || { hist: [], wrong: 0 };
+      S.items[id].mode = el.dataset.m; save(); render();
+      break;
+    }
+    case 'fav': { const s = st(id); s.fav = !s.fav; save(); render(); toast(s.fav ? '已收藏' : '已取消收藏'); break; }
+    case 'mem': { st(id).mode = modeOf(id) === 'memory' ? 'reference' : 'memory'; save(); render(); break; }
+    case 'cat': ui.todayCat = el.dataset.c; render(); break;
+    case 'pick': ui.todaySel = id; ui.todayOpen.add(id); render(); break;
+    case 'expand': ui.todayOpen.has(id) ? ui.todayOpen.delete(id) : ui.todayOpen.add(id); render(); break;
+    case 'startnew': if (ui.todaySel) startNew(ui.todaySel); break;
+    case 'resumenew': go({ v: 'learn' }); break;
+    case 'dropnew': S.newSession = null; save(); render(); toast('已放弃本次新学进度，已完成的条目保留'); break;
+    case 'beginwrite': { const ns = S.newSession; ns.step = 'write'; ns.queue = ns.rounds[ns.round].filter(x => !studied(x)); ns.fb = null; if (!ns.queue.length) endRound(); if (S.newSession) save(); render(true); break; }
+    case 'nextround': { const ns = S.newSession; ns.round++; ns.step = 'intro'; ns.fb = null; save(); render(true); break; }
+    case 'reveal': setSessionFb('', true); break;
+    case 'cont': {
+      const r = cur();
+      if (r.v === 'learn') continueLearn();
+      else if (r.v === 'practice') { const p = ui.practice; p.i++; p.fb = null; if (p.i >= p.ids.length) { ui.lastReview.practiced = true; back(); toast('错题练习完成'); } else render(true); }
+      break;
+    }
+    case 'donenew': ui.lastNew = null; back(); break;
+    case 'startreview': startReview(); break;
+    case 'startreview-replace': ui.lastNew = null; startReview(null, true); break;
+    case 'reviewgroup': startReview(id); break;
+    case 'resumereview': go({ v: 'review' }); break;
+    case 'rate': {
+      const rs = S.reviewSession, iid = rs.ids[rs.i];
+      applyRating(iid, el.dataset.r, ITEMS.get(iid).type);
+      rs.ratings[iid] = el.dataset.r; rs.i++; rs.fb = null;
+      if (rs.i >= rs.ids.length) finishReview(); else save();
+      render(true);
+      break;
+    }
+    case 'practice': {
+      const r = ui.lastReview;
+      ui.practice = { ids: r.ids.filter(x => r.ratings[x] !== 'rem' && ITEMS.has(x)), i: 0, fb: null };
+      go({ v: 'practice' }); break;
+    }
+    case 'donereview': ui.lastReview = null; back(); break;
+    case 'checkin': checkin(); render(); break;
+    case 'checkin-back': checkin(); ui.lastNew = null; ui.lastReview = null; back(); break;
+    case 'exit': back(); toast('已保存进度，可以从首页继续'); break;
+    case 'quick-replace': ui.lastNew = null; replaceRoute({ v: 'quick', id }); break;
+    case 'qrmode': ui.qrMode = el.dataset.m; ui.qrShown = new Set(); render(); break;
+    case 'qr': if (el.classList.contains('masked')) { ui.qrShown.add(el.dataset.k); el.classList.remove('masked'); } break;
+    case 'qrreset': ui.qrShown = new Set(); render(); break;
+    case 'nextitem': replaceRoute({ v: 'item', id }); break;
+    case 'nfilter': ui.notesFilter = el.dataset.f; render(); break;
+    case 'calprev': case 'calnext': { let [y, m] = ui.calMonth; m += a === 'calprev' ? -1 : 1; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } ui.calMonth = [y, m]; render(); break; }
+    case 'seg': {
+      const seg = el.closest('[data-seg]');
+      seg.dataset.value = el.dataset.v;
+      seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === el)));
+      if (seg.dataset.seg === 'type') seg.closest('form').querySelectorAll('[data-for]').forEach(f => { f.hidden = !f.dataset.for.split(' ').includes(el.dataset.v); });
+      break;
+    }
+    case 'sample': { const ta = $('#import-text'); ta.value = SAMPLE_NOTE; $('[data-form="import"] [name="title"]').value = dayKey() + ' 示例笔记'; break; }
+    case 'ttype': {
+      const it = S.notes.items.find(x => x.id === id);
+      if (it && it.type !== el.dataset.t) {
+        it.type = el.dataset.t;
+        const gid = 'ng:' + uid();
+        S.notes.groups.push({ id: gid, setId: it.setId, kind: it.type, name: it.en });
+        it.gid = gid; pruneNoteGroups(); assemble(); save(); render();
+      }
+      break;
+    }
+    case 'tdel': S.notes.items = S.notes.items.filter(x => x.id !== id); delete S.items[id]; pruneNoteGroups(); assemble(); save(); render(); break;
+    case 'tconfirm': {
+      const set = noteSet(id); set.confirmed = true;
+      S.notes.items.filter(x => x.setId === id).forEach(x => { if (!(S.items[x.id] && S.items[x.id].mode)) st(x.id).mode = defMode(x); });
+      assemble(); save(); toast('已确认，记忆内容进入“等待学习”'); replaceRoute({ v: 'notes' });
+      break;
+    }
+    case 'tdiscard': case 'delset': {
+      const gone = new Set(S.notes.items.filter(x => x.setId === id).map(x => x.id));
+      S.notes.items = S.notes.items.filter(x => x.setId !== id);
+      S.notes.groups = S.notes.groups.filter(g => g.setId !== id);
+      S.notes.sets = S.notes.sets.filter(s => s.id !== id);
+      gone.forEach(x => delete S.items[x]);
+      if (S.newSession && !GROUPS.has(S.newSession.gid)) S.newSession = null;
+      assemble();
+      if (S.newSession && !GROUPS.has(S.newSession.gid)) S.newSession = null;
+      if (S.reviewSession && !GROUPS.has(S.reviewSession.gid)) S.reviewSession = null;
+      save();
+      toast(a === 'tdiscard' ? '已放弃这次导入' : '已删除笔记组');
+      if (a === 'tdiscard') replaceRoute({ v: 'notes' }); else render();
+      break;
+    }
+    case 'delitem': {
+      const it = ITEMS.get(id);
+      if (it.lib === 'notes') { S.notes.items = S.notes.items.filter(x => x.id !== id); pruneNoteGroups(); }
+      else { S.custom.items = S.custom.items.filter(x => x.id !== id); const used = new Set(S.custom.items.map(x => x.gid)); S.custom.groups = S.custom.groups.filter(g => used.has(g.id)); }
+      delete S.items[id];
+      assemble();
+      if (S.newSession) { S.newSession.ids = S.newSession.ids.filter(x => x !== id); if (!S.newSession.ids.length) S.newSession = null; }
+      save(); toast('已删除'); back();
+      break;
+    }
+  }
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target;
+  const kind = f.dataset.form;
+  if (kind === 'answer') {
+    const inp = f.querySelector('.answer');
+    if (inp.readOnly) return;
+    setSessionFb(inp.value, false);
+  } else if (kind === 'drill') {
+    const it = ITEMS.get(f.dataset.id);
+    const d = diff($('#drill-in').value, answerOf(it));
+    $('#drill-fb').innerHTML = fbHTML(d, it, d.empty);
+  } else if (kind === 'add') {
+    const G = GROUPS.get(f.dataset.id);
+    const v = n => (f.querySelector(`[name="${n}"]`) || { value: '' }).value.trim();
+    const seg = n => { const s = f.querySelector(`[data-seg="${n}"]`); return s ? s.dataset.value : ''; };
+    const en = v('en'), zh = v('zh');
+    if (!en || !zh) { $('#form-msg').textContent = '请填写英文表达和中文含义。'; return; }
+    if (/[㐀-鿿]/.test(en)) { $('#form-msg').textContent = '英文表达里不要包含中文。'; return; }
+    const id = (G.lib === 'notes' ? 'n:' : 'c:') + uid();
+    let type = G.lib === 'function' ? 'fn' : seg('type');
+    let gid = G.id;
+    const solo = seg('target') === 'solo' || (G.lib === 'notes' && type !== G.kind);
+    if (G.lib === 'notes') {
+      if (type === 'grammar' && !v('wrong')) { $('#form-msg').textContent = '语法卡需要填写原来的错误写法。'; return; }
+      if (solo) { gid = 'ng:' + uid(); S.notes.groups.push({ id: gid, setId: G.setId, kind: type, name: en }); }
+      const rec = { id, setId: G.setId, gid, type, raw: '', line: 0, defMode: seg('mode') };
+      for (const [k] of NOTE_FORM) rec[k] = v(k);
+      S.notes.items.push(rec);
+    } else {
+      if (solo) {
+        gid = 'cg:' + uid();
+        S.custom.groups.push(G.lib === 'topic'
+          ? { id: gid, lib: 'topic', topic: G.topic, sub: G.sub, name: en, scene: zh, independent: true, parent: G.id }
+          : { id: gid, lib: 'function', fn: G.fn, name: en, scene: G.scene, independent: true, parent: G.id });
+      }
+      S.custom.items.push({ id, lib: G.lib, type, gid, en, zh, ex: v('ex'), col: '', usage: '', err: '', syntax: v('syntax'), tone: v('tone'), diff: v('diff'), defMode: seg('mode') });
+    }
+    st(id).mode = seg('mode');
+    assemble(); save(); back(); toast(solo ? '已作为独立项保存' : '已加入「' + G.name + '」');
+  } else if (kind === 'edit') {
+    const it = S.notes.items.find(x => x.id === f.dataset.id);
+    const v = n => f.querySelector(`[name="${n}"]`).value.trim();
+    const type = f.querySelector('[data-seg="type"]').dataset.value;
+    if (!v('en')) { $('#form-msg').textContent = '英文表达不能为空。'; return; }
+    if (type === 'grammar' && !v('wrong')) { $('#form-msg').textContent = '语法卡需要填写原来的错误写法。'; return; }
+    for (const [k] of NOTE_FORM) it[k] = v(k);
+    if (type !== it.type) {
+      it.type = type;
+      const gid = 'ng:' + uid();
+      S.notes.groups.push({ id: gid, setId: it.setId, kind: type, name: it.en });
+      it.gid = gid; pruneNoteGroups();
+    }
+    assemble(); save(); back(); toast('已保存修改');
+  } else if (kind === 'import') {
+    const text = f.querySelector('[name="text"]').value;
+    const title = f.querySelector('[name="title"]').value.trim() || dayKey() + ' 写作笔记';
+    if (!text.trim()) { $('#form-msg').textContent = '请先粘贴笔记内容或导入 Markdown 文件。'; return; }
+    const setId = createNoteSet(text, title, { source: importSource || '粘贴的文字' });
+    importSource = '';
+    if (!setId) { $('#form-msg').textContent = '没有识别到英文表达。每行写一条，英文在前、中文在后。'; return; }
+    assemble(); save(); replaceRoute({ v: 'triage', id: setId });
+  }
+});
+
+let importSource = '';
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'md-file' && t.files && t.files[0]) {
+    const file = t.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      $('#import-text').value = String(reader.result || '');
+      const title = $('[data-form="import"] [name="title"]');
+      title.value = file.name.replace(/\.(md|markdown|txt)$/i, '') || title.value;
+      importSource = 'Markdown 文件 · ' + file.name;
+      toast('已读取 ' + file.name);
+    };
+    reader.onerror = () => toast('文件读取失败，请改为粘贴文字');
+    reader.readAsText(file);
+  }
+  if (t.dataset.tmove) {
+    const it = S.notes.items.find(x => x.id === t.dataset.tmove);
+    if (t.value === 'solo' || t.value === 'new') {
+      const gid = 'ng:' + uid();
+      S.notes.groups.push({ id: gid, setId: it.setId, kind: it.type, name: t.value === 'new' ? '新的语义组' : it.en });
+      it.gid = gid;
+      if (t.value === 'new') toast('已新建语义组，再把相近的卡片移进来');
+    } else it.gid = t.value;
+    pruneNoteGroups(); assemble(); save(); render();
+  }
+});
+
+let noteTimer;
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'q') {
+    const q = t.value;
+    if (!q.trim()) { if (cur().v === 'search') back(); return; }
+    if (cur().v === 'search') { cur().id = q; render(); } else go({ v: 'search', id: q });
+    t.focus();
+    return;
+  }
+  if (t.dataset.note) {
+    const id = t.dataset.note;
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(() => { st(id).note = t.value; save(); }, 300);
+  }
+  if (t.dataset.tf) {
+    const it = S.notes.items.find(x => x.id === t.dataset.id);
+    if (it) { it[t.dataset.tf] = t.value; save(); assemble(); }
+  }
+  if (t.dataset.gname) {
+    const g = S.notes.groups.find(x => x.id === t.dataset.gname);
+    if (g) { g.name = t.value; save(); assemble(); }
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || e.isComposing) return;
+  const t = e.target;
+  if (t.matches('textarea') || (t.matches('input') && !t.readOnly)) return;
+  if (t.matches('button') && !t.hasAttribute('data-enter')) return;
+  const b = $('#view [data-enter]');
+  if (b) { e.preventDefault(); b.click(); }
+});
+
+/* ============================================================
+   启动
+   ============================================================ */
+function fillSampleDetails() {
+  const detail = new Map();
+  for (const sec of parseNotes(SAMPLE_NOTE)) for (const c of sec.cards) detail.set(c.en.toLowerCase(), c);
+  let changed = false;
+  for (const it of S.notes.items) {
+    const set = noteSet(it.setId);
+    if (!set || !/示例/.test(set.source || '')) continue;
+    const c = detail.get(it.en.toLowerCase());
+    if (!c || !c.fields) continue;
+    const f = Object.assign({}, c.fields);
+    if (it.type === 'pattern' && f.usage && !f.scene) { f.scene = f.usage; delete f.usage; }
+    for (const [k, v] of Object.entries(f)) if (!it[k]) { it[k] = v; changed = true; }
+  }
+  if (changed) save();
+}
+if (!S.seeded) {
+  createNoteSet(SAMPLE_NOTE, '示例 · 2026-10-06 写作笔记', { confirmed: true, source: '示例笔记，可删除' });
+  S.seeded = true;
+  save();
+}
+fillSampleDetails();
+assemble();
+const startHash = (location.hash || '').slice(1);
+if (VIEWS[startHash] && ['home', 'today', 'topics', 'funcs', 'notes', 'favs', 'records', 'library'].includes(startHash)) stack = [{ v: startHash }];
+render(true);
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
+</script>
+<a class="ver-badge" href="../?r=v4" aria-label="切换版本">v4 · 切换版本</a>
+<style>
+.ver-badge { position: fixed; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 40; font: 500 12px/1 var(--f-ui); color: var(--warm); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; text-decoration: none; box-shadow: var(--shadow-sm); }
+@media (max-width: 720px) { .ver-badge { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
+</style>
+</body>
+</html>
