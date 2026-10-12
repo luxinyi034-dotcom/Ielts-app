@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="写作表达">
+<meta name="theme-color" content="#EEEAE2">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<title>写作表达 · 版本目录</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap">
+<style>
+/* 版本目录：一列版本卡片，最新一版在最上面，与 App 共用同一套自然中性色。 */
+:root {
+  --canvas: #EEEAE2; --paper: #FCFBF7; --paper-2: #F7F4EE; --linen: #EBE6DC;
+  --sage: #A5B09B; --sage-deep: #72806D; --sage-soft: #E5E9DF; --blush: #EAD8D0;
+  --ink: #5B665C; --warm: #706D67; --muted: #96918A; --line: #DEDBD3;
+  --f-en: "Source Serif 4", Georgia, serif; --f-title: "Noto Serif SC", "Songti SC", serif;
+  --f-ui: "Noto Sans SC", -apple-system, "PingFang SC", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var(--f-ui); font-size: 16px; line-height: 1.6; padding: max(28px, env(safe-area-inset-top)) 20px max(40px, env(safe-area-inset-bottom)); }
+.wrap { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+header { display: flex; align-items: center; gap: 14px; }
+.mark { width: 46px; height: 46px; border-radius: 14px; background: var(--sage-deep); display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 10px; flex: none; }
+.mark i { border-radius: 3px; background: var(--paper); }
+.mark i:nth-child(2), .mark i:nth-child(3) { opacity: .55; }
+h1 { margin: 0; font-family: var(--f-title); font-size: 28px; font-weight: 600; line-height: 1.25; text-wrap: balance; }
+.lede { margin: 2px 0 0; color: var(--warm); font-size: 14px; }
+.note { background: var(--paper-2); border-radius: 16px; padding: 14px 18px; font-size: 14px; color: var(--warm); }
+.list { display: flex; flex-direction: column; gap: 14px; }
+.ver { background: var(--paper); border-radius: 22px; padding: 22px 26px; display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 6px 22px; box-shadow: 0 1px 2px rgba(91,102,92,.05), 0 18px 40px -26px rgba(91,102,92,.3); }
+.ver.latest { outline: 2px solid var(--sage); }
+.vno { font-family: var(--f-en); font-size: 44px; line-height: 1; color: var(--sage-deep); grid-row: span 3; }
+.vhead { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.vhead h2 { margin: 0; font-family: var(--f-title); font-size: 19px; font-weight: 600; }
+.date { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tag { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--sage-soft); color: var(--sage-deep); }
+ul { margin: 0; padding-left: 1.2em; color: var(--warm); font-size: 14px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 999px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px solid transparent; transition: transform .15s; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--sage-deep); color: var(--paper); }
+.btn-outline { background: var(--paper); border-color: var(--line); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--sage-deep); outline-offset: 2px; }
+@media (max-width: 560px) { .ver { grid-template-columns: minmax(0, 1fr); padding: 20px; } .vno { grid-row: auto; font-size: 34px; } }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div><h1>雅思写作表达 · 版本目录</h1><p class="lede">每一版单独保存，发布新版不会覆盖旧版，随时可以打开对比。</p></div></header>
+  <p class="note">同一台设备上，各版本共用一份学习进度。以后如果某一版改了数据格式，会改用自己的存储，旧版本的数据不受影响。每一版也可以单独“添加到主屏幕”。</p>
+  <div class="list" id="list"></div>
+</div>
+<script>
+var VERSIONS = [{"version": "v1", "title": "第一版：按 PRD v1.0 + v2.0 实现", "date": "2026-10-12", "notes": ["主题表达、功能表达、我的写作笔记三个表达库", "今日新学：理解场景 → 主动写出 → 句子应用", "按组复习：记得 / 模糊 / 忘记，复习完成后打卡", "快速复习遮挡、Markdown 笔记导入与整理、学习日历"], "commit": "70aca0d", "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v1/ielts-writing"}];
+var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+document.getElementById('list').innerHTML = VERSIONS.slice().reverse().map(function (v, i) {
+  return '<article class="ver' + (i === 0 ? ' latest' : '') + '">' +
+    '<div class="vno">' + esc(v.version) + '</div>' +
+    '<div class="vhead"><h2>' + esc(v.title) + '</h2>' + (i === 0 ? '<span class="tag">最新</span>' : '') + '<span class="date">' + esc(v.date) + '</span></div>' +
+    (v.notes && v.notes.length ? '<ul>' + v.notes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '<span></span>') +
+    '<div class="actions"><a class="btn btn-primary" href="' + encodeURIComponent(v.version) + '/">打开 ' + esc(v.version) + '</a>' +
+    '<a class="btn btn-outline" href="' + esc(v.source) + '" target="_blank" rel="noopener">查看这一版的源码</a></div>' +
+    '</article>';
+}).join('');
+</script>
+</body>
+</html>

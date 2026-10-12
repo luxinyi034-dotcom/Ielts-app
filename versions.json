@@ -1,0 +1,15 @@
+[
+  {
+    "version": "v1",
+    "title": "第一版：按 PRD v1.0 + v2.0 实现",
+    "date": "2026-10-12",
+    "notes": [
+      "主题表达、功能表达、我的写作笔记三个表达库",
+      "今日新学：理解场景 → 主动写出 → 句子应用",
+      "按组复习：记得 / 模糊 / 忘记，复习完成后打卡",
+      "快速复习遮挡、Markdown 笔记导入与整理、学习日历"
+    ],
+    "commit": "70aca0d",
+    "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v1/ielts-writing"
+  }
+]
