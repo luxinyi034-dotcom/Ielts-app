@@ -49,5 +49,20 @@
     ],
     "commit": "3b6e4ee",
     "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v4/ielts-writing"
+  },
+  {
+    "version": "v5",
+    "title": "第五版（轻量）：主题表达按 PRD v3 重做",
+    "date": "2026-10-12",
+    "notes": [
+      "先做 2 个话题：医疗科技与监管、线上学习的利与弊",
+      "话题页（按论点 / 一览）、范文段落页",
+      "新学：选 3 个论点 → 预览 → 逐条默写 → 范文填空 → 话题词汇 → 完成",
+      "复习：按论点安排，次日 / 3 / 7 / 14 / 30 天各有题型；补练；论点结果页；忘记先确认再从头开始",
+      "论点句、展开表达、话题词汇三种详情页",
+      "复习设置：考试日期、按考试日期缩短间隔、延长到 60 天（默认关闭）"
+    ],
+    "commit": "d64d989",
+    "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v5/ielts-writing"
   }
 ]
