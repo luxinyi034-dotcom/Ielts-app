@@ -24,5 +24,17 @@
     ],
     "commit": "8796c53",
     "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v2/ielts-writing"
+  },
+  {
+    "version": "v3",
+    "title": "第三版：高亮更柔和，笔记详情更紧凑",
+    "date": "2026-10-12",
+    "notes": [
+      "示例句里的黄色高亮换成和整体一致的浅绿色",
+      "我的写作笔记详情页去掉原始笔记，页面更紧凑",
+      "使用规则、个人错误合并成一块，受控练习改成一行输入"
+    ],
+    "commit": "61943a6",
+    "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v3/ielts-writing"
   }
 ]
