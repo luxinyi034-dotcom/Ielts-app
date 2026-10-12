@@ -437,31 +437,37 @@ textarea.note { width: 100%; min-height: 90px; border: 1px solid var(--line); bo
 .tcard-top .btn-row { flex-wrap: nowrap; }
 @media (max-width: 720px) { .tcard-top .btn-row { flex-wrap: wrap; } }
 
-/* ---------- v2 首页：三个分区（标题 + 细线分隔，颜色只给学习区） ---------- */
-.zone { display: flex; flex-direction: column; gap: 14px; }
-.zone + .zone { margin-top: 4px; }
-.zone-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--line); min-height: 44px; }
-.zone-head h2 { font-family: var(--f-title); font-size: 22px; color: var(--ink); }
-.zone-head .hint { font-size: 13px; color: var(--muted); }
-.zone .panel.blush, .zone .panel.sage { padding: 24px 26px; }
-.due-row { background: var(--blush-soft); padding: 9px 14px; border-radius: 12px; gap: 10px; font-size: 14px; }
+/* ---------- v2 首页：三个分区，每个区一块底板（方案 D） ---------- */
+.zone { display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 26px; }
+.zone-learn { background: var(--sage-soft); }
+.zone-lib { background: var(--paper-2); }
+.zone-rec { border: 1px solid var(--line); }
+.zone-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 0 8px; min-height: 36px; }
+.zone-head h2 { font-family: var(--f-title); font-size: 19px; color: var(--ink); }
+.zone-head .hint { font-size: 13px; color: var(--warm); }
+.zone-card { background: var(--paper); box-shadow: var(--shadow-sm); padding: 22px 24px; gap: 10px; }
+.pill { align-self: flex-start; font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 999px; }
+.pill-review { background: var(--blush); color: var(--ink); }
+.pill-new { background: var(--sage-soft); color: var(--sage-deep); }
+.due-row { background: var(--paper-2); padding: 9px 14px; border-radius: 12px; gap: 10px; font-size: 14px; }
 .due-row .title { font-size: 14px; font-weight: 500; }
-.lib-entries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.lib-entry { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); text-align: left; min-height: 76px; transition: border-color .15s, transform .15s; }
-.lib-entry:hover { border-color: var(--sage); transform: translateY(-1px); }
-.lib-entry .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.lib-entry .name { font-size: 17px; font-weight: 600; color: var(--ink); }
-.lib-entry .meta { font-size: 13px; color: var(--muted); }
-.lib-entry > svg { width: 18px; height: 18px; color: var(--muted); flex: none; }
-.stat-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.stat-card { padding: 16px 20px; border-radius: 18px; background: var(--paper-2); display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.stat-card .label { font-size: 13px; color: var(--muted); }
-.stat-card .val { font-family: var(--f-en); font-size: 34px; line-height: 1.2; color: var(--ink); font-variant-numeric: tabular-nums; }
-.stat-card .val small { font-family: var(--f-ui); font-size: 14px; color: var(--warm); margin-left: 4px; }
-.stat-card .week-dots { margin-top: 6px; }
-.stat-card .week-dots i { width: 14px; height: 14px; }
+.zone-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.zone-tile { display: flex; flex-direction: column; gap: 6px; padding: 20px 22px; border: 0; border-radius: 20px; background: var(--paper); box-shadow: var(--shadow-sm); text-align: left; min-width: 0; transition: transform .15s; }
+.zone-tile:hover { transform: translateY(-1px); }
+.zone-tile .name { font-family: var(--f-title); font-size: 20px; font-weight: 600; color: var(--ink); }
+.zone-tile .sub { font-size: 14px; color: var(--warm); overflow-wrap: anywhere; }
+.zone-tile .meta { font-size: 13px; color: var(--muted); }
+.rec-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.rec-col { padding: 4px 8px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.rec-title { font-size: 14px; color: var(--warm); }
+.rec-title b { color: var(--ink); }
+.week-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; text-align: center; font-size: 12px; color: var(--muted); }
+.week-row .day i { display: block; margin: 0 auto 4px; width: 30px; height: 30px; border-radius: 50%; background: var(--linen); }
+.week-row .day.on i { background: var(--sage); }
+.week-row .day.today i { box-shadow: 0 0 0 2px var(--sage-deep); }
 @media (max-width: 720px) {
-  .lib-entries, .stat-cards { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .zone { padding: 14px; }
+  .zone-tiles, .rec-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
 }
 </style>
 </head>
@@ -1252,7 +1258,7 @@ function vHome() {
   if (S.newSession) {
     const ns = S.newSession, G = GROUPS.get(ns.gid);
     const done = ns.ids.filter(studied).length;
-    nw = `<div class="eyebrow">进行中的新学<small>${esc(groupCrumb(G).join(' / '))}</small></div>
+    nw = `<div class="note-line">${esc(groupCrumb(G).join(' / '))}</div>
       <h3 style="font-family:var(--f-title);font-size:22px">${esc(G.name)}</h3>
       <div class="progress"><span>${done} / ${ns.ids.length}</span><div class="pbar"><i style="width:${Math.round(done / ns.ids.length * 100)}%"></i></div></div>
       <div class="btn-row"><button class="btn btn-primary" type="button" data-a="resumenew">继续本组新学</button></div>`;
@@ -1260,13 +1266,13 @@ function vHome() {
     const rec = [...GROUPS.values()].find(G => G.lib === 'topic' && gstats(G).fresh > 0);
     if (rec) {
       const s = gstats(rec);
-      nw = `<div class="eyebrow">今日新学推荐<small>${esc(groupCrumb(rec).join(' / '))}</small></div>
+      nw = `<div class="note-line">${esc(groupCrumb(rec).join(' / '))}</div>
         <h3 style="font-family:var(--f-title);font-size:22px">${esc(rec.name)}</h3>
         <p class="warm">${esc(rec.scene)}</p>
         <p class="note-line">${s.fresh} 条记忆 · ${s.ref} 条资料（资料不计入学习量）</p>
         <div class="btn-row"><button class="btn btn-primary" type="button" data-go="today:${esc(rec.id)}">开始今日新学</button><button class="btn btn-outline" type="button" data-go="group:${esc(rec.id)}">查看表达组</button></div>`;
     } else {
-      nw = `<div class="eyebrow">今日新学</div><p class="warm">主题表达里的核心论点都已学过。可以在功能表达或写作笔记里把内容加入记忆。</p>
+      nw = `<p class="warm">主题表达里的核心论点都已学过。可以在功能表达或写作笔记里把内容加入记忆。</p>
         <div class="btn-row"><button class="btn btn-outline" type="button" data-nav="today">选择表达组</button></div>`;
     }
   }
@@ -1278,46 +1284,47 @@ function vHome() {
   const noteCards = S.notes.items.length;
   const pending = sets.filter(s => !s.confirmed).length;
 
-  // 打卡与记录：连续天数 + 本周、明天到期 + 未来 7 天、已学过 + 近期稳定
-  const memIds = [...ITEMS.keys()].filter(id => active(id) && modeOf(id) === 'memory');
-  const learned = memIds.filter(studied);
-  const stable = learned.filter(id => itemStatus(id) === '近期稳定').length;
-  const tomorrow = addDays(Date.now(), 1), weekEnd = addDays(Date.now(), 8);
-  const dueTomorrow = learned.filter(id => S.items[id].next === tomorrow).length;
-  const dueWeek = learned.filter(id => S.items[id].next >= tomorrow && S.items[id].next < weekEnd).length;
+  // 打卡与记录：本周打卡 + 接下来几天的复习
   const t0 = dayStart(), mon = addDays(t0, -((new Date(t0).getDay() + 6) % 7));
   let week = '';
   for (let i = 0; i < 7; i++) {
-    const t = addDays(mon, i);
-    week += `<i class="${(S.log[dayKey(t)] || {}).checked ? 'on' : ''} ${t === t0 ? 'today' : ''}" title="星期${'一二三四五六日'[i]}"></i>`;
+    const t = addDays(mon, i), on = (S.log[dayKey(t)] || {}).checked;
+    week += `<span class="day ${on ? 'on' : ''} ${t === t0 ? 'today' : ''}"><i></i>${'一二三四五六日'[i]}</span>`;
   }
-  const libRow = (nav, name, meta) => `<button class="lib-entry" type="button" data-nav="${nav}"><span class="body"><span class="name">${name}</span><span class="meta">${meta}</span></span>${svg('chev')}</button>`;
+  const fc = [];
+  for (let d = 1; d <= 4; d++) {
+    const t = addDays(Date.now(), d);
+    fc.push([t, [...ITEMS.keys()].filter(id => active(id) && modeOf(id) === 'memory' && studied(id) && S.items[id].next === t).length]);
+  }
+  const fmax = Math.max(1, ...fc.map(x => x[1]));
+  const latest = sets.slice().sort((a, b) => b.created - a.created)[0];
+  const tile = (nav, name, sub, meta) => `<button class="zone-tile" type="button" data-nav="${nav}"><span class="name">${name}</span><span class="sub">${sub}</span><span class="meta">${meta}</span></button>`;
 
   return {
     title: `${greet}，${S.user.name}`,
     crumb: [fmtMD(Date.now()) + ' · 星期' + WD[new Date().getDay()]],
     body: `${installHint()}
-      <section class="zone">
+      <section class="zone zone-learn">
         <div class="zone-head"><h2>今天的学习</h2><span class="hint">复习节点：次日 · 3 天 · 7 天 · 14 天 · 30 天</span></div>
         <div class="grid">
-          <section class="panel blush span-7"><div class="eyebrow">今日复习</div>${review}</section>
-          <section class="panel sage span-5">${nw}</section>
+          <section class="panel zone-card span-7"><span class="pill pill-review">今日复习</span>${review}</section>
+          <section class="panel zone-card span-5"><span class="pill pill-new">${S.newSession ? '进行中的新学' : '今日新学'}</span>${nw}</section>
         </div>
       </section>
-      <section class="zone">
+      <section class="zone zone-lib">
         <div class="zone-head"><h2>表达库</h2><span class="hint">查阅、收藏，把需要的内容加入记忆</span></div>
-        <div class="lib-entries">
-          ${libRow('topics', '主题表达', `${topics.size} 个大主题 · ${topicGroups.length} 个表达组`)}
-          ${libRow('funcs', '功能表达', `${FUNCTION_GROUPS.length} 个写作功能 · ${fnItems} 条`)}
-          ${libRow('notes', '我的写作笔记', `${sets.length} 个笔记组 · ${noteCards} 张卡片${pending ? ` · ${pending} 个待整理` : ''}`)}
+        <div class="zone-tiles">
+          ${tile('topics', '主题表达', '大主题 → 细分主题 → 表达组', `${topics.size} 个大主题 · ${topicGroups.length} 个表达组`)}
+          ${tile('funcs', '功能表达', '比较语气、句法和使用边界', `${FUNCTION_GROUPS.length} 个写作功能 · ${fnItems} 条`)}
+          ${tile('notes', '我的写作笔记', latest ? '最近：' + esc(latest.title) : '表达组 · 句型组 · 语法组', `${sets.length} 个笔记组 · ${noteCards} 张卡片${pending ? ` · ${pending} 个待整理` : ''}`)}
         </div>
       </section>
-      <section class="zone">
+      <section class="zone zone-rec">
         <div class="zone-head"><h2>打卡与记录</h2><button class="btn btn-ghost btn-sm" type="button" data-nav="records">查看学习记录</button></div>
-        <div class="stat-cards">
-          <div class="stat-card"><span class="label">连续打卡</span><span class="val">${streak()}<small>天</small></span><span class="week-dots" aria-label="本周打卡">${week}</span></div>
-          <div class="stat-card"><span class="label">明天到期</span><span class="val">${dueTomorrow}<small>条</small></span><span class="note-line">未来 7 天共 ${dueWeek} 条</span></div>
-          <div class="stat-card"><span class="label">已学过</span><span class="val">${learned.length}<small>条记忆内容</small></span><span class="note-line">近期稳定 ${stable} 条</span></div>
+        <div class="rec-grid">
+          <div class="rec-col"><div class="rec-title">本周打卡 · 连续 <b>${streak()}</b> 天</div><div class="week-row">${week}</div></div>
+          <div class="rec-col"><div class="rec-title">接下来的复习</div>
+            <div class="forecast">${fc.map(([t, v]) => `<div class="fc-row"><span>${diffDays(t) === 1 ? '明天' : '周' + WD[new Date(t).getDay()]}</span><div class="track"><i style="width:${v / fmax * 100}%"></i></div><b>${v}</b></div>`).join('')}</div></div>
         </div>
       </section>`,
   };
