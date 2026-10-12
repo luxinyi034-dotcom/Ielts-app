@@ -11,5 +11,18 @@
     ],
     "commit": "70aca0d",
     "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v1/ielts-writing"
+  },
+  {
+    "version": "v2",
+    "title": "第二版：首页分区更清楚",
+    "date": "2026-10-12",
+    "notes": [
+      "首页分成三个区：今天的学习、表达库、打卡与记录",
+      "颜色只留给复习和新学，其他区用标题和细线分隔",
+      "表达库入口改成统一的白色卡片",
+      "打卡、明天到期、已学过收成三个小卡片"
+    ],
+    "commit": "e04dc2d",
+    "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v2/ielts-writing"
   }
 ]
