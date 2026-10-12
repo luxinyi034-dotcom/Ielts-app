@@ -69,7 +69,7 @@ document.getElementById('list').innerHTML = VERSIONS.slice().reverse().map(funct
     '<div class="vno">' + esc(v.version) + '</div>' +
     '<div class="vhead"><h2>' + esc(v.title) + '</h2>' + (i === 0 ? '<span class="tag">最新</span>' : '') + '<span class="date">' + esc(v.date) + '</span></div>' +
     (v.notes && v.notes.length ? '<ul>' + v.notes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '<span></span>') +
-    '<div class="actions"><a class="btn btn-primary" href="' + encodeURIComponent(v.version) + '/">打开 ' + esc(v.version) + '</a>' +
+    '<div class="actions"><a class="btn btn-primary" href="' + encodeURIComponent(v.version) + '/?b=' + encodeURIComponent(v.commit || '') + '">打开 ' + esc(v.version) + '</a>' +
     '<a class="btn btn-outline" href="' + esc(v.source) + '" target="_blank" rel="noopener">查看这一版的源码</a></div>' +
     '</article>';
 }).join('');

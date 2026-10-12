@@ -2351,7 +2351,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
 }
 </script>
-<a class="ver-badge" href="../" aria-label="切换版本">v2 · 切换版本</a>
+<a class="ver-badge" href="../?r=v2" aria-label="切换版本">v2 · 切换版本</a>
 <style>
 .ver-badge { position: fixed; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 40; font: 500 12px/1 var(--f-ui); color: var(--warm); background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; text-decoration: none; box-shadow: var(--shadow-sm); }
 @media (max-width: 720px) { .ver-badge { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
