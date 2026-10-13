@@ -807,6 +807,132 @@ button.t-planrow:hover { background: var(--paper-2); }
 .t-res-head button.txt { display: flex; flex-direction: column; }
 @media (max-width: 720px) { .t-modes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .t-para-grid.pp { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+
+/* ============================================================
+   学习记录（v7）：概览 · 词条清单 · 复习日程 · 薄弱项
+   薄弱用浅红：底 #FAF0EC，线 #E3B8AD，字 #B57A6C
+   ============================================================ */
+:root { --wk-bg: #FAF0EC; --wk-line: #E3B8AD; --wk-txt: #B57A6C; --wk-tag: #F3DFD8; }
+.r-page { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.icon-btn.sm { width: 32px; height: 32px; } .icon-btn.sm svg { width: 15px; height: 15px; }
+.r-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.r-stat { border: 0; border-radius: 18px; background: var(--paper-2); padding: 14px 18px; display: flex; flex-direction: column; gap: 2px; text-align: left; font: inherit; color: inherit; min-width: 0; }
+.r-stat span { font-size: 12px; color: var(--warm); }
+.r-stat b { font-family: var(--f-en); font-size: 30px; font-weight: 500; line-height: 1.15; }
+.r-stat small { font-size: 12px; color: var(--muted); }
+.r-stat.weak { background: var(--wk-bg); } .r-stat.weak span { color: var(--wk-txt); }
+button.r-stat { cursor: pointer; }
+.r-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+.r-card { border-radius: 20px; background: var(--paper-2); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.r-card.line { background: var(--paper); border: 1px solid var(--line); }
+.r-card-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.r-card-head b { font-size: 15px; }
+.r-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; text-align: center; font-size: 12px; }
+.r-cal .dow, .r-scal .dow { color: var(--muted); padding-bottom: 2px; font-size: 12px; text-align: center; }
+.r-day { display: grid; place-items: center; }
+.r-day i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-style: normal; color: var(--muted); }
+.r-day i.on { background: var(--sage-deep); color: var(--on-accent); }
+.r-day i.act { background: var(--sage-soft); color: var(--sage-deep); }
+.r-day i.today { box-shadow: inset 0 0 0 1.5px var(--sage-deep); color: var(--sage-deep); }
+.r-day i.on.today { color: var(--on-accent); box-shadow: 0 0 0 2px var(--paper-2), 0 0 0 3.5px var(--sage-deep); }
+.r-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--warm); }
+.r-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+.r-legend i.on { background: var(--sage-deep); } .r-legend i.act { background: var(--sage-soft); } .r-legend i.today { box-shadow: inset 0 0 0 1.5px var(--sage-deep); }
+.r-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; align-items: end; height: 200px; }
+.r-bars > div { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; height: 100%; }
+.r-bars .v { font-size: 12px; font-weight: 600; }
+.r-bars i { width: 100%; max-width: 30px; border-radius: 6px; background: var(--sage); }
+.r-bars i.today { background: var(--sage-deep); }
+.r-bars small { font-size: 11px; color: var(--muted); }
+.r-dist { display: flex; flex-direction: column; gap: 12px; }
+.r-dist > div { display: grid; grid-template-columns: 44px minmax(0, 1fr) 80px; gap: 12px; align-items: center; font-size: 13px; }
+.r-dist .track { height: 8px; border-radius: 4px; background: var(--linen); display: flex; overflow: hidden; }
+.r-dist .track i { background: var(--sage-deep); } .r-dist .track i.w { background: var(--wk-line); }
+.r-dist .num { text-align: right; } .r-dist .num small { color: var(--wk-txt); }
+.r-recent { display: flex; flex-direction: column; }
+.r-recent > div, .r-toprow { display: grid; grid-template-columns: 1fr auto; gap: 10px; font-size: 13px; padding: 7px 0; border-bottom: 1px solid var(--linen); }
+.r-recent small { color: var(--sage-deep); }
+.r-toprow { width: 100%; flex-direction: row; display: grid !important; }
+.r-toprow .en { font-size: 15px; }
+/* 词条清单 */
+.r-filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.r-chip { min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); font-size: 13px; color: var(--warm); }
+.r-chip.on { background: var(--sage-soft); border-color: var(--sage-soft); color: var(--sage-deep); font-weight: 500; }
+.r-chip.weakchip { color: var(--wk-txt); border-color: var(--wk-line); }
+.r-chip.weakchip.on { background: var(--wk-tag); border-color: var(--wk-tag); }
+.r-search { margin-left: auto; min-width: 200px; height: 36px; border: 1px solid var(--line); border-radius: 999px; padding: 0 14px; font-size: 14px; background: var(--paper); }
+.r-meta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--warm); }
+.r-weakkey i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; background: var(--wk-tag); box-shadow: inset 3px 0 0 var(--wk-line); vertical-align: -3px; margin-right: 4px; }
+.r-weakkey { color: var(--wk-txt); font-weight: 500; }
+.r-sort { margin-left: auto; display: inline-flex; gap: 4px; align-items: center; }
+.r-sort button { border: 0; background: transparent; padding: 2px 8px; border-radius: 999px; font-size: 12px; color: var(--warm); }
+.r-sort button.on { background: var(--sage-soft); color: var(--sage-deep); font-weight: 500; }
+.r-table { display: flex; flex-direction: column; gap: 4px; }
+.r-row { display: grid; grid-template-columns: minmax(0, 1fr) 84px 200px 90px; gap: 14px; align-items: center; padding: 9px 14px; border-radius: 12px; background: var(--paper-2); border: 0; text-align: left; width: 100%; font: inherit; color: inherit; }
+.r-row:nth-child(odd) { background: var(--paper); }
+button.r-row:hover { background: var(--linen); }
+.r-row.head { background: transparent !important; font-size: 11px; color: var(--muted); padding-top: 0; padding-bottom: 0; }
+.r-row.weak { background: var(--wk-bg) !important; box-shadow: inset 3px 0 0 var(--wk-line); }
+.r-row .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.r-row .en { font-family: var(--f-en); font-size: 16px; line-height: 1.35; overflow-wrap: anywhere; }
+.r-row small { font-size: 12px; color: var(--muted); }
+.r-weak { display: inline-flex; gap: 6px; align-items: center; font-size: 11px; color: var(--wk-txt); margin-top: 2px; }
+.r-weak em { font-style: normal; font-weight: 600; background: var(--wk-tag); padding: 0 8px; border-radius: 999px; }
+.r-ladhead { display: flex; justify-content: space-between; width: 176px; }
+.r-lad { display: inline-flex; align-items: center; }
+.r-lad i { width: 10px; height: 10px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); flex: none; }
+.r-lad i.on { background: var(--sage-deep); box-shadow: none; }
+.r-lad i.cur { width: 16px; height: 16px; background: var(--sage-deep); box-shadow: none; }
+.r-lad b { width: 22px; height: 2px; background: var(--line); flex: none; }
+.r-lad b.on { background: var(--sage-deep); }
+.r-lad.weak i.on, .r-lad.weak i.cur, .r-lad.weak b.on { background: var(--wk-line); }
+.r-lad.sm i { width: 8px; height: 8px; } .r-lad.sm i.cur { width: 12px; height: 12px; } .r-lad.sm b { width: 12px; }
+.r-next { display: flex; flex-direction: column; text-align: right; }
+.r-next b { font-size: 14px; } .r-next small { font-size: 11px; color: var(--muted); }
+.r-next.today b { color: var(--sage-deep); text-decoration: underline; text-underline-offset: 3px; }
+/* 复习日程 */
+.r-sched { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.r-scal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.r-sday { height: 54px; border-radius: 12px; border: 0; background: var(--paper); padding: 4px 6px; display: flex; flex-direction: column; justify-content: space-between; font: inherit; font-size: 12px; color: var(--ink); text-align: left; }
+.r-sday b { font-size: 14px; text-align: right; }
+.r-sday.past { color: #C9C4BC; }
+.r-sday.dark { color: var(--on-accent); }
+.r-sday.sel { box-shadow: 0 0 0 2px var(--sage-deep); }
+.r-dtitle { font-family: var(--f-title); font-size: 19px !important; }
+.r-daylist { display: flex; flex-direction: column; gap: 6px; }
+.r-dayrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 12px; background: var(--paper-2); border: 0; text-align: left; width: 100%; font: inherit; color: inherit; }
+.r-dayrow.weak { background: var(--wk-bg); box-shadow: inset 3px 0 0 var(--wk-line); }
+.r-dayrow .txt { display: flex; flex-direction: column; min-width: 0; }
+.r-dayrow .en { font-family: var(--f-en); font-size: 15px; } .r-dayrow small { font-size: 12px; color: var(--muted); }
+.r-kind { font-size: 11px; color: var(--warm); } .r-kind em { font-style: normal; color: var(--wk-txt); font-weight: 600; }
+/* 薄弱项 */
+.r-weakhead { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.r-weakhead .wk { color: var(--wk-txt); font-size: 18px; }
+.r-weaklist { display: flex; flex-direction: column; gap: 8px; }
+.r-wcard { border-radius: 16px; background: var(--wk-bg); box-shadow: inset 3px 0 0 var(--wk-line); padding: 12px 16px 12px 20px; display: grid; grid-template-columns: minmax(0, 1fr) 230px; grid-template-areas: "txt wside" "mid wside" "wr wside"; gap: 4px 16px; align-items: start; }
+.r-wcard .txt { grid-area: txt; } .r-wcard .txt .en { font-family: var(--f-en); font-size: 17px; } .r-wcard .txt small { font-size: 12px; color: var(--muted); }
+.r-wcard .mid { grid-area: mid; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.r-wcard .why { font-size: 12px; color: var(--wk-txt); font-weight: 600; }
+.r-wcard .wr { grid-area: wr; font-size: 12px; color: var(--warm); } .r-wcard .wr s { font-size: 14px; }
+.r-wcard .wside { grid-area: wside; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.r-wcard .wside small { font-size: 12px; color: var(--warm); }
+.r-dots { display: inline-flex; gap: 4px; } .r-dots i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.r-dots i.rem { background: var(--sage-deep); } .r-dots i.vag { background: var(--gap); } .r-dots i.fgt { background: var(--wk-line); }
+@media (max-width: 1080px) {
+  .r-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .r-sched { grid-template-columns: minmax(0, 1fr); }
+  .r-row { grid-template-columns: minmax(0, 1fr) 176px 80px; }
+  .r-row .rsrc { display: none; } .r-row.head > :nth-child(2) { display: none; }
+}
+@media (max-width: 720px) {
+  .r-grid2 { grid-template-columns: minmax(0, 1fr); }
+  .r-row { grid-template-columns: minmax(0, 1fr) 70px; }
+  .r-row .r-lad, .r-row.head .r-ladhead { display: none; }
+  .r-search { margin-left: 0; width: 100%; }
+  .r-sort { margin-left: 0; }
+  .r-wcard { grid-template-columns: minmax(0, 1fr); grid-template-areas: "txt" "mid" "wr" "wside"; }
+  .r-wcard .wside { align-items: flex-start; }
+}
 </style>
 </head>
 <body>
@@ -2733,7 +2859,7 @@ STATUS_CLS['已学完'] = 's-stable';
 function t3init() {
   const d = { arg: {}, it: {}, term: {}, fav: {}, combos: [], learn: null, rev: null, revDone: null, set: {} };
   S.t3 = Object.assign(d, S.t3 || {});
-  S.t3.set = Object.assign({ exam: '', shrink: false, extend: false }, S.t3.set || {});
+  S.t3.set = Object.assign({ exam: '', shrink: false, extend: false, weakN: 3, weakM: 2, weakLast: true }, S.t3.set || {});
   if (S.t3.revDone && S.t3.revDone.day !== dayKey()) S.t3.revDone = null;
 }
 const AR = id => S.t3.arg[id] || (S.t3.arg[id] = { hist: [] });
@@ -3617,11 +3743,11 @@ function t3PendRows(pend) {
 function t3Prac() {
   const p = ui.t3prac;
   if (!p) return { redirect: { v: 'trevdone' } };
-  const id = p.ids[p.i], it = tget(id), fb = p.fb;
+  const id = p.ids[p.i], it = anyItem(id), fb = p.fb;
   return {
     title: '再练一次错题', crumb: ['今日复习'], focus: true,
     body: `<div class="session"><div class="session-head"><div class="progress" style="flex:1"><span>${p.i + 1} / ${p.ids.length} · 练习不改变复习安排</span><div class="pbar"><i style="width:${p.i / p.ids.length * 100}%"></i></div></div><button class="btn btn-outline btn-sm" type="button" data-a="back">结束练习</button></div>
-      <div class="qcard"><div class="qtype"><span class="tag ${it.kind === 'term' ? 'term' : it.kind === 'sent' ? 'core' : 'know'}">${it.kind === 'term' ? '话题词汇' : it.role}</span></div>
+      <div class="qcard"><div class="qtype"><span class="tag ${it.kind === 'term' ? 'term' : it.kind === 'sent' ? 'core' : 'know'}">${it.kind === 'term' ? '话题词汇' : it.role}</span><span>看中文写出英文 · 不记录</span></div>
         <div class="prompt-zh">${esc(it.zh)}</div>
         ${fb ? `<input class="answer" type="text" value="${esc(fb.input)}" readonly>` + t3fb(fb, it.en, true) + `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>${p.i + 1 < p.ids.length ? '下一条' : '完成练习'}</button></div>` : ansForm(p, it.en)}
       </div></div>`,
@@ -3820,6 +3946,13 @@ function t3Settings() {
       <section class="t-setgroup"><span class="note-line">可选 · 其他</span>
         ${sw('extend', st.extend, false, '延长最长间隔', '30 天之后再加一格 60 天。离考试还远、内容已经很熟时可以打开。')}
       </section>
+      <section class="t-setgroup"><span class="note-line">薄弱的判断 · 学习记录里用浅红标出</span>
+        <div class="t-setrow"><span class="txt"><b>看最近几次复习</b><small>在最近这几次里数模糊和忘记的次数</small></span>
+          <select class="t-date" data-t3weak="weakN" aria-label="看最近几次">${[3, 4, 5].map(v => `<option value="${v}" ${st.weakN === v ? 'selected' : ''}>最近 ${v} 次</option>`).join('')}</select></div>
+        <div class="t-setrow"><span class="txt"><b>其中至少几次模糊或忘记</b><small>达到就算薄弱（默认：最近 3 次里 2 次）</small></span>
+          <select class="t-date" data-t3weak="weakM" aria-label="至少几次">${[1, 2, 3, 4, 5].filter(v => v <= st.weakN).map(v => `<option value="${v}" ${st.weakM === v ? 'selected' : ''}>至少 ${v} 次</option>`).join('')}</select></div>
+        ${sw('weakLast', st.weakLast !== false, false, '上次忘记就算薄弱', '最近一次评为忘记的条目，直接算薄弱。连续两次记得后自然离开薄弱。')}
+      </section>
       ${example}
       <p class="note-line">“考前冲刺”（最后 7 天把所有内容平均排一遍）会在下一版加入。</p>
     </div>`,
@@ -3850,7 +3983,7 @@ function t3ctx() {
     return { h: u, id: q.id, ans: tget(q.id).en };
   }
   if (v === 'tpara' && ui.t3pp) { const P = ui.t3pp, id = feKey(P); return id ? { h: P, id, ans: blankAnswer(id), prac: true, pp: true } : null; }
-  if (v === 'tprac') { const p = ui.t3prac; return { h: p, id: p.ids[p.i], ans: tget(p.ids[p.i]).en, prac: true }; }
+  if (v === 'tprac') { const p = ui.t3prac; return { h: p, id: p.ids[p.i], ans: anyItem(p.ids[p.i]).en, prac: true }; }
   return null;
 }
 function t3answer(input, revealed) {
@@ -3881,6 +4014,7 @@ function t3next() {
   t3Commit();
 }
 function t3click(a, el) {
+  if (a.startsWith('t3rec') && recClick(a, el)) return true;
   const id = el.dataset.id;
   switch (a) {
     case 't3view': ui.t3view = el.dataset.v; render(); return true;
@@ -4003,6 +4137,7 @@ function t3submit(kind, f) {
   }
 }
 function t3change(t) {
+  if (t.dataset.t3weak) { const k = t.dataset.t3weak; S.t3.set[k] = +t.value; if (S.t3.set.weakM > S.t3.set.weakN) S.t3.set.weakM = S.t3.set.weakN; save(); render(); return true; }
   if (t.hasAttribute('data-t3exam')) { S.t3.set.exam = t.value; if (!t.value) S.t3.set.shrink = false; save(); render(); return true; }
   return false;
 }
@@ -4012,6 +4147,238 @@ const T3VIEWS = {
   trev: t3Rev, trevdone: t3RevDone, tprac: t3Prac,
   targ: t3ArgDetail, texp: t3ExpDetail, tterm: t3TermDetail, tsettings: t3Settings,
 };
+
+/* ============================================================
+   学习记录（PRD 第五部分）：概览 · 词条清单 · 复习日程 · 薄弱项
+   覆盖主题表达、话题词汇、写作笔记、功能表达和旧版表达组里“记忆”中、已经学过的内容
+   ============================================================ */
+const SRC3 = { topic: ['主题表达', 'core'], term: ['话题词汇', 'term'], notes: ['写作笔记', 'know'], fn: ['功能表达', 'grammar'], old: ['旧版', ''] };
+function weakCfg() { const s = S.t3.set; return { n: s.weakN || 3, m: s.weakM || 2, last: s.weakLast !== false }; }
+function weakOf(x) {
+  const h = x.hist;
+  if (!h.length) return null;
+  const c = weakCfg(), last = h[h.length - 1], win = h.slice(-c.n), bad = win.filter(r => r !== 'rem').length;
+  const two = h.slice(-2);
+  if (c.last && last === 'fgt') return two.length === 2 && two[0] === 'fgt' ? '最近两次都忘记' : '上次忘记' + (x.makeup ? ' · 在补练中' : '');
+  if (bad >= Math.min(c.m, c.n)) return two.length === 2 && two.every(r => r === 'vag') ? '最近两次都模糊' : two.length === 2 && two.every(r => r === 'fgt') ? '最近两次都忘记' : `最近 ${win.length} 次里 ${bad} 次模糊 / 忘记`;
+  return null;
+}
+function recAll() {
+  const out = [];
+  for (const [aid, A] of T.arg) {
+    const r = S.t3.arg[aid];
+    if (!r || r.mode !== 'memory' || r.stage == null) continue;
+    const tp = T.topic.get(A.topic);
+    for (const id of A.items) {
+      const it = T.item.get(id), ir = S.t3.it[id] || {};
+      out.push({ id, en: it.en, zh: it.zh, src: 'topic', sub: `${tp.name} · 论点 ${A.n} · ${it.role}`, stage: r.stage, next: r.next, pend: !!r.pend, hist: (ir.hist || []).map(h => h.r), wrongs: ir.wrongs || [], wrongN: (ir.wrongs || []).length, makeup: ir.makeup, route: t3route(id), arg: aid });
+    }
+  }
+  for (const [id, t] of T.term) {
+    const r = S.t3.term[id];
+    if (!r || r.mode !== 'memory' || r.stage == null) continue;
+    out.push({ id, en: t.en, zh: t.zh, src: 'term', sub: `${T.topic.get(t.topic).name} · ${t.cat}`, stage: r.stage, next: r.next, hist: (r.hist || []).map(h => h.r), wrongs: r.wrongs || [], wrongN: (r.wrongs || []).length, route: 'tterm:' + id });
+  }
+  for (const [id, it] of ITEMS) {
+    if (!active(id) || modeOf(id) !== 'memory' || !studied(id)) continue;
+    const s = S.items[id], G = GROUPS.get(it.gid) || {};
+    const src = it.lib === 'notes' ? 'notes' : it.lib === 'function' ? 'fn' : 'old';
+    out.push({ id, en: it.en, zh: it.type === 'grammar' ? '改正：' + it.wrong : it.zh, src, sub: src === 'old' ? '旧版 · ' + (G.name || '') : src === 'fn' ? '功能表达 · ' + (G.fn || '') : '写作笔记 · ' + TYPE_LABEL[it.type], stage: Math.min(s.stage, LADDER.length - 1), next: s.next, hist: (s.hist || []).map(h => h.r), wrongs: [], wrongN: s.wrong || 0, route: 'item:' + id });
+  }
+  out.forEach(x => { x.weak = weakOf(x); });
+  return out;
+}
+const anyItem = id => {
+  const x = tget(id);
+  if (x) return x;
+  const it = ITEMS.get(id);
+  return it ? { id, en: it.en, zh: it.type === 'grammar' ? '改正这一句：' + it.wrong : it.zh, kind: 'old', role: TYPE_LABEL[it.type] } : null;
+};
+function oldDueOn(t) { return [...ITEMS.keys()].filter(id => active(id) && modeOf(id) === 'memory' && studied(id) && S.items[id].next === t).length; }
+function dueOnDay(t) { return t <= dayStart() ? dueCount() : t3dueOn(t) + oldDueOn(t); }
+
+/* ---------- 共享片段 ---------- */
+function recTabs(cur) {
+  return `<div class="seg" role="group" aria-label="学习记录分页">${[['overview', '概览'], ['list', '词条清单'], ['sched', '复习日程'], ['weak', '薄弱项']].map(([k, t]) => `<button type="button" data-a="t3rectab" data-v="${k}" aria-pressed="${cur === k}">${t}</button>`).join('')}</div>`;
+}
+function recLadder(x, small) {
+  const n = ladder().length, cur = Math.min(x.stage, n - 1);
+  let out = `<span class="r-lad ${x.weak ? 'weak' : ''} ${small ? 'sm' : ''}" aria-label="${STAGE_LABEL[cur]}">`;
+  for (let i = 0; i < n; i++) out += `<i class="${i < cur ? 'on' : i === cur ? 'cur' : ''}"></i>` + (i < n - 1 ? `<b class="${i < cur ? 'on' : ''}"></b>` : '');
+  return out + '</span>';
+}
+function recNext(x) {
+  if (x.pend) return '<span class="r-next"><b>等确认</b><small>是否从头开始</small></span>';
+  const d = diffDays(x.next), today = d <= 0;
+  return `<span class="r-next ${today ? 'today' : ''}"><b>${(new Date(x.next).getMonth() + 1) + '/' + new Date(x.next).getDate()}</b><small>${relDay(x.next)}</small></span>`;
+}
+const srcTag = src => `<span class="tag ${SRC3[src][1]}">${SRC3[src][0]}</span>`;
+const rdots3 = hist => `<span class="r-dots">${hist.slice(-4).map(r => `<i class="${r}"></i>`).join('')}</span>`;
+
+/* ---------- 概览 ---------- */
+function recOverview(all) {
+  const now = new Date();
+  if (!ui.calMonth) ui.calMonth = [now.getFullYear(), now.getMonth()];
+  const [y, m] = ui.calMonth;
+  const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
+  let cells = '日一二三四五六'.split('').map(d => `<span class="dow">${d}</span>`).join('');
+  for (let i = 0; i < first.getDay(); i++) cells += '<span></span>';
+  let checkedMonth = 0;
+  for (let d = 1; d <= days; d++) {
+    const t = new Date(y, m, d).getTime(), l = S.log[dayKey(t)] || {};
+    const act = (l.rem || 0) + (l.vag || 0) + (l.fgt || 0) + (l.learned || 0);
+    if (l.checked) checkedMonth++;
+    cells += `<span class="r-day"><i class="${l.checked ? 'on' : act ? 'act' : ''} ${t === dayStart() ? 'today' : ''}">${d}</i></span>`;
+  }
+  const weak = all.filter(x => x.weak).length;
+  const by = k => all.filter(x => x.src === k).length;
+  const l = todayLog(), doneToday = (l.rem || 0) + (l.vag || 0) + (l.fgt || 0);
+  const fc = [];
+  for (let d = 0; d < 7; d++) { const t = addDays(Date.now(), d); fc.push([d === 0 ? '今天' : d === 1 ? '明天' : '周' + WD[new Date(t).getDay()], dueOnDay(t)]); }
+  const fmax = Math.max(1, ...fc.map(x => x[1]));
+  const n = ladder().length, dist = [];
+  for (let i = 0; i < n; i++) { const xs = all.filter(x => Math.min(x.stage, n - 1) === i); dist.push([STAGE_LABEL[i].replace('档', ''), xs.length, xs.filter(x => x.weak).length]); }
+  const dmax = Math.max(1, ...dist.map(x => x[1]));
+  const recent = Object.keys(S.log).sort().reverse().slice(0, 5);
+  const stat = (t, v, s, cls = '', a = '') => `<${a ? 'button type="button" ' + a : 'div'} class="r-stat ${cls}"><span>${t}</span><b>${v}</b><small>${s}</small></${a ? 'button' : 'div'}>`;
+  const card = (title, hint, body) => `<section class="r-card"><div class="r-card-head"><b>${title}</b>${hint || ''}</div>${body}</section>`;
+  return `<div class="r-stats">
+      ${stat('连续打卡', streak() + ' 天', `本月打卡 ${checkedMonth} 天`)}
+      ${stat('在记的条目', all.length, ['topic', 'term', 'notes', 'fn', 'old'].filter(by).map(k => SRC3[k][0].replace('表达', '') + ' ' + by(k)).join(' · ') || '还没有学过的内容')}
+      ${stat('今天到期', dueCount(), `今天已复习 ${doneToday} 条`)}
+      ${stat('薄弱', weak, weak ? '点开看是哪几条 ›' : '现在没有薄弱的条目', 'weak', 'data-a="t3rectab" data-v="weak"')}
+    </div>
+    <div class="r-grid2">
+      ${card(`学习打卡 · ${y} 年 ${m + 1} 月`, `<span class="btn-row"><button class="icon-btn sm" type="button" data-a="calprev" aria-label="上个月">${svg('back', 2)}</button><button class="icon-btn sm" type="button" data-a="calnext" aria-label="下个月"><span style="transform:rotate(180deg);display:grid">${svg('back', 2)}</span></button></span>`,
+        `<div class="r-cal">${cells}</div><div class="r-legend"><span><i class="on"></i>已打卡</span><span><i class="act"></i>学了没打卡</span><span><i class="today"></i>今天</span></div>`)}
+      ${card('未来 7 天要复习', '<button class="t-link-btn" type="button" data-a="t3rectab" data-v="sched">看复习日程 ›</button>',
+        `<div class="r-bars">${fc.map(([k, v], i) => `<div><span class="v">${v}</span><i style="height:${Math.max(4, v / fmax * 150)}px" class="${i === 0 ? 'today' : ''}"></i><small>${k}</small></div>`).join('')}</div>`)}
+    </div>
+    <div class="r-grid2">
+      ${card('各档位有多少条', '<small class="muted">浅红 = 其中薄弱的</small>', `<div class="r-dist">${dist.map(([k, c, w]) => `<div><span>${k}</span><span class="track"><i style="width:${(c - w) / dmax * 100}%"></i><i class="w" style="width:${w / dmax * 100}%"></i></span><span class="num"><b>${c}</b>${w ? ` <small>薄弱 ${w}</small>` : ''}</span></div>`).join('')}</div>`)}
+      ${card('最近的学习', '', recent.length ? `<div class="r-recent">${recent.map(k => { const g = S.log[k]; return `<div><span>${+k.slice(5, 7)} 月 ${+k.slice(8)} 日${g.checked ? ' <small>· 已打卡</small>' : ''}</span><span class="muted">新学 ${g.learned || 0} · 复习 ${(g.rem || 0) + (g.vag || 0) + (g.fgt || 0)}</span></div>`; }).join('')}</div>` : '<p class="warm">还没有学习记录。</p>')}
+    </div>`;
+}
+
+/* ---------- 词条清单 ---------- */
+function recList(all) {
+  const f = ui.recSrc || 'all', q = (ui.recQ || '').trim().toLowerCase(), weakOnly = !!ui.recWeak, sort = ui.recSort || 'next';
+  let xs = all.filter(x => (f === 'all' || x.src === f) && (!weakOnly || x.weak) && (!q || (x.en + ' ' + x.zh).toLowerCase().includes(q)));
+  const nextKey = x => x.pend ? -1 : x.next;
+  xs.sort(sort === 'stage' ? (a, b) => a.stage - b.stage || nextKey(a) - nextKey(b) : sort === 'wrong' ? (a, b) => b.wrongN - a.wrongN || nextKey(a) - nextKey(b) : (a, b) => nextKey(a) - nextKey(b) || (b.weak ? 1 : 0) - (a.weak ? 1 : 0));
+  const srcs = ['topic', 'term', 'notes', 'fn', 'old'].filter(k => all.some(x => x.src === k));
+  const weakN = all.filter(x => x.weak).length;
+  const n = ladder().length;
+  const head = `<div class="r-row head"><span>表达</span><span>来源</span><span class="r-ladhead">${STAGE_LABEL.slice(0, n).map(s => `<small>${s.replace('档', '')}</small>`).join('')}</span><span style="text-align:right">下次复习</span></div>`;
+  const rows = xs.map(x => `<button class="r-row ${x.weak ? 'weak' : ''}" type="button" data-go="${esc(x.route)}">
+      <span class="txt"><span class="en">${esc(x.en)}</span><small>${esc(x.zh)}</small>${x.weak ? `<span class="r-weak"><em>薄弱</em>${esc(x.weak)}</span>` : ''}</span>
+      <span class="rsrc">${srcTag(x.src)}</span>${recLadder(x)}${recNext(x)}</button>`).join('');
+  return `<div class="r-filters">
+      ${[['all', '全部', all.length]].concat(srcs.map(k => [k, SRC3[k][0], all.filter(x => x.src === k).length])).map(([k, t, c]) => `<button class="r-chip ${f === k ? 'on' : ''}" type="button" data-a="t3recsrc" data-v="${k}">${t} ${c}</button>`).join('')}
+      <button class="r-chip weakchip ${weakOnly ? 'on' : ''}" type="button" data-a="t3recweak">只看薄弱 ${weakN}</button>
+      <input class="r-search" type="search" data-recq value="${esc(ui.recQ || '')}" placeholder="搜索英文或中文" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="搜索词条">
+    </div>
+    <div class="r-meta"><span>${recLadder({ stage: 2, weak: false }, true)} 走到第几格 = 记得多牢</span><span class="r-weakkey"><i></i>浅红 = 薄弱</span>
+      <span class="r-sort">排序 ${[['next', '下次复习'], ['stage', '档位'], ['wrong', '写错次数']].map(([k, t]) => `<button type="button" class="${sort === k ? 'on' : ''}" data-a="t3recsort" data-v="${k}">${t}</button>`).join('')}</span></div>
+    ${xs.length ? `<div class="r-table">${head}${rows}</div>` : `<div class="empty"><h3>${all.length ? '没有符合条件的条目' : '还没有学过的内容'}</h3><p>${all.length ? '换一个筛选试试。' : '完成第一组新学后，这里会列出每一条的档位和下次复习日期。'}</p></div>`}
+    <p class="note-line">点一行进入详情页，返回回到这里。主题表达的论点句和展开表达跟着论点一起复习，所以同一个论点的几条日期相同。</p>`;
+}
+
+/* ---------- 复习日程 ---------- */
+function dayEntries(t, all) {
+  const today = dayStart(), rows = [];
+  if (t <= today) {
+    const P = t3plan();
+    P.mk.forEach(id => rows.push({ kind: '补练', en: T.item.get(id).en, zh: T.item.get(id).zh, route: t3route(id), x: all.find(x => x.id === id) }));
+    P.args.forEach(id => { const A = T.arg.get(id); rows.push({ kind: '论点', en: A.en, zh: `论点 ${A.n} · ${A.short} · 跟论点一起，共 ${A.items.length} 条`, route: 'targ:' + id, x: { stage: argRec(id).stage, weak: false } }); });
+    P.terms.forEach(id => rows.push({ kind: '话题词汇', en: T.term.get(id).en, zh: T.term.get(id).zh, route: 'tterm:' + id, x: all.find(x => x.id === id) }));
+    dueQueue().forEach(g => g.ids.forEach(id => { const x = all.find(y => y.id === id); if (x) rows.push({ kind: SRC3[x.src][0], en: x.en, zh: x.zh, route: x.route, x }); }));
+    return rows;
+  }
+  for (const [id, A] of T.arg) { const r = S.t3.arg[id]; if (r && r.mode === 'memory' && r.next === t && !r.pend) rows.push({ kind: '论点', en: A.en, zh: `论点 ${A.n} · ${A.short} · 跟论点一起，共 ${A.items.length} 条`, route: 'targ:' + id, x: { stage: r.stage, weak: A.items.some(i => (all.find(x => x.id === i) || {}).weak) } }); }
+  all.filter(x => x.makeup === t).forEach(x => rows.push({ kind: '补练', en: x.en, zh: x.zh, route: x.route, x }));
+  all.filter(x => x.src !== 'topic' && x.next === t).forEach(x => rows.push({ kind: SRC3[x.src][0], en: x.en, zh: x.zh, route: x.route, x }));
+  return rows;
+}
+function recSched(all) {
+  const now = new Date();
+  if (!ui.calMonth) ui.calMonth = [now.getFullYear(), now.getMonth()];
+  const [y, m] = ui.calMonth, first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
+  const today = dayStart(), sel = ui.recDay || addDays(Date.now(), 1);
+  const counts = {};
+  for (let d = 1; d <= days; d++) { const t = new Date(y, m, d).getTime(); counts[d] = t < today ? null : dueOnDay(t); }
+  const cmax = Math.max(1, ...Object.values(counts).filter(v => v));
+  let cells = '日一二三四五六'.split('').map(d => `<span class="dow">${d}</span>`).join('');
+  for (let i = 0; i < first.getDay(); i++) cells += '<span></span>';
+  for (let d = 1; d <= days; d++) {
+    const t = new Date(y, m, d).getTime(), c = counts[d];
+    const a = c ? 0.15 + c / cmax * 0.6 : 0;
+    cells += c == null ? `<span class="r-sday past">${d}</span>`
+      : `<button class="r-sday ${t === sel ? 'sel' : ''} ${a > 0.55 ? 'dark' : ''}" type="button" data-a="t3recday" data-v="${t}" style="${c ? `background:rgba(114,128,109,${a.toFixed(2)})` : ''}"><span>${d}</span>${c ? `<b>${c}</b>` : ''}</button>`;
+  }
+  const rows = dayEntries(sel, all);
+  const kinds = {};
+  rows.forEach(r => { kinds[r.kind] = (kinds[r.kind] || 0) + (r.kind === '论点' ? 1 : 1); });
+  const items = rows.reduce((s, r) => s + (r.kind === '论点' ? T.arg.get(r.route.slice(5)).items.length : 1), 0);
+  const dd = new Date(sel), label = `${dd.getMonth() + 1} 月 ${dd.getDate()} 日 · ${relDay(sel)}`;
+  return `<div class="r-sched">
+    <section class="r-card"><div class="r-card-head"><b>${y} 年 ${m + 1} 月</b><span class="btn-row"><button class="icon-btn sm" type="button" data-a="calprev" aria-label="上个月">${svg('back', 2)}</button><button class="icon-btn sm" type="button" data-a="calnext" aria-label="下个月"><span style="transform:rotate(180deg);display:grid">${svg('back', 2)}</span></button></span></div>
+      <div class="r-scal">${cells}</div><span class="note-line">格子里的数字 = 那天到期的条数，颜色越深越多；今天包含逾期的内容。点某一天看具体内容。</span></section>
+    <section class="r-card line"><div class="r-card-head"><b class="r-dtitle">${label}</b><span class="muted">${items} 条 · 约 ${Math.max(1, Math.round(items * 1.3))} 分钟</span></div>
+      <span class="note-line">${Object.entries(kinds).map(([k, v]) => `${k} ${v}${k === '论点' ? ' 个' : ''}`).join(' · ') || '这一天没有到期的内容'}</span>
+      <div class="r-daylist">${rows.map(r => `<button class="r-dayrow ${r.x && r.x.weak ? 'weak' : ''}" type="button" data-go="${esc(r.route)}"><span class="txt"><span class="en">${esc(r.en)}</span><small>${esc(r.zh)}</small><span class="r-kind">${r.kind}${r.x && r.x.weak ? ' · <em>薄弱</em>' : ''}</span></span>${r.x && r.x.stage != null ? recLadder(r.x, true) : ''}</button>`).join('')}</div></section>
+  </div>`;
+}
+
+/* ---------- 薄弱项 ---------- */
+function recWeak(all) {
+  const ws = all.filter(x => x.weak).sort((a, b) => (b.hist[b.hist.length - 1] === 'fgt') - (a.hist[a.hist.length - 1] === 'fgt') || b.wrongN - a.wrongN);
+  const c = weakCfg();
+  const top = all.filter(x => x.wrongN > 0).sort((a, b) => b.wrongN - a.wrongN).slice(0, 5);
+  const wrongTxt = x => {
+    const m = new Map();
+    x.wrongs.forEach(w => { const k = w.input.trim().toLowerCase(); m.set(k, w.input); });
+    const list = [...m.values()].slice(-3);
+    return list.length ? `我写错过：${list.map(w => `<s class="en">${esc(w)}</s>`).join('；')}${x.wrongN > 1 ? ` · 共 ${x.wrongN} 次` : ''}` : x.wrongN ? `写错过 ${x.wrongN} 次` : '';
+  };
+  return `<div class="r-weakhead"><span class="warm">现在有 <b class="wk">${ws.length}</b> 条薄弱：${c.last ? '上次忘记，或' : ''}最近 ${c.n} 次里至少 ${c.m} 次模糊 / 忘记。<button class="t-link-btn" type="button" data-go="tsettings">改规则 ›</button></span>
+      ${ws.length ? '<button class="btn btn-primary" type="button" data-a="t3recpracall">全部练一遍（不记录）</button>' : ''}</div>
+    ${ws.length ? `<div class="r-weaklist">${ws.map(x => `<div class="r-wcard">
+      <button class="txt t-plain" type="button" data-go="${esc(x.route)}"><span class="en">${esc(x.en)}</span><small>${esc(x.zh)}</small></button>
+      <span class="mid">${srcTag(x.src)}<span class="why">${esc(x.weak)}</span>${rdots3(x.hist)}</span>
+      <span class="wr">${wrongTxt(x)}</span>
+      <span class="wside">${recLadder(x)}<small>下次复习：<b>${x.pend ? '等确认' : relDay(x.next)}</b></small><button class="btn btn-outline btn-sm" type="button" data-a="t3recprac" data-id="${esc(x.id)}">练一遍（不记录）</button></span></div>`).join('')}</div>`
+      : '<div class="empty"><h3>现在没有薄弱的条目</h3><p>上次忘记、或最近几次老是模糊的条目会出现在这里。</p></div>'}
+    ${top.length ? `<section class="r-card line"><div class="r-card-head"><b>写错最多的</b></div><div class="r-recent">${top.map(x => `<button class="t-plain r-toprow" type="button" data-go="${esc(x.route)}"><span class="en">${esc(x.en)}</span><span class="muted">${x.wrongN} 次</span></button>`).join('')}</div></section>` : ''}`;
+}
+
+function vRecords3() {
+  const tab = ui.recTab || 'overview', all = recAll();
+  const body = tab === 'list' ? recList(all) : tab === 'sched' ? recSched(all) : tab === 'weak' ? recWeak(all) : recOverview(all);
+  return { title: '学习记录', crumb: ['我的'], actions: recTabs(tab), body: `<div class="r-page">${body}</div>` };
+}
+function recClick(a, el) {
+  switch (a) {
+    case 't3rectab': ui.recTab = el.dataset.v; render(true); return true;
+    case 't3recsrc': ui.recSrc = el.dataset.v; render(); return true;
+    case 't3recweak': ui.recWeak = !ui.recWeak; render(); return true;
+    case 't3recsort': ui.recSort = el.dataset.v; render(); return true;
+    case 't3recday': ui.recDay = +el.dataset.v; render(); return true;
+    case 't3recprac': ui.t3prac = { ids: [el.dataset.id], i: 0, fb: null }; go({ v: 'tprac' }); return true;
+    case 't3recpracall': ui.t3prac = { ids: recAll().filter(x => x.weak).map(x => x.id), i: 0, fb: null }; go({ v: 'tprac' }); return true;
+  }
+  return false;
+}
+function recInput(t) {
+  if (t.dataset.recq === undefined) return false;
+  ui.recQ = t.value;
+  const pos = t.selectionStart;
+  render();
+  const n = $('[data-recq]');
+  if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} }
+  return true;
+}
+T3VIEWS.records = vRecords3;
 
 
 const VIEWS = {
@@ -4289,6 +4656,7 @@ document.addEventListener('change', e => {
 let noteTimer;
 document.addEventListener('input', e => {
   const t = e.target;
+  if (recInput(t)) return;
   if (t.id === 'q') {
     const q = t.value;
     if (!q.trim()) { if (cur().v === 'search') back(); return; }
@@ -4501,6 +4869,29 @@ render(true);
       A.goRoot({ v: 'ttopic', id: sel.topic }); A.go({ v: 'tpara', id: sel.arg }); close();
       var b = document.querySelector('[data-a="t3ppstart"]'); if (b) b.click();
     },
+    records: function () {
+      reset();
+      var S = A.S(), now = Date.now();
+      var med = A.T.topic.get('med').args, onl = A.T.topic.get('online').args;
+      makeCombo('med', med.slice(0, 3)); makeCombo('online', onl.slice(0, 3));
+      [[med[0], 1, 0], [med[1], 0, 1], [med[2], 3, 11], [onl[0], 4, 27], [onl[1], 2, 4], [onl[2], 1, 2]].forEach(function (x) { learned(x[0], x[1], inDays(x[2])); });
+      var hist = function (id, rs, wrong) { var r = A.IR(id); rs.forEach(function (v, i) { r.hist.push({ t: now - (rs.length - i) * 2 * DAY, r: v, src: i ? 'rev' : 'new' }); }); (wrong || []).forEach(function (w) { r.wrongs.push({ t: now - DAY, input: w, r: 'fgt' }); }); };
+      var it = function (a, k) { return A.T.arg.get(a).items[k]; };
+      A.T.arg.forEach(function (Ar, aid) { if (A.S().t3.arg[aid]) Ar.items.forEach(function (id) { hist(id, ['rem', 'rem']); }); });
+      hist(it(med[1], 3), ['fgt', 'fgt'], ['lead to data leaks', 'cause data leaking']);
+      hist(it(med[1], 2), ['vag', 'vag'], ['collect lots of personal health information']);
+      hist(it(med[0], 1), ['vag', 'fgt', 'rem'], ['undergo strict clinical trials']);
+      hist(it(med[2], 1), ['fgt'], ['long approval processes']); A.IR(it(med[2], 1)).makeup = inDays(1);
+      var terms = A.T.topic.get('med').terms;
+      termDue(terms[2], 0, inDays(1)); A.TR(terms[2]).hist.push({ t: now - DAY, r: 'vag', src: 'rev' }, { t: now, r: 'vag', src: 'rev' }); A.TR(terms[2]).wrongs.push({ t: now, input: 'informed agreement', r: 'vag' });
+      termDue(terms[1], 3, inDays(14)); termDue(terms[0], 1, inDays(3));
+      (S.notes.items || []).slice(0, 3).forEach(function (n, i) {
+        S.items[n.id] = { mode: 'memory', stage: [1, 2, 4][i], next: inDays([3, 6, 27][i]), last: now - DAY, wrong: [2, 0, 0][i], hist: i === 0 ? [{ r: 'vag', t: now - 3 * DAY, p: 'new' }, { r: 'fgt', t: now - DAY }] : [{ r: 'rem', t: now - 3 * DAY, p: 'new' }, { r: 'rem', t: now - DAY }] };
+      });
+      for (var d = 1; d <= 12; d++) { var k = A.dayKey(now - d * DAY); S.log[k] = { learned: d % 4 ? 0 : 12, rem: 10 + d, vag: 2, fgt: d % 3, checked: d !== 3 && d !== 7 }; }
+      A.ui.recTab = 'list';
+      A.save(); A.goRoot({ v: 'records' }); close(); flash('已造好一批学习记录：有薄弱、补练、不同档位和来源');
+    },
     afterLearn: function () {
       reset();
       var ids = comboArgs(); makeCombo(sel.topic, ids);
@@ -4593,6 +4984,7 @@ render(true);
       '<button class="b" data-tb="sc" data-s="learnFresh2">只剩 1 个论点没学<small>第二个写作组合</small></button>' +
       '<button class="b" data-tb="sc" data-s="afterLearn">刚学完，等明天复习<small>再点“前进 1 天”</small></button>' +
       '<button class="b" data-tb="sc" data-s="paraPractice">范文默写练习<small>不记录，可换难度</small></button>' +
+      '<button class="b p" data-tb="sc" data-s="records">学习记录<small style="color:#E5E9DF">造一批数据，看 4 个分页</small></button>' +
       '</div></section>' +
 
       '<section class="tb-sec"><h4>复习 · 选中的论点</h4><div class="tb-grid">' +
