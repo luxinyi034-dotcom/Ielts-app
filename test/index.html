@@ -779,6 +779,34 @@ mark.slot { background: var(--sage-soft); color: var(--sage-deep); border-bottom
   .t-fillpara { font-size: 18px; padding: 16px; }
   .t-blank .box { min-width: 110px; } .t-blank.cur .box { min-width: 140px; }
 }
+
+/* v6：点开详情、填空难度、默写练习 */
+.t-plain { border: 0; background: transparent; padding: 0; text-align: left; color: inherit; font: inherit; display: inline-flex; flex-direction: column; min-width: 0; cursor: pointer; }
+.t-plain:hover b, .t-plain:hover .en { text-decoration: underline; text-decoration-color: var(--sage); text-underline-offset: 3px; }
+button.t-plain.en { display: inline; font-family: var(--f-en); font-size: 16px; }
+button.t-mkcard, button.t-planrow { border: 0; text-align: left; width: 100%; font: inherit; color: inherit; cursor: pointer; }
+button.t-planrow:hover { background: var(--paper-2); }
+.row.due-row.tap { border: 0; width: 100%; text-align: left; font: inherit; color: inherit; }
+.t-blank.tap { cursor: pointer; }
+.t-blank.tap .box { transition: border-color .15s; }
+.t-blank.tap:hover .box { border-color: var(--sage-deep); }
+.t-modes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.t-modecard { border: 1.5px solid var(--line); border-radius: var(--r-md); background: var(--paper); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; text-align: left; font: inherit; color: inherit; }
+.t-modecard.on { border-color: var(--sage-deep); background: var(--sage-soft); }
+.t-modecard b { font-size: 15px; } .t-modecard small { font-size: 12px; color: var(--warm); }
+.t-modecard .ex { margin-top: 6px; font-size: 12px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; min-height: 2.6em; }
+.t-pphead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.t-ppctl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.t-chk { min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); font-size: 13px; color: var(--warm); }
+.t-chk.on { background: var(--sage-soft); border-color: var(--sage); color: var(--sage-deep); }
+.t-note-ok { border-radius: var(--r-md); background: var(--sage-soft); color: var(--sage-deep); padding: 12px 16px; font-size: 14px; }
+.t-termrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.t-tpair { display: inline-flex; align-items: stretch; }
+.t-tpair .t-tchip { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.t-tinfo { border: 1px solid var(--line); border-left: 0; border-radius: 0 999px 999px 0; background: var(--paper-2); color: var(--sage-deep); padding: 0 12px; font-size: 16px; }
+.t-res-head button.txt { display: flex; flex-direction: column; }
+@media (max-width: 720px) { .t-modes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.t-para-grid.pp { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
 </style>
 </head>
 <body>
@@ -1829,12 +1857,12 @@ function vHome() {
       <div class="btn-row"><button class="btn btn-primary" type="button" data-a="${S.t3.rev ? 't3resumerev' : 'resumereview'}">继续复习</button></div>`;
   } else if (dueN) {
     const lines = [];
-    if (P.mk.length) lines.push(['补练', '上次忘记的单条', P.mk.length + ' 条']);
-    P.groups.forEach(g => lines.push([T.topic.get(g.topic).name, '主题表达 · ' + g.ids.map(id => '论点 ' + T.arg.get(id).n).join('、'), g.ids.length + ' 个论点']));
-    if (P.terms.length) lines.push(['话题词汇', '每个词单独安排', P.terms.length + ' 个']);
-    q.forEach(g => { const G = GROUPS.get(g.gid); lines.push([G.name, groupCrumb(G)[0], g.ids.length + ' 条']); });
+    if (P.mk.length) lines.push(['补练', '上次忘记的单条', P.mk.length + ' 条', 'today']);
+    P.groups.forEach(g => lines.push([T.topic.get(g.topic).name, '主题表达 · ' + g.ids.map(id => '论点 ' + T.arg.get(id).n).join('、'), g.ids.length + ' 个论点', 'ttopic:' + g.topic]));
+    if (P.terms.length) lines.push(['话题词汇', '每个词单独安排', P.terms.length + ' 个', 'today']);
+    q.forEach(g => { const G = GROUPS.get(g.gid); lines.push([G.name, groupCrumb(G)[0], g.ids.length + ' 条', 'group:' + G.id]); });
     review = `<div class="big-num">${dueN}<small>条待复习</small></div>
-      <div class="rows">${lines.slice(0, 4).map(([a, b, c]) => `<div class="row due-row"><span class="title">${esc(a)}</span><span class="meta">${esc(b)}</span><span class="num" style="margin-left:auto">${c}</span></div>`).join('')}</div>
+      <div class="rows">${lines.slice(0, 4).map(([a, b, c, r]) => `<button class="row due-row tap" type="button" data-go="${esc(r)}"><span class="title">${esc(a)}</span><span class="meta">${esc(b)}</span><span class="num" style="margin-left:auto">${c}</span></button>`).join('')}</div>
       <div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3startall">开始今日复习</button><span class="note-line">补练 → 论点 → 话题词汇，按到期时间和错误记录排序</span></div>`;
   } else if (pend.length) {
     review = `<div class="big-num">0<small>条待复习</small></div><p class="warm">有 ${pend.length} 个论点评为忘记，确认是否从头开始后就能打卡。</p>
@@ -1975,7 +2003,7 @@ function vToday(r) {
       const items = open ? `<div class="cgroup-items">${ids.map(id => {
         const it = ITEMS.get(id), m = modeOf(id);
         return `<div class="citem"><button class="check" type="button" role="checkbox" aria-checked="${m === 'memory'}" data-a="mem" data-id="${esc(id)}" aria-label="加入记忆：${esc(it.en)}">${svg('check', 2.6)}</button>
-          <div class="body"><span class="en">${esc(it.en)}</span><span class="zh">${esc(it.zh)}</span></div>${typeTag(it.type)}${studied(id) || m !== 'memory' ? statusHTML(itemStatus(id)) : ''}</div>`;
+          <div class="body" role="button" data-go="item:${esc(id)}" style="cursor:pointer"><span class="en">${esc(it.en)}</span><span class="zh">${esc(it.zh)}</span></div>${typeTag(it.type)}${studied(id) || m !== 'memory' ? statusHTML(itemStatus(id)) : ''}</div>`;
       }).join('')}</div>` : '';
       return `<div class="cgroup ${sel ? 'selected' : ''}">
         <div class="cgroup-head">
@@ -2216,7 +2244,7 @@ function vReviewDone() {
         <div class="panel blush"><span class="eyebrow">忘记</span><span class="big-num">${c.fgt}</span></div>
       </div>
       ${r.pulled ? '<p class="note-line">本组错误较多，记得的内容也提前到 3 天内复习。</p>' : ''}
-      ${wrongIds.length ? `<section class="section"><div class="section-head"><h3>需要再看一眼</h3><span class="hint">忘记的内容明天优先复习</span></div><div class="rows">${wrongIds.map(id => { const it = ITEMS.get(id); return `<div class="row"><div class="body"><span class="en title">${esc(it.en)}</span><span class="sub">${esc(it.zh)}</span></div><span class="tag ${r.ratings[id] === 'fgt' ? 'know' : 'term'}">${r.ratings[id] === 'fgt' ? '忘记' : '模糊'}</span></div>`; }).join('')}</div></section>` : ''}
+      ${wrongIds.length ? `<section class="section"><div class="section-head"><h3>需要再看一眼</h3><span class="hint">忘记的内容明天优先复习</span></div><div class="rows">${wrongIds.map(id => { const it = ITEMS.get(id); return `<div class="row"><div class="body tap" role="button" data-go="item:${esc(id)}"><span class="en title">${esc(it.en)}</span><span class="sub">${esc(it.zh)}</span></div><span class="tag ${r.ratings[id] === 'fgt' ? 'know' : 'term'}">${r.ratings[id] === 'fgt' ? '忘记' : '模糊'}</span></div>`; }).join('')}</div></section>` : ''}
       <div class="qcard"><p class="warm">${q.length ? '今天还有其他到期的表达组。每组单独完成，保持各自的语境。' : ck ? '今天到期的复习已经全部完成。确认后写入学习记录和月度日历。' : '今天到期的复习已经全部完成。'}</p>
         <div class="btn-row">${main}${wrongIds.length && !r.practiced ? '<button class="btn btn-soft" type="button" data-a="practice">再练一次错题</button>' : ''}<button class="btn btn-ghost" type="button" data-a="donereview">返回</button></div></div>
     </div>`,
@@ -2731,7 +2759,8 @@ function stepStage(stage, r) {
   return s;
 }
 function sched(rec, r) { rec.stage = stepStage(rec.stage, r); rec.next = addDays(Date.now(), capDays(ladder()[rec.stage])); rec.last = Date.now(); }
-const tierOf = stage => !stage ? 0 : stage === 1 ? 1 : stage === 2 ? 2 : 3;
+/* 题型：0 逐条默写 · 1 默写论点句 + 有原形的填空 · 3 只给中文的填空（7 天）· 2 只给中文论点、回忆全部（14 / 30 天） */
+const tierOf = stage => !stage ? 0 : stage === 1 ? 1 : stage === 2 ? 3 : 2;
 function argDue(id) { const r = S.t3.arg[id]; return !!(r && r.mode === 'memory' && r.stage != null && r.next <= dayStart()); }
 function termDue(id) { const r = S.t3.term[id]; return !!(r && r.mode === 'memory' && r.stage != null && r.next <= dayStart()); }
 function mkDue(id) { const r = S.t3.it[id]; return !!(r && r.makeup != null && r.makeup <= dayStart() && !argDue(T.item.get(id).arg)); }
@@ -2934,32 +2963,57 @@ function t3Topic(r) {
   return { title: tp.name, crumb: [tp.theme], actions, body };
 }
 
+function ppKeys(A, withSent) {
+  const low = A.para.toLowerCase();
+  return (withSent ? [A.id + ':s'] : []).concat(A.items.slice(1), termsInPara(A))
+    .sort((a, b) => low.indexOf(blankAnswer(a).toLowerCase()) - low.indexOf(blankAnswer(b).toLowerCase()));
+}
+function ppStart(argId, mode, withSent) {
+  const A = T.arg.get(argId);
+  ui.t3pp = { arg: argId, mode: mode || 'both', sent: !!withSent, keys: ppKeys(A, withSent), res: {}, done: {}, cur: null, fb: null, hinted: false };
+}
 function t3Para(r) {
   const A = T.arg.get(r.id);
   if (!A) return { redirect: { v: 'topics' } };
   const tp = T.topic.get(A.topic);
   const masked = ui.t3paraMask === A.id;
   const ranges = findRanges(A.para, paraSpecs(A));
-  const html = weave(A.para, ranges, (rg, txt) => {
-    if (rg.cls === 'sent') return `<span class="t-u">${esc(txt)}</span>`;
-    if (rg.cls === 'link') return `<span class="t-link">${esc(txt)}</span>`;
-    return `<mark class="t-${rg.cls}${masked ? ' masked' : ''}" data-a="t3hl" data-k="${rg.key}">${esc(txt)}</mark>`;
-  });
   const used = ranges.filter(x => x.cls === 'term').map(x => x.key);
   const links = ranges.filter(x => x.cls === 'link').map(x => x.p);
+  const P = ui.t3pp && ui.t3pp.arg === A.id ? ui.t3pp : null;
+  let left;
+  if (P) {
+    const key = feKey(P), fb = P.fb, doneN = P.keys.filter(k => P.done[k]).length;
+    const btns = !fb ? '' : fb.g === 'rem'
+      ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>${P.keys.filter(k => !P.done[k]).length > 1 ? '下一空' : '完成'}</button></div>`
+      : `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3retry" data-enter>再填一次</button><button class="btn btn-ghost" type="button" data-a="t3skipblank">跳过这一空</button></div>`;
+    left = `<section class="panel"><div class="t-pphead"><b>默写练习 · 不记录</b><span class="note-line">已完成 ${doneN} / ${P.keys.length}</span></div>
+      <div class="t-ppctl">${modeSeg('t3ppmode', P.mode)}<button class="t-chk ${P.sent ? 'on' : ''}" type="button" data-a="t3ppsent" aria-pressed="${P.sent}">${P.sent ? '✓ ' : ''}论点句也挖空</button></div>
+      <div class="t-fillpara" style="background:var(--paper)">${fillPara(A, P.keys, P.res, key, { mode: P.mode, click: true, curDone: !!fb })}</div>
+      ${key ? fillBox(key, P.mode, fb ? t3fb(fb, blankAnswer(key), true) + btns : '', ansForm(P, blankAnswer(key), { submit: '检查这一空' })) : '<div class="t-note-ok">这一段练完了。可以换个难度再来一遍，或者换一个论点。</div>'}
+      <div class="btn-row"><button class="btn btn-outline btn-sm" type="button" data-a="t3ppreset">重新开始</button><button class="btn btn-ghost btn-sm" type="button" data-a="t3ppexit">结束练习</button><span class="note-line">这里的练习不改变学习记录和复习安排</span></div></section>`;
+  } else {
+    const html = weave(A.para, ranges, (rg, txt) => {
+      if (rg.cls === 'sent') return `<span class="t-u">${esc(txt)}</span>`;
+      if (rg.cls === 'link') return `<span class="t-link">${esc(txt)}</span>`;
+      return `<mark class="t-${rg.cls}${masked ? ' masked' : ''}" data-a="t3hl" data-k="${rg.key}">${esc(txt)}</mark>`;
+    });
+    left = `<section class="panel"><span class="note-line">${esc(A.zh)}</span>
+        <div class="t-para">${html}</div>
+        <div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3ppstart" data-id="${A.id}">默写练习（不记录）</button><button class="btn btn-outline" type="button" data-a="t3paramask" data-id="${A.id}">${masked ? '取消遮挡' : '遮住标记处自测'}</button>${masked ? '<span class="note-line">点一处显示一处</span>' : ''}</div></section>`;
+  }
+  const mk = c => P ? ' masked' : '';
   return {
     title: `论点 ${A.n} 的范文段落`, crumb: [tp.name, A.stance],
     actions: `<div class="seg" role="group" aria-label="论点">${tp.args.map(id => `<button type="button" data-a="t3para" data-id="${id}" aria-pressed="${id === A.id}">论点 ${T.arg.get(id).n}</button>`).join('')}</div>`,
-    body: `<div class="t-para-grid">
-      <section class="panel"><span class="note-line">${esc(A.zh)}</span>
-        <div class="t-para">${html}</div>
-        <div class="btn-row"><button class="btn ${masked ? 'btn-outline' : 'btn-primary'}" type="button" data-a="t3paramask" data-id="${A.id}">${masked ? '取消遮挡' : '遮住标记处自测'}</button>${masked ? '<span class="note-line">点一处显示一处，不改变学习状态</span>' : ''}</div></section>
+    focus: !!P,
+    body: `<div class="t-para-grid${P ? ' pp' : ''}">${left}
       <aside class="t-para-side">
-        <div class="t-label">论点句</div>
-        <button class="t-box" type="button" data-go="targ:${A.id}" data-hk="${A.id}:s"><span class="en" style="font-weight:600">${esc(A.en)}</span><span class="zh">${esc(A.zh)}</span></button>
+        <div class="t-label">论点句${P ? ' · 练习时英文先遮住，点一下显示' : ''}</div>
+        <button class="t-box" type="button" data-go="targ:${A.id}" data-hk="${A.id}:s"><span class="en${mk()}"${P ? ' data-a="t3unmask"' : ''} style="font-weight:600">${esc(A.en)}</span><span class="zh">${esc(A.zh)}</span></button>
         <div class="t-label">展开表达</div>
-        <div class="t-box list">${A.items.slice(1).map(x => { const it = T.item.get(x); return `<button class="t-exp" type="button" data-go="texp:${x}" data-hk="${x}"><span class="role">${it.role}</span><span class="txt"><span class="en">${esc(it.en)}</span><span class="zh">${esc(it.zh)}</span></span></button>`; }).join('')}</div>
-        ${used.length ? `<div class="t-label">用到的话题词汇</div><div class="chips">${used.map(k => { const t = T.term.get(k); return `<button class="t-termchip" type="button" data-go="tterm:${k}" data-hk="${k}"><span class="en">${esc(t.en)}</span> <small>${esc(t.zh)}</small></button>`; }).join('')}</div>` : ''}
+        <div class="t-box list">${A.items.slice(1).map(x => { const it = T.item.get(x); return `<button class="t-exp" type="button" data-go="texp:${x}" data-hk="${x}"><span class="role">${it.role}</span><span class="txt"><span class="en${mk()}"${P ? ' data-a="t3unmask"' : ''}>${esc(it.en)}</span><span class="zh">${esc(it.zh)}</span></span></button>`; }).join('')}</div>
+        ${used.length ? `<div class="t-label">用到的话题词汇</div><div class="chips">${used.map(k => { const t = T.term.get(k); return `<button class="t-termchip" type="button" data-go="tterm:${k}" data-hk="${k}"><span class="en${mk()}"${P ? ' data-a="t3unmask"' : ''}>${esc(t.en)}</span> <small>${esc(t.zh)}</small></button>`; }).join('')}</div>` : ''}
         ${links.length ? `<div class="t-label">衔接 · 点击查看功能表达</div><div class="chips">${links.map(l => `<button class="t-linkchip" type="button" data-nav="funcs">${esc(l.replace(/,$/, ''))} …</button>`).join('')}</div>` : ''}
       </aside></div>
       <div class="t-legend"><span><span class="t-u">下划线</span> 论点句</span><span><mark class="t-exp">浅绿底</mark> 展开表达</span><span><mark class="t-term">米色底虚线</mark> 话题词汇</span><span><span class="t-link">棕粉色字</span> 衔接（功能表达）</span></div>`,
@@ -2989,13 +3043,13 @@ function t3Pick(r) {
         const A = T.arg.get(id), done = learnedArg(id), on = P.args.includes(id);
         return `<button class="t-pick ${on ? 'on' : ''}" type="button" data-a="t3pickarg" data-id="${id}" ${done ? 'disabled' : ''} aria-pressed="${on}">
           <span class="check" aria-checked="${on || done}">${svg('check', 2.6)}</span>
-          <span class="txt"><span class="meta">论点 ${A.n} · ${esc(A.short)} · ${A.items.length} 条${done ? ' · 已学过' : on ? '' : ' · 不选则作为资料'}</span><span class="en">${esc(A.en)}</span><span class="zh">${esc(A.zh)}</span></span></button>`;
+          <span class="txt"><span class="meta">论点 ${A.n} · ${esc(A.short)} · ${A.items.length} 条${done ? ' · 已学过' : on ? '' : ' · 不选则作为资料'}</span><span class="en">${esc(A.en)}</span><span class="zh">${esc(A.zh)}</span><span class="t-link-btn" role="link" data-go="targ:${id}">查看详情 ›</span></span></button>`;
       }).join('')}</div>`;
   }).join('')}</div>`;
   const terms = `<section class="panel line"><div class="panel-head"><div><b>话题词汇 · 放在最后一轮收尾</b><p class="note-line">默认不背。勾上的词会在论点学完后单独练习；已经在记的词不用再勾。</p></div><button class="btn btn-ghost btn-sm" type="button" data-a="t3allterms">全部加入</button></div>
     <div class="chips">${tp.terms.map(id => {
       const t = T.term.get(id), had = termMem(id) && (S.t3.term[id] || {}).stage != null, on = P.terms.includes(id);
-      return `<button class="t-tchip ${on || had ? 'on' : ''}" type="button" data-a="t3pickterm" data-id="${id}" ${had ? 'disabled' : ''}>${on || had ? '✓ ' : ''}<span class="en">${esc(t.en)}</span>${had ? ' <small>已在记</small>' : ''}</button>`;
+      return `<span class="t-tpair"><button class="t-tchip ${on || had ? 'on' : ''}" type="button" data-a="t3pickterm" data-id="${id}" ${had ? 'disabled' : ''}>${on || had ? '✓ ' : ''}<span class="en">${esc(t.en)}</span>${had ? ' <small>已在记</small>' : ''}</button><button class="t-tinfo" type="button" data-go="tterm:${id}" aria-label="查看 ${esc(t.en)} 的详情">›</button></span>`;
     }).join('')}</div></section>`;
   const n = P.args.reduce((s, id) => s + T.arg.get(id).items.length, 0);
   const a0 = sideCount(0), a1 = sideCount(1);
@@ -3043,42 +3097,63 @@ function ansForm(h, answer, opts = {}) {
     <div class="btn-row"><button class="btn btn-primary" type="submit">${opts.submit || '提交'}</button>${opts.noHint ? '' : `<button class="btn btn-ghost" type="button" data-a="t3hint" ${h.hinted ? 'disabled' : ''}>看提示</button>`}<button class="btn btn-ghost" type="button" data-a="t3reveal">看答案</button></div>
   </form>`;
 }
-const copyForm = () => `<form data-form="t3copy" class="form" autocomplete="off"><span class="note-line">跟着正确答案写一遍，再继续（不改变评分）</span>
-  <input class="answer" name="answer" type="text" placeholder="照着写一遍" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="照着写一遍">
-  <div class="btn-row"><button class="btn btn-primary" type="submit">写好了，继续</button></div></form>`;
+const copyForm = (next = '下一条') => `<form data-form="t3copy" class="form" autocomplete="off"><span class="note-line">可以跟着正确答案写一遍再继续，也可以直接跳过（都不改变评分）</span>
+  <input class="answer" name="answer" type="text" placeholder="照着写一遍（可选）" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="照着写一遍">
+  <div class="btn-row"><button class="btn btn-primary" type="submit">写好了，继续</button><button class="btn btn-ghost" type="button" data-a="t3skipcopy">不照写，${next}</button></div></form>`;
 
-function blankSpan(key, cls, text, note) {
-  return `<span class="t-blank ${cls}"><span class="box">${text ? esc(text) : '&nbsp;'}</span><small>${note}</small></span>`;
+/* ---------- 填空：可以点任意一空，四种提示难度 ---------- */
+const FILL_MODES = [['both', '中文 + 原形', '最容易：知道意思和词形，只需放进句子'], ['zh', '只给中文', '自己想出整个表达，再写成合适的形式'], ['base', '只给原形', '看词形回忆意思和用法'], ['none', '什么都不给', '只看段落语境，最难']];
+function blankHint(key, mode) {
+  const it = tget(key), term = key.startsWith('tt:'), parts = [];
+  if (mode === 'both' || mode === 'zh') parts.push(esc(it.zh));
+  if ((mode === 'both' || mode === 'base') && it.base) parts.push('原形：' + esc(it.base));
+  if (mode === 'base' && !it.base) parts.push(term ? '话题词汇' : it.kind === 'sent' ? '论点句' : it.role);
+  if (term && (mode === 'both' || mode === 'zh')) parts.push('话题词汇');
+  return parts.join(' · ');
+}
+function blankSpan(key, cls, text, note, click) {
+  return `<span class="t-blank ${cls}${click ? ' tap' : ''}"${click ? ` data-a="t3blank" data-k="${key}" role="button" tabindex="0"` : ''}><span class="box">${text ? esc(text) : '&nbsp;'}</span><small>${note || '&nbsp;'}</small></span>`;
 }
 function fillPara(A, keys, res, curKey, opts) {
+  const mode = opts.mode || 'both';
   const specs = [{ p: A.en, key: A.id + ':s', cls: keys.includes(A.id + ':s') ? 'blank' : 'sent' }]
     .concat(A.items.slice(1).map(id => ({ p: T.item.get(id).para, key: id, cls: keys.includes(id) ? 'blank' : 'plain' })))
     .concat(keys.filter(k => k.startsWith('tt:')).map(k => ({ p: T.term.get(k).en, key: k, cls: 'blank' })));
   return weave(A.para, findRanges(A.para, specs), (rg, txt) => {
     if (rg.cls === 'sent') return `<span class="t-u">${esc(txt)}</span>`;
     if (rg.cls === 'plain') return esc(txt);
-    const it = tget(rg.key), a = res[rg.key];
-    const hint = esc(it.zh) + (opts.base && it.base ? ' · 原形：' + esc(it.base) : '') + (rg.key.startsWith('tt:') ? ' · 话题词汇' : '');
-    if (rg.key === curKey && !opts.curDone) return blankSpan(rg.key, 'cur', '', hint);
-    if (!a) return blankSpan(rg.key, '', '', hint);
-    if (a.g === 'rem') return blankSpan(rg.key, a.tier === 'form' ? 'form' : 'ok', a.tier === 'form' ? a.input : '✓ ' + txt, a.tier === 'form' ? '形式不对 · 应为 ' + esc(txt) : '正确');
-    return blankSpan(rg.key, 'bad', '✕ ' + (a.input || '—'), (a.g === 'vag' ? '只错一点' : '写错') + ' · 应为 ' + esc(txt));
+    const a = res[rg.key], hint = blankHint(rg.key, mode), lock = opts.lock && opts.lock[rg.key];
+    const click = opts.click && !lock && !(a && a.g === 'rem');
+    if (rg.key === curKey && !opts.curDone) return blankSpan(rg.key, 'cur', '', hint, false);
+    if (!a) return blankSpan(rg.key, '', '', hint, click);
+    if (a.g === 'rem') return blankSpan(rg.key, a.tier === 'form' ? 'form' : 'ok', a.tier === 'form' ? a.input : '✓ ' + txt, a.tier === 'form' ? '形式不对 · 应为 ' + esc(txt) : '正确', false);
+    return blankSpan(rg.key, 'bad', '✕ ' + (a.input || '—'), (a.g === 'vag' ? '只错一点' : '写错') + ' · 应为 ' + esc(txt) + (click ? ' · 点这里再填' : ''), click);
   });
 }
+/* 填空进度：done 里是已经结束的空，cur 是当前这一空 */
+function feKey(E) { if (E.cur && !E.done[E.cur]) return E.cur; return E.keys.find(k => !E.done[k]) || null; }
+function feNext(E) {
+  const i = Math.max(0, E.keys.indexOf(E.cur));
+  E.cur = E.keys.slice(i + 1).concat(E.keys.slice(0, i + 1)).find(k => !E.done[k]) || null;
+}
+function fillBox(key, mode, fbHTML, form) {
+  const it = tget(key), hint = blankHint(key, mode);
+  return `<div class="qcard t-fillbox"><div class="qtype"><span class="tag ${key.startsWith('tt:') ? 'term' : it.kind === 'sent' ? 'core' : 'know'}">${key.startsWith('tt:') ? '话题词汇' : it.kind === 'sent' ? '论点句' : '展开表达 · ' + it.role}</span><span>${hint || '这一空不给提示，看段落语境'}</span></div>${fbHTML || form}</div>`;
+}
+const modeSeg = (act, cur) => `<div class="seg small" role="group" aria-label="提示难度">${FILL_MODES.map(([k, t]) => `<button type="button" data-a="${act}" data-v="${k}" aria-pressed="${cur === k}">${t}</button>`).join('')}</div>`;
 
 function t3Learn() {
   const L = S.t3.learn;
   if (!L) return { redirect: { v: 'today' } };
   const tp = T.topic.get(L.topic);
-  const idx = { preview: 0, write: 1, fill: 2, terms: 3, done: 4 }[L.step];
-  const head = `<div class="session-head">${stepsBar(['预览', '逐条默写', '范文填空', '话题词汇', '完成'], idx)}${L.step === 'done' ? '' : '<button class="btn btn-outline btn-sm" type="button" data-a="exit">退出并保存</button>'}</div>`;
+  const idx = { preview: 0, write: 1, fillchoose: 2, fill: 2, terms: 3, done: 4 }[L.step];
+  const head = `<div class="session-head">${stepsBar(['预览', '逐条默写', '范文填空（可选）', '话题词汇', '完成'], idx)}${L.step === 'done' ? '' : '<button class="btn btn-outline btn-sm" type="button" data-a="exit">退出并保存</button>'}</div>`;
   const crumb = ['今日新学', tp.theme];
-  let body = '';
+  const wrap = body => ({ title: tp.name, crumb, focus: true, body: `<div class="session wide">${head}${body}</div>` });
   if (L.step === 'preview') {
-    body = `<p class="warm">先看一遍这 ${L.args.length} 个论点：论点句、展开表达，以及它们在范文里的用法。只看不写。</p>${stanceCols(tp, L.args, { noMode: true })}
+    return wrap(`<p class="warm">先看一遍这 ${L.args.length} 个论点：论点句、展开表达，以及它们在范文里的用法。只看不写；打开范文段落还可以做不记录的默写练习。</p>${stanceCols(tp, L.args, { noMode: true })}
       ${L.terms.length ? `<section class="section"><div class="section-head"><h3>收尾的话题词汇</h3></div><div class="chips">${L.terms.map(id => { const t = T.term.get(id); return `<button class="t-tchip" type="button" data-go="tterm:${id}"><span class="en">${esc(t.en)}</span> <small>${esc(t.zh)}</small></button>`; }).join('')}</div></section>` : ''}
-      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3lstep" data-enter>开始默写</button><span class="note-line">按论点顺序默写，一个论点写完再到下一个</span></div>`;
-    return { title: tp.name, crumb, focus: true, body: `<div class="session wide">${head}${body}</div>` };
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3lstep" data-enter>开始默写</button><span class="note-line">按论点顺序默写，一个论点写完再到下一个</span></div>`);
   }
   if (L.step === 'write') {
     const argId = L.args[L.ai], A = T.arg.get(argId), id = L.q[0], it = T.item.get(id);
@@ -3086,25 +3161,32 @@ function t3Learn() {
     const fb = L.fb;
     const side = `<aside class="t-aside"><b>论点 ${A.n} · ${esc(A.short)}</b>${A.items.map(x => { const st = !L.q.includes(x) ? 'ok' : x === id ? 'cur' : ''; return `<div class="t-li ${st}"><i></i><span>${T.item.get(x).role}${x.endsWith(':s') ? '' : ' · ' + esc(T.item.get(x).zh)}</span></div>`; }).join('')}
       <div class="t-sep"></div>${L.args.filter(x => x !== argId).map(x => `<div class="muted">论点 ${T.arg.get(x).n} · ${esc(T.arg.get(x).short)}　${T.arg.get(x).items.length} 条${L.args.indexOf(x) < L.ai ? ' · 已写完' : ''}</div>`).join('')}
-      <p class="note-line">写错的留在本轮，这个论点的其他条目写完后再写一次。</p></aside>`;
-    body = `<div class="t-work"><div class="qcard">
+      <p class="note-line">写错的可以选“稍后重写”，留到这个论点最后再写一次；也可以跳过。第一次写的结果都会记下来。</p></aside>`;
+    return wrap(`<div class="t-work"><div class="qcard">
       <div class="progress"><span>论点 ${L.ai + 1} / ${L.args.length} · ${doneN} / ${A.items.length}</span><div class="pbar"><i style="width:${doneN / A.items.length * 100}%"></i></div></div>
       <div class="qtype"><span class="tag ${it.kind === 'sent' ? 'core' : 'know'}">${it.kind === 'sent' ? '论点句' : '展开表达 · ' + it.role}</span><span>中文提示 → 写出${it.kind === 'sent' ? '完整英文句子' : '英文'}</span>${L.re[id] ? '<span class="tag" style="background:var(--wrong-soft);color:var(--wrong)">重写</span>' : ''}</div>
       <div class="note-line">论点 ${A.n} · ${esc(A.short)}：${esc(A.zh)}</div>
       <div class="prompt-zh">${esc(it.zh)}</div>
-      ${fb ? `<input class="answer" type="text" value="${esc(fb.input)}" readonly aria-label="你的答案">` + t3fb(fb, it.en, true) + `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>${fb.g === 'rem' ? '下一条' : '本轮稍后重写'}</button></div>` : ansForm(L, it.en, { ph: it.kind === 'sent' ? '写出完整句子' : '写出英文', noHint: true })}
-    </div>${side}</div>`;
-    return { title: tp.name, crumb, focus: true, body: `<div class="session wide">${head}${body}</div>` };
+      ${fb ? `<input class="answer" type="text" value="${esc(fb.input)}" readonly aria-label="你的答案">` + t3fb(fb, it.en, true) + (fb.g === 'rem' ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>下一条</button></div>` : `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>稍后重写</button><button class="btn btn-ghost" type="button" data-a="t3skipre">跳过，不重写</button></div>`) : ansForm(L, it.en, { ph: it.kind === 'sent' ? '写出完整句子' : '写出英文', noHint: true })}
+    </div>${side}</div>`);
+  }
+  if (L.step === 'fillchoose') {
+    const m = L.fillMode || 'both';
+    return wrap(`<section class="t-bigprompt"><span class="note-line">第 3 步 · 可选</span><b>要不要做范文填空？</b><span class="warm">把刚默写过的表达放回 ${L.args.length} 段范文里，练搭配和变形。可以跳过，直接进入${L.terms.length ? '话题词汇' : '完成页'}。</span></section>
+      <div class="t-modes">${FILL_MODES.map(([k, t, d]) => `<button class="t-modecard ${m === k ? 'on' : ''}" type="button" data-a="t3fmode" data-v="${k}" aria-pressed="${m === k}"><b>${t}</b><small>${d}</small><span class="ex">${k === 'none' ? '&nbsp;' : blankHint(T.arg.get(L.args[0]).items[2], k)}</span></button>`).join('')}</div>
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3fillgo" data-enter>开始范文填空</button><button class="btn btn-outline" type="button" data-a="t3fillskip">跳过范文填空</button><span class="note-line">空格可以按任意顺序点着填</span></div>`);
   }
   if (L.step === 'fill') {
-    const F = L.fill, A = T.arg.get(L.args[F.ai]), key = F.q[0], it = tget(key), fb = L.fb;
-    const keys = learnBlanks(L, A.id);
-    body = `<div class="section-head"><span class="warm">论点 ${A.n} · ${esc(A.short)} <span class="muted">（共 ${L.args.length} 段，第 ${F.ai + 1} 段）</span>　把空格按中文提示填回去；空格下面是原形，句子里需要时自己变形</span><span class="note-line">已填 ${keys.filter(k => F.res[k] && F.res[k].g === 'rem').length} / ${keys.length}</span></div>
-      <div class="t-fillpara">${fillPara(A, keys, F.res, key, { base: true, curDone: !!fb })}</div>
-      <div class="qcard t-fillbox"><div class="qtype"><span class="tag ${key.startsWith('tt:') ? 'term' : 'know'}">${key.startsWith('tt:') ? '话题词汇' : '展开表达 · ' + it.role}</span><span>${esc(it.zh)}${it.base ? ' · 原形：<span class="en">' + esc(it.base) + '</span>' : ''}</span></div>
-        ${fb ? t3fb(fb, blankAnswer(key), true) + `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>${fb.g === 'rem' ? '下一空' : '这一空稍后重填'}</button></div>` : ansForm(L, blankAnswer(key), { submit: '检查这一空', noHint: true })}</div>
-      <div class="t-judge"><div class="ok"><b>正确</b><span>和范文写法一样（大小写、标点不管）</span></div><div class="form"><b>形式不对</b><span>关键词对，只差单复数、时态、-s / -ed / -ing 或 a / the，不算写错</span></div><div class="bad"><b>写错</b><span>关键词错了或漏了，这一空在本段末尾重填</span></div></div>`;
-    return { title: tp.name, crumb, focus: true, body: `<div class="session wide">${head}${body}</div>` };
+    const F = L.fill, A = T.arg.get(L.args[F.ai]), key = feKey(F), fb = L.fb;
+    const doneN = F.keys.filter(k => F.done[k]).length;
+    const btns = !fb ? '' : fb.g === 'rem'
+      ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>下一空</button></div>`
+      : `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3retry" data-enter>再填一次</button><button class="btn btn-ghost" type="button" data-a="t3skipblank">跳过这一空</button></div>`;
+    return wrap(`<div class="section-head"><span class="warm">论点 ${A.n} · ${esc(A.short)} <span class="muted">（共 ${L.args.length} 段，第 ${F.ai + 1} 段）</span>　点任意一个空格都可以先填它</span><span class="note-line">已完成 ${doneN} / ${F.keys.length}</span></div>
+      <div class="t-fillpara">${fillPara(A, F.keys, F.res, key, { mode: F.mode, click: true, curDone: !!fb })}</div>
+      ${fillBox(key, F.mode, fb ? t3fb(fb, blankAnswer(key), true) + btns : '', ansForm(L, blankAnswer(key), { submit: '检查这一空', noHint: true }))}
+      <div class="t-judge"><div class="ok"><b>正确</b><span>和范文写法一样（大小写、标点不管）</span></div><div class="form"><b>形式不对</b><span>关键词对，只差单复数、时态、-s / -ed / -ing 或 a / the，不算写错</span></div><div class="bad"><b>写错</b><span>可以再填一次，也可以跳过；第一次填的结果会记下来</span></div></div>
+      <div class="btn-row"><button class="btn btn-ghost btn-sm" type="button" data-a="t3fillskip">结束范文填空</button></div>`);
   }
   if (L.step === 'terms') {
     const cu = L.tq[0], t = T.term.get(cu.id), fb = L.fb;
@@ -3113,47 +3195,52 @@ function t3Learn() {
     const pos = all.length - left.length + 1;
     const side = `<aside class="t-aside"><b>本次勾选的 ${all.length} 个词</b>${all.map(id => {
       const w = T.term.get(id), skip = L.skip.includes(id), done = !left.includes(id);
-      return `<div class="t-li ${skip || done ? 'ok' : id === cu.id ? 'cur' : ''}"><i></i><span>${esc(w.en)}<br><small class="muted">${skip ? '已在范文里填对，跳过' : done ? '中文 ✓ · 例句 ✓' : id === cu.id ? (cu.part === 1 ? '中文进行中' : '中文 ✓ · 例句进行中') : ''}</small></span></div>`;
+      return `<div class="t-li ${skip || done ? 'ok' : id === cu.id ? 'cur' : ''}"><i></i><span>${esc(w.en)}<br><small class="muted">${skip ? '已在范文里填对，跳过' : done ? '已完成' : id === cu.id ? (cu.part === 1 ? '中文进行中' : '中文 ✓ · 例句进行中') : ''}</small></span></div>`;
     }).join('')}<p class="note-line">每个词两步：先看中文写英文，再填进它自己的例句。</p></aside>`;
     const prompt = cu.part === 1
       ? `<div class="note-line">① 看中文写英文</div><div class="prompt-zh">${esc(t.zh)} <span class="tag">${esc(t.cat)}</span></div>`
       : `<div class="t-donebox"><span class="note-line">① 看中文写英文 · 已完成</span><span><b>${esc(t.zh)}</b> <span class="tag">${esc(t.cat)}</span> <span class="en">✓ ${esc(t.en)}</span></span></div>
         <div class="note-line">② 放进它自己的例句</div><div class="prompt-hint"><span class="en" style="font-size:22px">${blankIn(t.ex, t.en) || esc(t.ex)}</span><span>${esc(t.exZh || '')}</span></div>`;
-    body = `<div class="t-work"><div class="qcard"><div class="progress"><span>话题词汇 ${Math.min(pos, all.length)} / ${all.length}</span><div class="pbar"><i style="width:${(pos - 1) / all.length * 100}%"></i></div></div>
+    return wrap(`<div class="t-work"><div class="qcard"><div class="progress"><span>话题词汇 ${Math.min(pos, all.length)} / ${all.length}</span><div class="pbar"><i style="width:${(pos - 1) / all.length * 100}%"></i></div></div>
       ${prompt}
-      ${fb ? `<input class="answer" type="text" value="${esc(fb.input)}" readonly aria-label="你的答案">` + t3fb(fb, t.en, true) + `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>${fb.g === 'rem' ? '下一步' : '稍后重写'}</button></div>` : ansForm(L, t.en, { noHint: true })}
-    </div>${side}</div>`;
-    return { title: tp.name, crumb, focus: true, body: `<div class="session wide">${head}${body}</div>` };
+      ${fb ? `<input class="answer" type="text" value="${esc(fb.input)}" readonly aria-label="你的答案">` + t3fb(fb, t.en, true) + (fb.g === 'rem' ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>下一步</button></div>` : `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>稍后重写</button><button class="btn btn-ghost" type="button" data-a="t3skipre">跳过，不重写</button></div>`) : ansForm(L, t.en, { noHint: true })}
+    </div>${side}</div>`);
   }
   return t3LearnDone(L, tp, head);
 }
-function t3LearnNext() {
+function t3ToTerms(L) {
+  const F = L.fill;
+  L.step = 'terms'; L.fb = null;
+  L.skip = L.terms.filter(id => F && F.first[id] && F.first[id].g === 'rem');
+  L.tq = L.terms.filter(id => !L.skip.includes(id)).flatMap(id => [{ id, part: 1 }, { id, part: 2 }]);
+  if (!L.tq.length) t3FinishLearn();
+}
+function t3FillAdvance(L) {
+  const F = L.fill;
+  feNext(F);
+  if (F.cur) return;
+  F.ai++;
+  if (F.ai < L.args.length) Object.assign(F, { keys: learnBlanks(L, L.args[F.ai]), done: {}, cur: null });
+  else t3ToTerms(L);
+}
+function t3LearnNext(skip) {
   const L = S.t3.learn, fb = L.fb;
   L.fb = null; L.hinted = false;
   if (L.step === 'write') {
     const id = L.q.shift();
-    if (!fb || fb.g !== 'rem') { L.re[id] = (L.re[id] || 0) + 1; L.q.push(id); }
+    if ((!fb || fb.g !== 'rem') && !skip) { L.re[id] = (L.re[id] || 0) + 1; L.q.push(id); }
     if (!L.q.length) {
       L.ai++;
       if (L.ai < L.args.length) L.q = T.arg.get(L.args[L.ai]).items.slice();
-      else { L.step = 'fill'; L.fill = { ai: 0, q: learnBlanks(L, L.args[0]), res: {}, first: {} }; }
+      else L.step = 'fillchoose';
     }
   } else if (L.step === 'fill') {
-    const F = L.fill, key = F.q.shift();
-    if (!fb || fb.g !== 'rem') F.q.push(key);
-    if (!F.q.length) {
-      F.ai++;
-      if (F.ai < L.args.length) F.q = learnBlanks(L, L.args[F.ai]);
-      else {
-        L.step = 'terms';
-        L.skip = L.terms.filter(id => F.first[id] && F.first[id].g === 'rem');
-        L.tq = L.terms.filter(id => !L.skip.includes(id)).flatMap(id => [{ id, part: 1 }, { id, part: 2 }]);
-        if (!L.tq.length) t3FinishLearn();
-      }
-    }
+    const F = L.fill, key = feKey(F);
+    F.done[key] = true; F.cur = key;
+    t3FillAdvance(L);
   } else if (L.step === 'terms') {
     const x = L.tq.shift();
-    if (!fb || fb.g !== 'rem') {
+    if ((!fb || fb.g !== 'rem') && !skip) {
       if (x.part === 1) L.tq = L.tq.filter(y => y.id !== x.id).concat([x, { id: x.id, part: 2 }]);
       else L.tq.push(x);
     }
@@ -3198,9 +3285,9 @@ function t3LearnDone(L, tp, head) {
     const look = A.items.filter(x => L.rate[x] !== 'rem').map(x => x.endsWith(':s') ? '论点句' : T.item.get(x).en);
     return `<div class="t-res">
       <div class="t-res-head"><button class="expand" type="button" data-a="t3open" data-id="${argId}" aria-expanded="${open}" aria-label="展开小点">${svg('down')}</button>
-        <span class="txt"><b>论点 ${A.n} · ${esc(A.short)}</b><small>默写 ${A.items.length} 条${re ? `，${re} 条重写` : '全对'} · 范文${form ? ` ${form} 处形式不对` : '全对'}</small></span>
+        <span class="txt"><button class="t-plain" type="button" data-go="targ:${argId}"><b>论点 ${A.n} · ${esc(A.short)}</b></button><small>默写 ${A.items.length} 条${re ? `，${re} 条重写` : '全对'} · ${!L.fill ? '范文填空跳过' : '范文' + (form ? ` ${form} 处形式不对` : '已填')}</small></span>
         <span class="look">${look.length ? '需要再看：' + look.map(esc).join('、') : '—'}</span>${rseg('t3largr', argId, res)}</div>
-      ${open ? `<div class="t-res-items">${A.items.map(x => { const it = T.item.get(x); return `<div class="t-res-item"><span class="role">${it.role}</span><span class="txt"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)}</small></span>${rseg('t3lrate', x, L.rate[x])}</div>`; }).join('')}</div>` : ''}
+      ${open ? `<div class="t-res-items">${A.items.map(x => { const it = T.item.get(x); return `<div class="t-res-item"><span class="role">${it.role}</span><button class="txt t-plain" type="button" data-go="${t3route(x)}"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)}</small></button>${rseg('t3lrate', x, L.rate[x])}</div>`; }).join('')}</div>` : ''}
     </div>`;
   }).join('');
   const ck = canCheckin();
@@ -3238,7 +3325,7 @@ function t3unit(q) {
   if (tier === 0) Object.assign(u, { step: 'write', list: A.items.slice() });
   else if (tier === 1) Object.assign(u, { step: 'write', list: [A.items[0]] });
   else if (tier === 2) Object.assign(u, { step: 'recall', list: [] });
-  else Object.assign(u, { step: 'fill', list: A.items.slice() });
+  else Object.assign(u, { step: 'fill', list: A.items.slice(), keys: A.items.slice(), done: {}, cur: null });
   return u;
 }
 function revHead(R, label) {
@@ -3312,15 +3399,16 @@ function t3RevArg(R, q, u) {
     };
   }
   if (u.step === 'fill') {
-    const key = u.list[u.j], it = T.item.get(key), fb = u.fb, base = u.tier === 1;
+    const fb = u.fb, key = fb ? u.cur : feKey(u), mode = u.tier === 1 ? 'both' : 'zh';
+    const doneN = u.keys.filter(k => u.done[k]).length, last = u.keys.filter(k => !u.done[k]).length === 0;
     const done1 = u.tier === 1 ? (() => { const s = A.items[0], a = u.ans[s]; return `<div class="t-donebox"><span class="note-line">第 1 步 · 论点句 ${a ? RL3[a.g] : ''}</span><span class="en">${esc(A.en)}</span></div>`; })() : '';
+    const btns = !fb ? '' : fb.g === 'rem' ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>${last ? '查看论点结果' : '下一空'}</button></div>` : copyForm(last ? '查看论点结果' : '下一空');
     return {
       title, crumb, focus: true,
       body: `<div class="session wide">${head}${done1}
-        <div class="section-head"><span class="warm">${base ? '把这个论点的展开表达填回段落。空格下面有中文和原形，需要时自己变形' : '论点句也空出来。每空只给中文，不给原形，自己想出整个表达并写成合适的形式'}</span><span class="note-line">已填 ${u.j} / ${u.list.length}</span></div>
-        <div class="t-fillpara">${fillPara(A, u.list, u.ans, key, { base, curDone: !!fb })}</div>
-        <div class="qcard t-fillbox"><div class="qtype"><span class="tag ${it.kind === 'sent' ? 'core' : 'know'}">${it.kind === 'sent' ? '论点句' : '展开表达 · ' + it.role}</span><span>${esc(it.zh)}${base && it.base ? ' · 原形：<span class="en">' + esc(it.base) + '</span>' : ''}</span></div>
-          ${fb ? t3fb(fb, blankAnswer(key)) + (fb.g === 'rem' ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3next" data-enter>${u.j + 1 < u.list.length ? '下一空' : '查看论点结果'}</button></div>` : copyForm()) : ansForm(u, blankAnswer(key), { submit: '检查这一空' })}</div>
+        <div class="section-head"><span class="warm">${mode === 'both' ? '把这个论点的展开表达填回段落。空格下面有中文和原形，需要时自己变形' : '论点句也空出来。每空只给中文，不给原形，自己想出整个表达并写成合适的形式'}。点任意一个空格都可以先填它</span><span class="note-line">已填 ${doneN} / ${u.keys.length}</span></div>
+        <div class="t-fillpara">${fillPara(A, u.keys, u.ans, key, { mode, click: true, lock: u.done, curDone: !!fb })}</div>
+        ${fillBox(key, mode, fb ? t3fb(fb, blankAnswer(key)) + btns : '', ansForm(u, blankAnswer(key), { submit: '检查这一空' }))}
         <div class="t-judge"><div class="ok"><b>正确 / 形式不对</b><span>都算记得，看了提示写对也算</span></div><div class="form"><b>只错一个词</b><span>预选模糊</span></div><div class="bad"><b>错很多 / 看答案</b><span>预选忘记，明天补练</span></div></div></div>`,
     };
   }
@@ -3363,7 +3451,7 @@ function t3RevArg(R, q, u) {
     body: `<div class="session wide">${head}
       <section class="t-result">
         <div class="t-result-head"><span class="txt"><b>论点结果：${RL3[res]}</b><small>${u.argR ? '你手动改过' : '由下面 ' + A.items.length + ' 条算出：' + why}</small></span>${rseg('t3argr', q.id, res)}</div>
-        ${A.items.map(x => { const it = T.item.get(x), a = u.ans[x] || {}; return `<div class="t-res-item"><span class="role">${it.role}</span><span class="txt"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)}${a.tier === 'empty' ? ' · 没写出来' : a.tier === 'reveal' ? ' · 看了答案' : a.tier === 'form' ? ' · 形式不对' : a.hinted && a.g === 'rem' ? ' · 看提示写对' : a.g && a.g !== 'rem' ? ' · 你写：' + esc(a.input) : ''}</small></span>${rseg('t3irate', x, u.rate[x])}</div>`; }).join('')}
+        ${A.items.map(x => { const it = T.item.get(x), a = u.ans[x] || {}; return `<div class="t-res-item"><span class="role">${it.role}</span><button class="txt t-plain" type="button" data-go="${t3route(x)}"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)}${a.tier === 'empty' ? ' · 没写出来' : a.tier === 'reveal' ? ' · 看了答案' : a.tier === 'form' ? ' · 形式不对' : a.hinted && a.g === 'rem' ? ' · 看提示写对' : a.g && a.g !== 'rem' ? ' · 你写：' + esc(a.input) : ''}</small></button>${rseg('t3irate', x, u.rate[x])}</div>`; }).join('')}
         <p class="note-line">评分是系统预选的，点一下就能改；改了小点，论点结果会重新算。也可以直接改上面的论点结果。</p>
       </section>
       <div class="t-two">
@@ -3377,9 +3465,10 @@ function t3RevArg(R, q, u) {
 }
 function t3ArgAdvance(u, q) {
   u.fb = null; u.hinted = false; u.copied = false;
+  if (u.step === 'fill') { feNext(u); if (!u.cur) t3ToResult(u, q); return; }
   u.j++;
   if (u.j >= u.list.length) {
-    if (u.tier === 1 && u.step === 'write') { u.step = 'fill'; u.list = T.arg.get(q.id).items.slice(1); u.j = 0; }
+    if (u.tier === 1) { const ex = T.arg.get(q.id).items.slice(1); Object.assign(u, { step: 'fill', list: ex, keys: ex, done: {}, cur: null }); }
     else t3ToResult(u, q);
   }
 }
@@ -3407,7 +3496,7 @@ function t3Recall(u, q, text) {
 function t3Commit() {
   const R = S.t3.rev, q = R.queue[R.i], u = R.u, now = Date.now(), tomorrow = addDays(now, 1);
   if (q.k === 'arg') {
-    const A = T.arg.get(q.id), rec = AR(q.id), res = u.argR || argResult(u.rate), from = rec.stage || 0;
+    const A = T.arg.get(q.id), rec = AR(q.id), res = u.argR || argResult(u.rate), from = rec.stage || 0, prevNext = rec.next;
     A.items.forEach(x => {
       const ir = IR(x), a = u.ans[x] || {};
       ir.hist.push({ t: now, r: u.rate[x], src: 'rev', tier: u.tier });
@@ -3416,8 +3505,9 @@ function t3Commit() {
     });
     if (res === 'fgt') { rec.pend = { prev: from }; rec.pendItems = A.items.filter(x => u.rate[x] === 'fgt'); }
     sched(rec, res); rec.lastR = res; rec.hist.push({ t: now, r: res, src: 'rev', tier: u.tier });
-    if (rec.next > tomorrow) A.items.forEach(x => { if (u.rate[x] === 'fgt') IR(x).makeup = tomorrow; });
-    R.log.args[q.id] = { r: res, from, to: rec.stage, next: rec.next };
+    const mkSet = rec.next > tomorrow ? A.items.filter(x => u.rate[x] === 'fgt') : [];
+    mkSet.forEach(x => { IR(x).makeup = tomorrow; });
+    R.log.args[q.id] = { r: res, from, prevNext, to: rec.stage, next: rec.next, rates: Object.assign({}, u.rate), argR: u.argR, mkSet };
     bumpLog(res);
   } else if (q.k === 'mk') {
     const ir = IR(q.id), ok = u.fb.g === 'rem';
@@ -3428,12 +3518,12 @@ function t3Commit() {
     R.log.mk[q.id] = ok;
     bumpLog(ok ? 'rem' : 'fgt');
   } else {
-    const rec = TR(q.id), r = u.r || u.fb.g;
+    const rec = TR(q.id), r = u.r || u.fb.g, from = rec.stage, prevNext = rec.next, prevN = rec.n || 0;
     sched(rec, r); rec.n = (rec.n || 0) + 1; rec.lastR = r;
     rec.hist.push({ t: now, r, src: 'rev' });
     if (u.fb.g !== 'rem' && u.fb.input) rec.wrongs.push({ t: now, input: u.fb.input, r: u.fb.g });
     if (r !== 'rem') R.wrong.push(q.id);
-    R.log.terms[q.id] = { r, to: rec.stage, next: rec.next };
+    R.log.terms[q.id] = { r, from, prevNext, prevN, to: rec.stage, next: rec.next };
     bumpLog(r);
   }
   R.i++; R.u = null;
@@ -3445,15 +3535,45 @@ function t3FinishRev() {
   S.t3.revDone = { day: dayKey(), log: R.log, wrong: [...new Set(R.wrong)] };
   S.t3.rev = null;
 }
+/* 复习完成页上改评分：从复习前的状态重新计算一次 */
+function t3ReapplyArg(id) {
+  const x = S.t3.revDone.log.args[id], rec = AR(id), A = T.arg.get(id), tomorrow = addDays(Date.now(), 1);
+  const res = x.argR || argResult(x.rates);
+  (x.mkSet || []).forEach(i => { if (IR(i).makeup === tomorrow) IR(i).makeup = null; });
+  rec.stage = x.from; rec.next = x.prevNext; delete rec.pend; delete rec.pendItems;
+  if (res === 'fgt') { rec.pend = { prev: x.from }; rec.pendItems = A.items.filter(i => x.rates[i] === 'fgt'); }
+  sched(rec, res); rec.lastR = res;
+  const h = rec.hist[rec.hist.length - 1]; if (h && h.src === 'rev') h.r = res;
+  A.items.forEach(i => { const hh = IR(i).hist[IR(i).hist.length - 1]; if (hh && hh.src === 'rev') hh.r = x.rates[i]; });
+  x.mkSet = rec.next > tomorrow ? A.items.filter(i => x.rates[i] === 'fgt') : [];
+  x.mkSet.forEach(i => { IR(i).makeup = tomorrow; });
+  if (x.r !== res) { bumpLog(x.r, -1); bumpLog(res); }
+  Object.assign(x, { r: res, to: rec.stage, next: rec.next });
+}
+function t3ReapplyTerm(id, r) {
+  const x = S.t3.revDone.log.terms[id], rec = TR(id);
+  rec.stage = x.from; rec.next = x.prevNext;
+  sched(rec, r); rec.n = (x.prevN || 0) + 1; rec.lastR = r;
+  const h = rec.hist[rec.hist.length - 1]; if (h && h.src === 'rev') h.r = r;
+  if (x.r !== r) { bumpLog(x.r, -1); bumpLog(r); }
+  Object.assign(x, { r, to: rec.stage, next: rec.next });
+}
 function t3RevDone() {
   const D = S.t3.revDone, pend = t3Pend();
   if (!D && !pend.length) return { redirect: { v: 'today' } };
   const log = D ? D.log : { args: {}, mk: {}, terms: {} };
   const tomorrow = addDays(Date.now(), 1);
+  ui.t3open = ui.t3open || new Set();
+  const editable = !!D && D.day === dayKey();
   const argRows = Object.entries(log.args).map(([id, x]) => {
-    const A = T.arg.get(id), rec = argRec(id);
+    const A = T.arg.get(id), rec = argRec(id), open = ui.t3open.has('d' + id);
     const to = rec.pend ? '等你确认' : STAGE_LABEL[rec.stage];
-    return `<div class="t-donerow"><span class="txt"><b>论点 ${A.n} · ${esc(A.short)}</b><small>${esc(T.topic.get(A.topic).name)}</small></span>${rchip(x.r)}<span class="warm">${STAGE_LABEL[x.from]} → ${to}</span><span class="muted">${rec.pend ? '—' : fmtMD(rec.next)}</span></div>`;
+    return `<div class="t-res">
+      <div class="t-res-head"><button class="expand" type="button" data-a="t3open" data-id="d${id}" aria-expanded="${open}" aria-label="展开小点">${svg('down')}</button>
+        <button class="txt t-plain" type="button" data-go="targ:${id}"><b>论点 ${A.n} · ${esc(A.short)}</b><small>${esc(T.topic.get(A.topic).name)} · ${STAGE_LABEL[x.from]} → ${to}${rec.pend ? '' : ' · ' + fmtMD(rec.next)}</small></button>
+        <span class="look">${x.argR ? '你手动改过论点结果' : '由小点算出'}</span>${x.rates && editable ? rseg('t3dargr', id, x.r) : rchip(x.r)}</div>
+      ${open && x.rates ? `<div class="t-res-items">${A.items.map(i => { const it = T.item.get(i); return `<div class="t-res-item"><span class="role">${it.role}</span><button class="txt t-plain" type="button" data-go="${t3route(i)}"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)}</small></button>${editable ? rseg('t3dirate', i, x.rates[i]) : rchip(x.rates[i])}</div>`; }).join('')}</div>` : ''}
+    </div>`;
   }).join('');
   const mk = [...T.item.keys()].filter(id => (S.t3.it[id] || {}).makeup === tomorrow);
   const terms = Object.entries(log.terms);
@@ -3465,10 +3585,10 @@ function t3RevDone() {
     title: '今日复习完成', crumb: [fmtMD(Date.now())], focus: true,
     actions: `<span class="note-line">论点 ${nArgs} 个 · 补练 ${nMk} 条 · 话题词汇 ${terms.length} 个</span>`,
     body: `<div class="session wide">
-      ${argRows ? `<section class="t-panel"><span class="note-line">论点</span>${argRows}</section>` : ''}
+      ${argRows ? `<div class="section"><div class="section-head"><span class="note-line">论点 · 点箭头展开每一条；在这里改评分，复习日期会跟着重新算</span></div>${argRows}</div>` : ''}
       <div class="t-two">
-        <section class="t-nextbox mk"><span class="note-line">明天补练 · ${mk.length} 条</span>${mk.length ? mk.map(x => `<span class="en">${esc(T.item.get(x).en)}${log.mk[x] === false ? ' <small class="warm">今天补练还是写错</small>' : ''}</span>`).join('') : '<span class="warm">没有要补练的条目</span>'}</section>
-        <section class="t-nextbox"><span class="note-line">话题词汇 · ${terms.length} 个</span>${terms.length ? terms.map(([id, x]) => `<span><span class="en">${esc(T.term.get(id).en)}</span> ${rchip(x.r)} <span class="muted">→ ${STAGE_LABEL[x.to]}</span></span>`).join('') : '<span class="warm">今天没有到期的话题词汇</span>'}</section>
+        <section class="t-nextbox mk"><span class="note-line">明天补练 · ${mk.length} 条</span>${mk.length ? mk.map(x => `<button class="t-plain en" type="button" data-go="${t3route(x)}">${esc(T.item.get(x).en)}${log.mk[x] === false ? ' <small class="warm">今天补练还是写错</small>' : ''}</button>`).join('') : '<span class="warm">没有要补练的条目</span>'}</section>
+        <section class="t-nextbox"><span class="note-line">话题词汇 · ${terms.length} 个</span>${terms.length ? terms.map(([id, x]) => `<div class="t-termrow"><button class="t-plain" type="button" data-go="tterm:${id}"><span class="en">${esc(T.term.get(id).en)}</span> <small class="muted">→ ${STAGE_LABEL[x.to]} · ${fmtMD(x.next)}</small></button>${x.prevNext !== undefined && editable ? rseg('t3dtrate', id, x.r) : rchip(x.r)}</div>`).join('') : '<span class="warm">今天没有到期的话题词汇</span>'}</section>
       </div>
       ${pend.length ? `<section class="t-confirm"><div class="section-head"><b>打卡前确认 · ${pend.length} 个论点评为忘记</b><span class="note-line">确认后才能打卡</span></div>
         ${t3PendRows(pend)}<span class="note-line">从头开始：明天从逐条默写重新开始。先不：按模糊处理，只退一格。</span></section>` : ''}
@@ -3533,16 +3653,16 @@ function t3PlanHTML() {
   let no = 0;
   const step = (title, hint) => `<div class="t-planhead"><span class="ord">${++no}</span><b>${title}</b><span class="note-line">${hint}</span></div>`;
   let html = pendLine;
-  if (P.mk.length) html += `<section class="t-plansec">${step('补练', '上次忘记的单条，各练一次')}<div class="t-grid2">${P.mk.map(id => { const it = T.item.get(id), A = T.arg.get(it.arg); return `<div class="t-mkcard"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)} · 来自 论点 ${A.n} ${esc(A.short)}</small></div>`; }).join('')}</div></section>`;
+  if (P.mk.length) html += `<section class="t-plansec">${step('补练', '上次忘记的单条，各练一次')}<div class="t-grid2">${P.mk.map(id => { const it = T.item.get(id), A = T.arg.get(it.arg); return `<button class="t-mkcard" type="button" data-go="${t3route(id)}"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)} · 来自 论点 ${A.n} ${esc(A.short)}</small></button>`; }).join('')}</div></section>`;
   if (P.groups.length) html += `<section class="t-plansec">${step('论点', '按写作组合分组，一次完成一个论点')}${P.groups.map(g => {
     const tp = T.topic.get(g.topic), c = g.combo;
     const waiting = c ? c.args.filter(a => !g.ids.includes(a) && argMem(a)).map(a => `论点 ${T.arg.get(a).n} · ${T.arg.get(a).short}：${relDay(argRec(a).next)}到期`) : [];
-    return `<div class="t-plangroup"><div class="top"><b>${esc(tp.name)}</b><span class="note-line">${comboLabel(c)} · 今天到期 ${g.ids.length} 个论点</span></div>
-      ${g.ids.map(id => { const A = T.arg.get(id), rec = argRec(id); return `<div class="t-planrow"><span class="txt"><b>论点 ${A.n} · ${esc(A.short)}</b>${rec.lastR && rec.lastR !== 'rem' ? ` <small class="${rec.lastR}">上次${RL3[rec.lastR]}</small>` : ''}<small class="muted">${A.items.length} 条 · ${esc(A.zh)}</small></span><span class="warm">${STAGE_LABEL[rec.stage]}</span><span class="t-pill">${TIER_LABEL[tierOf(rec.stage)]}</span></div>`; }).join('')}
+    return `<div class="t-plangroup"><div class="top"><button class="t-plain" type="button" data-go="ttopic:${tp.id}"><b>${esc(tp.name)}</b></button><span class="note-line">${comboLabel(c)} · 今天到期 ${g.ids.length} 个论点</span></div>
+      ${g.ids.map(id => { const A = T.arg.get(id), rec = argRec(id); return `<button class="t-planrow" type="button" data-go="targ:${id}"><span class="txt"><b>论点 ${A.n} · ${esc(A.short)}</b>${rec.lastR && rec.lastR !== 'rem' ? ` <small class="${rec.lastR}">上次${RL3[rec.lastR]}</small>` : ''}<small class="muted">${A.items.length} 条 · ${esc(A.zh)}</small></span><span class="warm">${STAGE_LABEL[rec.stage]}</span><span class="t-pill">${TIER_LABEL[tierOf(rec.stage)]}</span></button>`; }).join('')}
       ${waiting.length ? `<span class="note-line">${waiting.map(esc).join('；')}</span>` : ''}</div>`;
   }).join('')}</section>`;
-  if (P.terms.length) html += `<section class="t-plansec">${step('话题词汇', '每个词单独安排')}<div class="chips">${P.terms.map(id => { const t = T.term.get(id), n = ((S.t3.term[id] || {}).n || 0) + 1; return `<span class="t-tchip"><span class="en">${esc(t.en)}</span> <small>· ${n % 2 ? '写英文' : '例句填空'}</small></span>`; }).join('')}</div></section>`;
-  if (oldN) html += `<section class="t-plansec">${step('其他表达组', '功能表达、写作笔记里到期的内容，按组复习')}<div class="rows">${q.map(g => { const G = GROUPS.get(g.gid); return `<div class="row"><span class="title">${esc(G.name)}</span><span class="meta">${esc(groupCrumb(G)[0])}</span><span class="num" style="margin-left:auto">${g.ids.length} 条</span></div>`; }).join('')}</div></section>`;
+  if (P.terms.length) html += `<section class="t-plansec">${step('话题词汇', '每个词单独安排')}<div class="chips">${P.terms.map(id => { const t = T.term.get(id), n = ((S.t3.term[id] || {}).n || 0) + 1; return `<button class="t-tchip" type="button" data-go="tterm:${id}"><span class="en">${esc(t.en)}</span> <small>· ${n % 2 ? '写英文' : '例句填空'}</small></button>`; }).join('')}</div></section>`;
+  if (oldN) html += `<section class="t-plansec">${step('其他表达组', '功能表达、写作笔记里到期的内容，按组复习')}<div class="rows">${q.map(g => { const G = GROUPS.get(g.gid); return `<button class="row tap" type="button" data-go="group:${esc(G.id)}"><span class="title">${esc(G.name)}</span><span class="meta">${esc(groupCrumb(G)[0])}</span><span class="num" style="margin-left:auto">${g.ids.length} 条</span></button>`; }).join('')}</div></section>`;
   html += `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3startall">开始今日复习</button><span class="note-line">共 ${P.n + oldN} 条 · 从${P.mk.length ? '补练' : P.n ? '论点' : '第 1 组'}开始；每完成一个论点会显示它的结果，可以随时退出</span></div>`;
   return html;
 }
@@ -3721,14 +3841,15 @@ function t3ctx() {
   if (v === 'tlearn') {
     const L = S.t3.learn;
     if (L.step === 'write') { const id = L.q[0]; return { h: L, id, ans: T.item.get(id).en, learn: true }; }
-    if (L.step === 'fill') { const id = L.fill.q[0]; return { h: L, id, ans: blankAnswer(id), learn: true, fill: true }; }
+    if (L.step === 'fill') { const id = feKey(L.fill); return { h: L, id, ans: blankAnswer(id), learn: true, fill: true }; }
     if (L.step === 'terms') { const x = L.tq[0]; return { h: L, id: x.id, part: x.part, ans: T.term.get(x.id).en, learn: true }; }
   }
   if (v === 'trev') {
     const R = S.t3.rev, q = R.queue[R.i], u = R.u;
-    if (q.k === 'arg') { const id = u.list[u.j]; return { h: u, id, ans: u.step === 'fill' ? blankAnswer(id) : T.item.get(id).en, arg: true }; }
+    if (q.k === 'arg') { const id = u.step === 'fill' ? (u.fb ? u.cur : feKey(u)) : u.list[u.j]; return { h: u, id, ans: u.step === 'fill' ? blankAnswer(id) : T.item.get(id).en, arg: true }; }
     return { h: u, id: q.id, ans: tget(q.id).en };
   }
+  if (v === 'tpara' && ui.t3pp) { const P = ui.t3pp, id = feKey(P); return id ? { h: P, id, ans: blankAnswer(id), prac: true, pp: true } : null; }
   if (v === 'tprac') { const p = ui.t3prac; return { h: p, id: p.ids[p.i], ans: tget(p.ids[p.i]).en, prac: true }; }
   return null;
 }
@@ -3745,13 +3866,15 @@ function t3answer(input, revealed) {
     if (L.step === 'terms' && !L.tfirst[c.id + ':' + c.part]) L.tfirst[c.id + ':' + c.part] = ansOf(fb);
     if (fb.g !== 'rem' && fb.input) RR(c.id).wrongs.push({ t: Date.now(), input: fb.input, r: fb.g });
   }
-  if (c.arg) c.h.ans[c.id] = fb;
+  if (c.pp) c.h.res[c.id] = fb;
+  if (c.arg) { c.h.ans[c.id] = fb; if (c.h.step === 'fill') { c.h.done[c.id] = true; c.h.cur = c.id; } }
   if (!c.prac) save();
   render();
 }
 function t3next() {
   const v = cur().v;
   if (v === 'tlearn') { t3LearnNext(); return; }
+  if (v === 'tpara' && ui.t3pp) { const P = ui.t3pp, k = feKey(P); if (k) { P.done[k] = true; P.cur = k; } P.fb = null; P.hinted = false; feNext(P); render(); return; }
   if (v === 'tprac') { const p = ui.t3prac; p.i++; p.fb = null; p.hinted = false; if (p.i >= p.ids.length) { ui.t3prac = null; back(); toast('错题练习完成'); } else render(true); return; }
   const R = S.t3.rev, q = R.queue[R.i], u = R.u;
   if (q.k === 'arg') { t3ArgAdvance(u, q); save(); render(true); return; }
@@ -3763,7 +3886,7 @@ function t3click(a, el) {
     case 't3view': ui.t3view = el.dataset.v; render(); return true;
     case 't3mask': ui.t3mask = el.dataset.v; render(); return true;
     case 't3unmask': el.classList.remove('masked'); el.removeAttribute('data-a'); return true;
-    case 't3para': replaceRoute({ v: 'tpara', id }); return true;
+    case 't3para': if (ui.t3pp) ppStart(id, ui.t3pp.mode, ui.t3pp.sent); replaceRoute({ v: 'tpara', id }); return true;
     case 't3paramask': ui.t3paraMask = ui.t3paraMask === id ? null : id; render(); return true;
     case 't3hl': {
       if (el.classList.contains('masked')) { el.classList.remove('masked'); return true; }
@@ -3796,12 +3919,12 @@ function t3click(a, el) {
       const L = S.t3.learn; L.rate[id] = el.dataset.r;
       const ir = IR(id), h = ir.hist[ir.hist.length - 1]; if (h && h.src === 'new') h.r = el.dataset.r;
       const A = T.arg.get(T.item.get(id).arg), rec = AR(A.id);
-      if (!L.argR[A.id]) { rec.lastR = argResult(Object.fromEntries(A.items.map(x => [x, L.rate[x]]))); const hh = rec.hist[rec.hist.length - 1]; if (hh) hh.r = rec.lastR; }
+      delete L.argR[A.id]; rec.lastR = argResult(Object.fromEntries(A.items.map(x => [x, L.rate[x]]))); const hh = rec.hist[rec.hist.length - 1]; if (hh) hh.r = rec.lastR;
       save(); render(); return true;
     }
     case 't3largr': { const L = S.t3.learn, rec = AR(id); L.argR[id] = el.dataset.r; rec.lastR = el.dataset.r; const hh = rec.hist[rec.hist.length - 1]; if (hh) hh.r = el.dataset.r; save(); render(); return true; }
-    case 't3learnclose': S.t3.learn = null; save(); goRoot({ v: 'home' }); return true;
-    case 't3learnck': S.t3.learn = null; checkin(); goRoot({ v: 'home' }); return true;
+    case 't3learnclose': S.t3.learn = null; save(); back(); return true;
+    case 't3learnck': S.t3.learn = null; checkin(); back(); return true;
     case 't3startall': {
       if (t3plan().n) { if (t3StartRev()) go({ v: 'trev' }); }
       else startReview();
@@ -3809,7 +3932,7 @@ function t3click(a, el) {
     }
     case 't3resumerev': go({ v: 'trev' }); return true;
     case 't3toresult': { const R = S.t3.rev; t3ToResult(R.u, R.queue[R.i]); save(); render(true); return true; }
-    case 't3irate': { const u = S.t3.rev.u; u.rate[id] = el.dataset.r; save(); render(); return true; }
+    case 't3irate': { const u = S.t3.rev.u; u.rate[id] = el.dataset.r; u.argR = null; save(); render(); return true; }
     case 't3argr': { const u = S.t3.rev.u; u.argR = el.dataset.r; save(); render(); return true; }
     case 't3trate': { const u = S.t3.rev.u; u.r = el.dataset.r; save(); render(); return true; }
     case 't3commit': t3Commit(); return true;
@@ -3829,8 +3952,34 @@ function t3click(a, el) {
       save(); render(); toast(a === 't3restart' ? '已确认从头开始，明天从逐条默写复习' : '已按模糊处理，退一格'); return true;
     }
     case 't3prac': { const D = S.t3.revDone; ui.t3prac = { ids: D.wrong.filter(x => tget(x)), i: 0, fb: null }; go({ v: 'tprac' }); return true; }
-    case 't3revck': checkin(); S.t3.revDone = null; save(); goRoot({ v: 'home' }); return true;
-    case 't3revclose': S.t3.revDone = null; save(); goRoot({ v: 'home' }); return true;
+    case 't3revck': checkin(); S.t3.revDone = null; save(); back(); return true;
+    case 't3revclose': S.t3.revDone = null; save(); back(); return true;
+    case 't3dirate': { const it = T.item.get(id), x = S.t3.revDone.log.args[it.arg]; x.rates[id] = el.dataset.r; x.argR = null; t3ReapplyArg(it.arg); save(); render(); toast('已改，复习日期重新算好了'); return true; }
+    case 't3dargr': { const x = S.t3.revDone.log.args[id]; x.argR = el.dataset.r; t3ReapplyArg(id); save(); render(); toast('已改，复习日期重新算好了'); return true; }
+    case 't3dtrate': t3ReapplyTerm(id, el.dataset.r); save(); render(); toast('已改，复习日期重新算好了'); return true;
+    case 't3skipcopy': { const R = S.t3.rev; if (R && R.queue[R.i].k === 'term') { R.u.copied = true; save(); render(); } else t3next(); return true; }
+    case 't3skipre': t3LearnNext(true); return true;
+    case 't3fmode': S.t3.learn.fillMode = el.dataset.v; save(); render(); return true;
+    case 't3fillgo': { const L = S.t3.learn; L.step = 'fill'; L.fb = null; L.fill = { ai: 0, keys: learnBlanks(L, L.args[0]), res: {}, first: {}, done: {}, cur: null, mode: L.fillMode || 'both' }; save(); render(true); return true; }
+    case 't3fillskip': { const L = S.t3.learn; if (!L.fill) L.fill = null; t3ToTerms(L); save(); render(true); return true; }
+    case 't3blank': {
+      const k = el.dataset.k, v = cur().v;
+      if (v === 'tlearn') { const L = S.t3.learn, F = L.fill; delete F.done[k]; F.cur = k; L.fb = null; L.hinted = false; save(); }
+      else if (v === 'trev') { const u = S.t3.rev.u; if (u.done[k]) { toast('这一空已经填过，结果页可以改评分'); return true; } u.cur = k; u.fb = null; u.hinted = false; save(); }
+      else if (ui.t3pp) { const P = ui.t3pp; delete P.done[k]; P.cur = k; P.fb = null; P.hinted = false; }
+      render(); return true;
+    }
+    case 't3retry': { const c = t3ctx() || {}; const h = cur().v === 'tlearn' ? S.t3.learn : ui.t3pp; h.fb = null; h.hinted = false; if (cur().v === 'tlearn') save(); render(); return true; }
+    case 't3skipblank': {
+      if (cur().v === 'tlearn') { const L = S.t3.learn, F = L.fill, k = feKey(F); F.done[k] = true; F.cur = k; L.fb = null; L.hinted = false; t3FillAdvance(L); save(); }
+      else { const P = ui.t3pp, k = feKey(P); P.done[k] = true; P.cur = k; P.fb = null; P.hinted = false; feNext(P); }
+      render(true); return true;
+    }
+    case 't3ppstart': ppStart(id, (ui.t3ppPref || {}).mode, (ui.t3ppPref || {}).sent); render(); return true;
+    case 't3ppmode': { const P = ui.t3pp; ui.t3ppPref = { mode: el.dataset.v, sent: P.sent }; ppStart(P.arg, el.dataset.v, P.sent); render(); return true; }
+    case 't3ppsent': { const P = ui.t3pp; ui.t3ppPref = { mode: P.mode, sent: !P.sent }; ppStart(P.arg, P.mode, !P.sent); render(); return true; }
+    case 't3ppreset': { const P = ui.t3pp; ppStart(P.arg, P.mode, P.sent); render(); return true; }
+    case 't3ppexit': ui.t3pp = null; render(); return true;
     case 't3fav': { S.t3.fav[id] = !S.t3.fav[id]; if (!S.t3.fav[id]) delete S.t3.fav[id]; save(); render(); toast(S.t3.fav[id] ? '已收藏' : '已取消收藏'); return true; }
     case 't3set': { const k = el.dataset.k; S.t3.set[k] = !S.t3.set[k]; save(); render(); return true; }
     case 't3clearexam': S.t3.set.exam = ''; S.t3.set.shrink = false; save(); render(); return true;
@@ -4348,6 +4497,10 @@ render(true);
       var terms = A.T.topic.get('med').terms; termDue(terms[0], 0, today()); termDue(terms[2], 1, today());
       done('已造好：补练 1 条、论点 4 个（次日 / 3 天 / 7 天 / 14 天各一个）、话题词汇 2 个'); A.goRoot({ v: 'today' });
     },
+    paraPractice: function () {
+      A.goRoot({ v: 'ttopic', id: sel.topic }); A.go({ v: 'tpara', id: sel.arg }); close();
+      var b = document.querySelector('[data-a="t3ppstart"]'); if (b) b.click();
+    },
     afterLearn: function () {
       reset();
       var ids = comboArgs(); makeCombo(sel.topic, ids);
@@ -4439,13 +4592,14 @@ render(true);
       '<button class="b" data-tb="sc" data-s="learnPick">从选论点开始<small>完整新学 5 步</small></button>' +
       '<button class="b" data-tb="sc" data-s="learnFresh2">只剩 1 个论点没学<small>第二个写作组合</small></button>' +
       '<button class="b" data-tb="sc" data-s="afterLearn">刚学完，等明天复习<small>再点“前进 1 天”</small></button>' +
+      '<button class="b" data-tb="sc" data-s="paraPractice">范文默写练习<small>不记录，可换难度</small></button>' +
       '</div></section>' +
 
       '<section class="tb-sec"><h4>复习 · 选中的论点</h4><div class="tb-grid">' +
       '<button class="b" data-tb="tier" data-n="0">次日档<small>逐条默写</small></button>' +
       '<button class="b" data-tb="tier" data-n="1">3 天档<small>默写论点句 → 范文填空</small></button>' +
-      '<button class="b" data-tb="tier" data-n="2">7 天档<small>只给中文论点，回忆全部</small></button>' +
-      '<button class="b" data-tb="tier" data-n="3">14 天档<small>范文填空（只给中文）</small></button>' +
+      '<button class="b" data-tb="tier" data-n="2">7 天档<small>范文填空（只给中文）</small></button>' +
+      '<button class="b" data-tb="tier" data-n="3">14 天档<small>只给中文论点，回忆全部</small></button>' +
       '<button class="b" data-tb="tier" data-n="4">30 天档<small>同 14 天，记得后保持</small></button>' +
       '<button class="b" data-tb="sc" data-s="makeup">补练一条<small>上次忘记的单条</small></button>' +
       '</div></section>' +
