@@ -933,6 +933,11 @@ button.r-row:hover { background: var(--linen); }
   .r-wcard { grid-template-columns: minmax(0, 1fr); grid-template-areas: "txt" "mid" "wr" "wside"; }
   .r-wcard .wside { align-items: flex-start; }
 }
+
+/* v7 修改：薄弱默认只有小标签，点“薄弱标浅红”才整行标出；排序方向 */
+.r-chip.hichip.on { background: var(--wk-tag); border-color: var(--wk-line); color: var(--wk-txt); font-weight: 500; }
+.r-weakkey.plain { color: var(--warm); font-weight: 400; } .r-weakkey.plain i { display: none; }
+.r-sort button.dir { border: 1px solid var(--line); background: var(--paper); color: var(--ink); margin-left: 4px; }
 </style>
 </head>
 <body>
@@ -4171,19 +4176,19 @@ function recAll() {
     const tp = T.topic.get(A.topic);
     for (const id of A.items) {
       const it = T.item.get(id), ir = S.t3.it[id] || {};
-      out.push({ id, en: it.en, zh: it.zh, src: 'topic', sub: `${tp.name} · 论点 ${A.n} · ${it.role}`, stage: r.stage, next: r.next, pend: !!r.pend, hist: (ir.hist || []).map(h => h.r), wrongs: ir.wrongs || [], wrongN: (ir.wrongs || []).length, makeup: ir.makeup, route: t3route(id), arg: aid });
+      out.push({ id, en: it.en, zh: it.zh, src: 'topic', sub: `${tp.name} · 论点 ${A.n} · ${it.role}`, stage: r.stage, next: r.next, pend: !!r.pend, first: ((ir.hist || [])[0] || (r.hist || [])[0] || {}).t || r.last || 0, hist: (ir.hist || []).map(h => h.r), wrongs: ir.wrongs || [], wrongN: (ir.wrongs || []).length, makeup: ir.makeup, route: t3route(id), arg: aid });
     }
   }
   for (const [id, t] of T.term) {
     const r = S.t3.term[id];
     if (!r || r.mode !== 'memory' || r.stage == null) continue;
-    out.push({ id, en: t.en, zh: t.zh, src: 'term', sub: `${T.topic.get(t.topic).name} · ${t.cat}`, stage: r.stage, next: r.next, hist: (r.hist || []).map(h => h.r), wrongs: r.wrongs || [], wrongN: (r.wrongs || []).length, route: 'tterm:' + id });
+    out.push({ id, en: t.en, zh: t.zh, src: 'term', sub: `${T.topic.get(t.topic).name} · ${t.cat}`, stage: r.stage, next: r.next, first: ((r.hist || [])[0] || {}).t || r.last || 0, hist: (r.hist || []).map(h => h.r), wrongs: r.wrongs || [], wrongN: (r.wrongs || []).length, route: 'tterm:' + id });
   }
   for (const [id, it] of ITEMS) {
     if (!active(id) || modeOf(id) !== 'memory' || !studied(id)) continue;
     const s = S.items[id], G = GROUPS.get(it.gid) || {};
     const src = it.lib === 'notes' ? 'notes' : it.lib === 'function' ? 'fn' : 'old';
-    out.push({ id, en: it.en, zh: it.type === 'grammar' ? '改正：' + it.wrong : it.zh, src, sub: src === 'old' ? '旧版 · ' + (G.name || '') : src === 'fn' ? '功能表达 · ' + (G.fn || '') : '写作笔记 · ' + TYPE_LABEL[it.type], stage: Math.min(s.stage, LADDER.length - 1), next: s.next, hist: (s.hist || []).map(h => h.r), wrongs: [], wrongN: s.wrong || 0, route: 'item:' + id });
+    out.push({ id, en: it.en, zh: it.type === 'grammar' ? '改正：' + it.wrong : it.zh, src, sub: src === 'old' ? '旧版 · ' + (G.name || '') : src === 'fn' ? '功能表达 · ' + (G.fn || '') : '写作笔记 · ' + TYPE_LABEL[it.type], stage: Math.min(s.stage, LADDER.length - 1), next: s.next, first: ((s.hist || [])[0] || {}).t || s.last || 0, hist: (s.hist || []).map(h => h.r), wrongs: [], wrongN: s.wrong || 0, route: 'item:' + id });
   }
   out.forEach(x => { x.weak = weakOf(x); });
   return out;
@@ -4201,9 +4206,10 @@ function dueOnDay(t) { return t <= dayStart() ? dueCount() : t3dueOn(t) + oldDue
 function recTabs(cur) {
   return `<div class="seg" role="group" aria-label="学习记录分页">${[['overview', '概览'], ['list', '词条清单'], ['sched', '复习日程'], ['weak', '薄弱项']].map(([k, t]) => `<button type="button" data-a="t3rectab" data-v="${k}" aria-pressed="${cur === k}">${t}</button>`).join('')}</div>`;
 }
-function recLadder(x, small) {
+const weakHi = () => !!S.t3.set.weakHi;
+function recLadder(x, small, forceRed) {
   const n = ladder().length, cur = Math.min(x.stage, n - 1);
-  let out = `<span class="r-lad ${x.weak ? 'weak' : ''} ${small ? 'sm' : ''}" aria-label="${STAGE_LABEL[cur]}">`;
+  let out = `<span class="r-lad ${x.weak && (forceRed || weakHi()) ? 'weak' : ''} ${small ? 'sm' : ''}" aria-label="${STAGE_LABEL[cur]}">`;
   for (let i = 0; i < n; i++) out += `<i class="${i < cur ? 'on' : i === cur ? 'cur' : ''}"></i>` + (i < n - 1 ? `<b class="${i < cur ? 'on' : ''}"></b>` : '');
   return out + '</span>';
 }
@@ -4262,24 +4268,34 @@ function recOverview(all) {
 
 /* ---------- 词条清单 ---------- */
 function recList(all) {
-  const f = ui.recSrc || 'all', q = (ui.recQ || '').trim().toLowerCase(), weakOnly = !!ui.recWeak, sort = ui.recSort || 'next';
+  const f = ui.recSrc || 'all', q = (ui.recQ || '').trim().toLowerCase(), weakOnly = !!ui.recWeak;
+  const sort = S.t3.set.recSort || 'stage', flip = !!S.t3.set.recFlip, hi = weakHi();
   let xs = all.filter(x => (f === 'all' || x.src === f) && (!weakOnly || x.weak) && (!q || (x.en + ' ' + x.zh).toLowerCase().includes(q)));
   const nextKey = x => x.pend ? -1 : x.next;
-  xs.sort(sort === 'stage' ? (a, b) => a.stage - b.stage || nextKey(a) - nextKey(b) : sort === 'wrong' ? (a, b) => b.wrongN - a.wrongN || nextKey(a) - nextKey(b) : (a, b) => nextKey(a) - nextKey(b) || (b.weak ? 1 : 0) - (a.weak ? 1 : 0));
+  /* 每种排序的“默认方向”：档位从长到短、下次复习从近到远、学习时间从新到旧、写错从多到少 */
+  const cmp = {
+    stage: (a, b) => b.stage - a.stage || nextKey(a) - nextKey(b),
+    next: (a, b) => nextKey(a) - nextKey(b) || b.stage - a.stage,
+    first: (a, b) => b.first - a.first || nextKey(a) - nextKey(b),
+    wrong: (a, b) => b.wrongN - a.wrongN || nextKey(a) - nextKey(b),
+  }[sort] || ((a, b) => 0);
+  xs.sort(flip ? (a, b) => -cmp(a, b) : cmp);
   const srcs = ['topic', 'term', 'notes', 'fn', 'old'].filter(k => all.some(x => x.src === k));
   const weakN = all.filter(x => x.weak).length;
   const n = ladder().length;
   const head = `<div class="r-row head"><span>表达</span><span>来源</span><span class="r-ladhead">${STAGE_LABEL.slice(0, n).map(s => `<small>${s.replace('档', '')}</small>`).join('')}</span><span style="text-align:right">下次复习</span></div>`;
-  const rows = xs.map(x => `<button class="r-row ${x.weak ? 'weak' : ''}" type="button" data-go="${esc(x.route)}">
+  const rows = xs.map(x => `<button class="r-row ${x.weak && hi ? 'weak' : ''}" type="button" data-go="${esc(x.route)}">
       <span class="txt"><span class="en">${esc(x.en)}</span><small>${esc(x.zh)}</small>${x.weak ? `<span class="r-weak"><em>薄弱</em>${esc(x.weak)}</span>` : ''}</span>
       <span class="rsrc">${srcTag(x.src)}</span>${recLadder(x)}${recNext(x)}</button>`).join('');
   return `<div class="r-filters">
       ${[['all', '全部', all.length]].concat(srcs.map(k => [k, SRC3[k][0], all.filter(x => x.src === k).length])).map(([k, t, c]) => `<button class="r-chip ${f === k ? 'on' : ''}" type="button" data-a="t3recsrc" data-v="${k}">${t} ${c}</button>`).join('')}
       <button class="r-chip weakchip ${weakOnly ? 'on' : ''}" type="button" data-a="t3recweak">只看薄弱 ${weakN}</button>
+      <button class="r-chip hichip ${hi ? 'on' : ''}" type="button" data-a="t3rechi" aria-pressed="${hi}">${hi ? '✓ ' : ''}薄弱标浅红</button>
       <input class="r-search" type="search" data-recq value="${esc(ui.recQ || '')}" placeholder="搜索英文或中文" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="搜索词条">
     </div>
-    <div class="r-meta"><span>${recLadder({ stage: 2, weak: false }, true)} 走到第几格 = 记得多牢</span><span class="r-weakkey"><i></i>浅红 = 薄弱</span>
-      <span class="r-sort">排序 ${[['next', '下次复习'], ['stage', '档位'], ['wrong', '写错次数']].map(([k, t]) => `<button type="button" class="${sort === k ? 'on' : ''}" data-a="t3recsort" data-v="${k}">${t}</button>`).join('')}</span></div>
+    <div class="r-meta"><span>${recLadder({ stage: 2, weak: false }, true)} 走到第几格 = 记得多牢</span><span class="r-weakkey ${hi ? '' : 'plain'}"><i></i>${hi ? '浅红 = 薄弱' : '“薄弱”小标签 = 薄弱'}</span>
+      <span class="r-sort">排序 ${[['stage', '档位'], ['next', '下次复习'], ['first', '学习时间'], ['wrong', '写错次数']].map(([k, t]) => `<button type="button" class="${sort === k ? 'on' : ''}" data-a="t3recsort" data-v="${k}">${t}</button>`).join('')}
+        <button type="button" class="dir" data-a="t3recdir" aria-label="切换排序方向">⇅ ${{ stage: ['进度长 → 短', '进度短 → 长'], next: ['近 → 远', '远 → 近'], first: ['最新学的在前', '最早学的在前'], wrong: ['写错多 → 少', '写错少 → 多'] }[sort][flip ? 1 : 0]}</button></span></div>
     ${xs.length ? `<div class="r-table">${head}${rows}</div>` : `<div class="empty"><h3>${all.length ? '没有符合条件的条目' : '还没有学过的内容'}</h3><p>${all.length ? '换一个筛选试试。' : '完成第一组新学后，这里会列出每一条的档位和下次复习日期。'}</p></div>`}
     <p class="note-line">点一行进入详情页，返回回到这里。主题表达的论点句和展开表达跟着论点一起复习，所以同一个论点的几条日期相同。</p>`;
 }
@@ -4326,7 +4342,7 @@ function recSched(all) {
       <div class="r-scal">${cells}</div><span class="note-line">格子里的数字 = 那天到期的条数，颜色越深越多；今天包含逾期的内容。点某一天看具体内容。</span></section>
     <section class="r-card line"><div class="r-card-head"><b class="r-dtitle">${label}</b><span class="muted">${items} 条 · 约 ${Math.max(1, Math.round(items * 1.3))} 分钟</span></div>
       <span class="note-line">${Object.entries(kinds).map(([k, v]) => `${k} ${v}${k === '论点' ? ' 个' : ''}`).join(' · ') || '这一天没有到期的内容'}</span>
-      <div class="r-daylist">${rows.map(r => `<button class="r-dayrow ${r.x && r.x.weak ? 'weak' : ''}" type="button" data-go="${esc(r.route)}"><span class="txt"><span class="en">${esc(r.en)}</span><small>${esc(r.zh)}</small><span class="r-kind">${r.kind}${r.x && r.x.weak ? ' · <em>薄弱</em>' : ''}</span></span>${r.x && r.x.stage != null ? recLadder(r.x, true) : ''}</button>`).join('')}</div></section>
+      <div class="r-daylist">${rows.map(r => `<button class="r-dayrow ${r.x && r.x.weak && weakHi() ? 'weak' : ''}" type="button" data-go="${esc(r.route)}"><span class="txt"><span class="en">${esc(r.en)}</span><small>${esc(r.zh)}</small><span class="r-kind">${r.kind}${r.x && r.x.weak ? ' · <em>薄弱</em>' : ''}</span></span>${r.x && r.x.stage != null ? recLadder(r.x, true) : ''}</button>`).join('')}</div></section>
   </div>`;
 }
 
@@ -4347,7 +4363,7 @@ function recWeak(all) {
       <button class="txt t-plain" type="button" data-go="${esc(x.route)}"><span class="en">${esc(x.en)}</span><small>${esc(x.zh)}</small></button>
       <span class="mid">${srcTag(x.src)}<span class="why">${esc(x.weak)}</span>${rdots3(x.hist)}</span>
       <span class="wr">${wrongTxt(x)}</span>
-      <span class="wside">${recLadder(x)}<small>下次复习：<b>${x.pend ? '等确认' : relDay(x.next)}</b></small><button class="btn btn-outline btn-sm" type="button" data-a="t3recprac" data-id="${esc(x.id)}">练一遍（不记录）</button></span></div>`).join('')}</div>`
+      <span class="wside">${recLadder(x, false, true)}<small>下次复习：<b>${x.pend ? '等确认' : relDay(x.next)}</b></small><button class="btn btn-outline btn-sm" type="button" data-a="t3recprac" data-id="${esc(x.id)}">练一遍（不记录）</button></span></div>`).join('')}</div>`
       : '<div class="empty"><h3>现在没有薄弱的条目</h3><p>上次忘记、或最近几次老是模糊的条目会出现在这里。</p></div>'}
     ${top.length ? `<section class="r-card line"><div class="r-card-head"><b>写错最多的</b></div><div class="r-recent">${top.map(x => `<button class="t-plain r-toprow" type="button" data-go="${esc(x.route)}"><span class="en">${esc(x.en)}</span><span class="muted">${x.wrongN} 次</span></button>`).join('')}</div></section>` : ''}`;
 }
@@ -4362,7 +4378,9 @@ function recClick(a, el) {
     case 't3rectab': ui.recTab = el.dataset.v; render(true); return true;
     case 't3recsrc': ui.recSrc = el.dataset.v; render(); return true;
     case 't3recweak': ui.recWeak = !ui.recWeak; render(); return true;
-    case 't3recsort': ui.recSort = el.dataset.v; render(); return true;
+    case 't3recsort': { const k = el.dataset.v; if ((S.t3.set.recSort || 'stage') === k) S.t3.set.recFlip = !S.t3.set.recFlip; else { S.t3.set.recSort = k; S.t3.set.recFlip = false; } save(); render(); return true; }
+    case 't3recdir': S.t3.set.recFlip = !S.t3.set.recFlip; save(); render(); return true;
+    case 't3rechi': S.t3.set.weakHi = !S.t3.set.weakHi; save(); render(); return true;
     case 't3recday': ui.recDay = +el.dataset.v; render(); return true;
     case 't3recprac': ui.t3prac = { ids: [el.dataset.id], i: 0, fb: null }; go({ v: 'tprac' }); return true;
     case 't3recpracall': ui.t3prac = { ids: recAll().filter(x => x.weak).map(x => x.id), i: 0, fb: null }; go({ v: 'tprac' }); return true;
