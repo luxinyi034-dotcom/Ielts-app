@@ -963,6 +963,81 @@ button.d-cmprow:hover, .d-sib:hover { outline: 1.5px solid var(--line); }
   .d-cmprow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .d-cmprow.head { display: none; }
 }
+
+/* ---------- v8 改版：词典式详情页（BA–BD）+ 右边一栏（AT） ---------- */
+.d-detail { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 28px; align-items: start; }
+.d-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.d-head { display: flex; flex-direction: column; gap: 6px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.d-kind { font-size: 12.5px; letter-spacing: .08em; color: var(--sage-deep); font-weight: 600; }
+.d-word { font-size: 40px; line-height: 1.2; color: var(--ink); }
+.d-zh { font-family: var(--f-title); font-size: 19px; color: var(--warm); }
+.d-sec { display: flex; flex-direction: column; gap: 12px; }
+.d-lab { display: flex; align-items: center; gap: 10px; }
+.d-lab b { font-size: 12px; letter-spacing: .1em; color: var(--sage-deep); }
+.d-lab i { flex: 1; height: 1px; background: var(--line); opacity: .7; }
+.d-lab small { font-size: 12px; color: var(--muted); }
+.d-quote { border-left: 3px solid var(--sage-deep); padding: 2px 0 2px 16px; display: flex; flex-direction: column; gap: 3px; }
+.d-quote .en { font-size: 22px; line-height: 1.5; color: var(--ink); }
+.d-quote.sm .en { font-size: 17px; }
+.d-quote small { font-size: 13.5px; color: var(--warm); }
+.d-src { border: 0; background: transparent; padding: 0; text-align: left; font-size: 11.5px; color: var(--muted); }
+.d-dl { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 10px 14px; font-size: 15px; align-items: baseline; line-height: 1.6; }
+.d-dl > span { font-size: 12.5px; color: var(--muted); }
+.d-dl .en { font-family: var(--f-en); }
+.d-x { color: var(--wrong); text-decoration-thickness: 1.5px; }
+.d-col { font-size: 21px; color: var(--ink); }
+.d-sibs { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.d-sibs button { border: 0; background: transparent; padding: 0; font-size: 16px; color: var(--warm); text-align: left; }
+.d-sibs button:hover { color: var(--sage-deep); text-decoration: underline; }
+.d-sibs i { font-style: normal; color: var(--muted); }
+.d-pair { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px 10px; align-items: baseline; }
+.d-pair b.x { color: var(--wrong); } .d-pair b.ok { color: var(--sage-deep); }
+.d-pair .en { font-size: 22px; }
+.d-rule { margin: 0; font-size: 16px; line-height: 1.7; }
+.d-struct { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.d-struct .d-fixed { background: transparent; border-radius: 0; padding: 0; font-size: 22px; color: var(--ink); border-bottom: 2.5px solid var(--sage-deep); }
+.d-word .d-slot { font-size: 16px; }
+.d-foldwrap { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.d-fold { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; border: 0; background: transparent; font-size: 14px; text-align: left; color: var(--ink); }
+.d-fold small { font-size: 12.5px; color: var(--muted); }
+.d-foldin { padding-bottom: 12px; }
+/* 右边一栏 */
+.d-side { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 18px; }
+.d-st { position: relative; border-radius: 18px; background: var(--paper-2); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.d-sthead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.d-sthead b { font-family: var(--f-title); font-size: 20px; font-weight: 600; }
+.d-stsub { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--warm); }
+.d-dots span { flex-direction: row; } .d-dots i { width: 10px; height: 10px; } .d-dots span { font-size: 0; }
+.d-modebtn { min-height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); font-size: 12.5px; color: var(--ink); }
+.d-modebtn[aria-expanded="true"] { border-color: var(--sage-deep); }
+.d-menu { position: absolute; right: 10px; top: 48px; z-index: 5; width: 220px; border-radius: 14px; background: #FFFFFF; border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(63,74,65,.14); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.d-menu button { display: flex; flex-direction: column; align-items: flex-start; padding: 8px 12px; border: 0; border-radius: 10px; background: transparent; text-align: left; color: var(--ink); }
+.d-menu button.on { background: var(--sage-soft); } .d-menu button.on b { color: var(--sage-deep); }
+.d-menu b { font-size: 14px; } .d-menu small { font-size: 11.5px; color: var(--muted); }
+.d-next { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-radius: 18px; border: 1.5px solid var(--sage-deep); background: #FFFFFF; text-align: left; color: var(--ink); }
+.d-next span { display: flex; flex-direction: column; min-width: 0; }
+.d-next small { font-size: 12px; color: var(--muted); }
+.d-next b { font-size: 17px; line-height: 1.35; font-weight: 600; }
+.d-next svg, .d-pracbtn svg { width: 18px; height: 18px; flex: none; color: inherit; }
+.d-side .d-pracbtn { border-radius: 18px; padding: 12px 16px; }
+.d-rows { display: flex; flex-direction: column; padding: 0 4px; }
+.d-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 11px 0; border: 0; border-top: 1px solid var(--line); background: transparent; font-size: 14px; color: var(--ink); text-align: left; }
+.d-row .muted { font-size: 13px; }
+.d-rowin { display: flex; flex-direction: column; gap: 6px; padding: 2px 0 12px; }
+.d-notefull { font-size: 13px; color: var(--warm); white-space: pre-wrap; padding: 0 0 10px; margin-top: -4px; }
+.d-foot { display: flex; gap: 6px; align-items: center; padding: 0 4px; font-size: 12.5px; color: var(--muted); }
+.d-foot button { border: 0; background: transparent; padding: 0; font-size: 12.5px; color: var(--muted); }
+.d-foot button.danger { color: var(--wrong); }
+@media (max-width: 900px) {
+  .d-detail { grid-template-columns: minmax(0, 1fr); }
+  .d-side { position: static; }
+}
+@media (max-width: 640px) {
+  .d-word { font-size: 30px; }
+  .d-quote .en, .d-pair .en, .d-struct .d-fixed { font-size: 19px; }
+  .d-dl { grid-template-columns: 68px minmax(0, 1fr); }
+}
+.d-hl { background: var(--sage-soft); color: var(--sage-deep); border-radius: 5px; padding: 0 4px; }
 </style>
 </head>
 <body>
@@ -4426,7 +4501,7 @@ function recInput(t) {
 T3VIEWS.records = vRecords3;
 
 /* ============================================================
-   详情页：功能表达（AM）· 表达卡（AN）· 句型卡（AO）· 语法卡（AP）
+   详情页：功能表达 · 表达卡 · 句型卡 · 语法卡（左边词典式 BA–BD，右边 AT）
    练一遍（AR）：单独的练习页，不记录、不改复习安排
    ============================================================ */
 const DETAIL_FIELDS = {
@@ -4435,20 +4510,16 @@ const DETAIL_FIELDS = {
   grammar: [['rule', '规则'], ['ex', '更多正确例句'], ['limit', '使用限制 / 例外']],
 };
 const PRAC_HOW = { fn: '看中文写出这条表达', expr: '看中文写出英文', pattern: '看中文功能写出句型', grammar: '看错误句子改成正确的' };
-const PRAC_TAG = { fn: 'grammar', expr: 'expr', pattern: 'pattern', grammar: 'grammar' };
+const PRAC_TAG = { fn: 'expr', expr: 'expr', pattern: 'expr', grammar: 'expr' };
 
 // 句型里 … 前后的固定部分；练一遍和结构拆解都用它
 const patParts = en => en.split(/\s*(?:\.\.\.|…)\s*/).map(x => x.trim());
 function pracAns(it) { return it.type === 'fn' || it.type === 'pattern' ? fixedPart(it.en) : it.en; }
 
-function dHero(tags, enHTML, zh, size) {
-  return `<section class="t-hero"><div class="tags">${tags.join('')}</div>
-    <div class="en t-hero-en" style="font-size:${size}px">${enHTML}</div>${zh ? `<div class="zh">${esc(zh)}</div>` : ''}</section>`;
-}
-function patHTML(en, big) {
+function patHTML(en) {
   const ps = patParts(en);
   if (ps.length < 2) return esc(en);
-  return ps.map((p, i) => (p ? esc(p) : '') + (i < ps.length - 1 ? `<span class="d-slot${big ? ' big' : ''}">${i === 0 && ps.length === 2 ? '自己填' : '…'}</span>` : '')).join(' ');
+  return ps.map((p, i) => (p ? esc(p) : '') + (i < ps.length - 1 ? `<span class="d-slot">${ps.length === 2 ? '自己填' : '…'}</span>` : '')).join(' ');
 }
 // 例句里要标出的部分：整条找不到时，去掉开头的 have / be 等动词再找（has had a profound impact on）
 function exHL(v, it) {
@@ -4458,111 +4529,121 @@ function exHL(v, it) {
   const rest = en.split(' ').slice(1).join(' ');
   return rest && low.includes(rest.toLowerCase()) ? [rest] : [en];
 }
-function badGood(bad, good) {
-  return `<div class="t-grid2"><div class="t-badbox"><small>✕ 错误写法</small><span class="en">${bad}</span></div><div class="t-okbox"><small>✓ 正确写法</small><span class="en">${good}</span></div></div>`;
+// 搭配里用 / 隔开的几个词可以互换，标出来
+function colHTML(t) {
+  return esc(t).replace(/[A-Za-z'-]+(?:\s*\/\s*[A-Za-z'-]+)+/g, m => `<span class="d-hl">${m}</span>`);
+}
+// 常见错误写成“错 → 对”时，错的部分划掉
+function errHTML(t) {
+  const m = String(t).split(/\s*(?:→|->)\s*/);
+  return m.length === 2 ? `<span class="en"><s class="d-x">${esc(m[0])}</s> → ${esc(m[1])}</span>` : esc(t);
 }
 
-function itemWrongs(it) {
-  const s = S.items[it.id] || {}, ans = it.en;
-  const list = (s.wrongs || []).slice(-5).reverse().map(w => ({ label: `${fmtMD(w.t)} · ${RL3[w.r] || '写错'}`, input: w.input }));
-  if (it.type === 'grammar' && it.wrong) list.push({ label: '原始笔记 · 导入时的错误写法', input: it.wrong });
-  if (!list.length) return `<span class="note-line">还没有写错过。${s.wrong ? `（之前写错过 ${s.wrong} 次，没有留下原文）` : '复习时写错的答案会自动收在这里。'}</span>`;
-  return list.map(w => { const d = diff(w.input, ans); return `<div class="t-wrong"><small>${esc(w.label)}</small><span class="en">${d.userHTML}</span><span class="en ok">→ ${esc(ans)}</span></div>`; }).join('');
-}
-
-function itemSide(it, G) {
-  const s = S.items[it.id] || {}, m = modeOf(it.id), notes = it.lib === 'notes';
-  const set = notes ? noteSet(it.setId) : null;
-  const path = notes
-    ? `我的写作笔记 › ${esc(set ? set.title : '手动添加')} › <b>${esc(G.ids.length < 2 ? '独立卡片' : G.name)}</b>`
-    : `功能表达 › <b>${esc(G.fn)}</b>`;
-  let status;
-  if (!confirmedItem(it)) status = `<b class="t-stage">待整理</b><span class="note-line">这份笔记还没确认，确认后才进入学习。</span>`;
-  else if (m === 'reference') status = `<b class="t-stage">资料 · 不复习</b><span class="note-line">${notes ? '' : '功能表达默认是资料；'}切到“记忆”后才进入新学和复习。</span>`;
-  else if (m === 'paused') status = `<b class="t-stage">暂缓</b><span class="note-line">先放一边，不出现在新学和复习里。</span>`;
-  else if (s.stage == null) status = `<b class="t-stage">等待学习</b><span class="note-line">在“今日学习”里学过之后开始安排复习。</span>`;
-  else status = `<b class="t-stage">${s.next <= dayStart() ? '今天要复习' : STAGE_LABEL[Math.min(s.stage, LADDER.length - 1)] + ' · 下次 ' + fmtMD(s.next)}</b><span class="note-line">每张卡单独安排</span>${histDots(s.hist)}`;
-  const raw = notes && it.raw ? `<div class="blk"><small>原始笔记</small><span class="d-raw">${it.line ? `第 ${it.line} 行 · ` : ''}${esc(it.raw)}</span></div>` : '';
-  const open = ui.noteOpen === it.id;
-  const note = s.note && !open
-    ? `<div class="d-note">${esc(s.note)}</div><button class="t-link-btn" type="button" data-a="dnote" data-id="${esc(it.id)}">修改备注</button>`
-    : open ? `<textarea class="note" data-note="${esc(it.id)}" placeholder="记录自己的用法、易错点或出处">${esc(s.note || '')}</textarea><button class="t-link-btn" type="button" data-a="dnote" data-id="">收起</button>`
-    : `<button class="t-link-btn" type="button" data-a="dnote" data-id="${esc(it.id)}">＋ 写备注</button>`;
-  const idx = G.ids.indexOf(it.id), nextId = G.ids[(idx + 1) % G.ids.length];
-  const edit = notes || it.custom;
-  return `<aside class="t-dside">
-    <div class="blk"><small>在哪里</small><span class="path">${path}</span><button class="t-link-btn" type="button" data-go="group:${esc(G.id)}">${notes ? '回到这一组 ›' : '查看这个功能的全部表达 ›'}</button></div>
-    ${raw}
-    <div class="blk"><small>学习方式</small>${modeToggle(it.id, true)}<span class="note-line">资料只查阅，不进新学和复习；暂缓先放一边，之后再决定。</span></div>
-    <div class="blk"><small>复习状态</small>${status}</div>
-    <div class="blk"><small>我写错过的</small>${itemWrongs(it)}</div>
-    <div class="blk"><small>个人备注</small>${note}</div>
-    <div class="blk">
-      <button class="d-pracbtn" type="button" data-a="dprac" data-id="${esc(it.id)}"><span><b>练一遍</b><small>${PRAC_HOW[it.type]} · 不记录成绩</small></span>${svg('chev')}</button>
-      <div class="btn-row">${G.ids.length > 1 ? `<button class="btn btn-outline btn-sm" type="button" data-a="nextitem" data-id="${esc(nextId)}">组内下一条</button>` : ''}
-        ${edit ? `<button class="btn btn-soft btn-sm" type="button" data-go="edit:${esc(it.id)}">编辑卡片</button><button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button>` : ''}</div>
-    </div>
-  </aside>`;
-}
+/* ---------- 左边：词典式（设计稿 BA–BD） ---------- */
+const dHead = (kind, sub, enHTML, zh) => `<header class="d-head"><span class="d-kind">${kind}${sub ? '　·　' + esc(sub) : ''}</span><div class="en d-word">${enHTML}</div>${zh ? `<div class="d-zh">${esc(zh)}</div>` : ''}</header>`;
+const dSec = (t, body, note = '') => !body ? '' : `<section class="d-sec"><div class="d-lab"><b>${t}</b><i></i>${note ? `<small>${note}</small>` : ''}</div>${body}</section>`;
+const dQuote = (enHTML, zh, src, small) => `<div class="d-quote${small ? ' sm' : ''}">${src || ''}<span class="en">${enHTML}</span>${zh ? `<small>${esc(zh)}</small>` : ''}</div>`;
+const dDl = rows => { const r = rows.filter(x => x[1]); return r.length ? `<div class="d-dl">${r.map(([a, b]) => `<span>${a}</span><div>${b}</div>`).join('')}</div>` : ''; };
+const dFold = (k, title, sub, inner) => { const on = ui.dOpen === k; return `<div class="d-foldwrap"><button class="d-fold" type="button" data-a="dfold" data-k="${k}" aria-expanded="${on}"><span><b>${title}</b> <small>${sub}</small></span><span class="muted">${on ? '收起 ▴' : '展开 ▾'}</span></button>${on ? `<div class="d-foldin">${inner}</div>` : ''}</div>`; };
 
 function fnMain(it, G) {
   const others = G.ids.map(x => ITEMS.get(x));
+  const fp = fixedPart(it.en), low = fp.toLowerCase();
+  const used = [...T.arg.values()].filter(A => A.para.toLowerCase().includes(low)).slice(0, 2).map(A => {
+    const tp = T.topic.get(A.topic);
+    return dQuote(markText(sentenceWith(A.para, fp), [{ p: fp }]), '', `<button class="d-src" type="button" data-go="tpara:${A.id}">主题表达范文里用到 · ${esc(tp.name)} · 论点 ${A.n} ${esc(A.short)} ›</button>`, true);
+  }).join('');
   const cmp = `<div class="d-cmp"><div class="d-cmprow head"><span>表达</span><span>后面接</span><span>语气</span><span>区别</span></div>${others.map(o => {
     const cur = o.id === it.id;
     return `<${cur ? 'div' : `button type="button" data-go="item:${esc(o.id)}"`} class="d-cmprow ${cur ? 'cur' : ''}"><span class="en">${esc(o.en)}</span><span>${esc(o.syntax || '')}</span><span>${esc(o.tone || '')}</span><span class="muted">${esc(o.diff || '')}</span></${cur ? 'div' : 'button'}>`;
   }).join('')}</div>`;
-  const fp = fixedPart(it.en), low = fp.toLowerCase();
-  const used = [...T.arg.values()].filter(A => A.para.toLowerCase().includes(low)).slice(0, 2).map(A => {
-    const tp = T.topic.get(A.topic);
-    return `<button class="t-card2 line" type="button" data-go="tpara:${A.id}" style="text-align:left"><small class="muted">主题表达范文里用到 · ${esc(tp.name)} · 论点 ${A.n} ${esc(A.short)}</small><span class="en">${markText(sentenceWith(A.para, fp), [{ p: fp }])}</span></button>`;
-  }).join('');
-  const syn = it.syntax ? `<div class="t-card2"><span class="en d-syn">${esc(it.syntax)}</span></div>` : '';
-  return dHero([t3tag('功能表达', 'grammar'), t3tag(G.fn)], esc(it.en), it.zh, 30) +
-    (syn ? sec3('句法结构', '后面接什么', syn) : '') +
-    (it.tone ? sec3('语气', '', `<div class="chips">${it.tone.split(/[；;]/).map(x => x.trim()).filter(Boolean).map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>`) : '') +
-    (others.length > 1 ? sec3('近义比较', '同一个写作功能里怎么选', cmp) : '') +
-    (it.ex || used ? sec3('例句', '', `<div class="rows">${it.ex ? `<div class="t-card2"><span class="en">${highlightIn(it.ex, [fp])}</span></div>` : ''}${used}</div>`) : '') +
-    (it.err ? sec3('常见错误', '', `<div class="t-card2 d-err"><span>${esc(it.err)}</span></div>`) : '');
+  const names = others.filter(o => o.id !== it.id).map(o => fixedPart(o.en)).slice(0, 3).join(' / ');
+  return dHead('功能表达', G.fn, esc(it.en), it.zh) +
+    (it.ex || used ? dSec('例句', (it.ex ? dQuote(highlightIn(it.ex, [fp])) : '') + used) : '') +
+    dSec('用法', dDl([['后面接', esc(it.syntax || '')], ['语气', esc(it.tone || '')], ['常见错误', it.err ? errHTML(it.err) : '']])) +
+    (others.length > 1 ? dFold('cmp', '近义比较', `和 ${esc(names)} 怎么选`, cmp) : '');
 }
 
 function noteMain(it, G) {
-  const set = noteSet(it.setId);
-  const tags = [t3tag('写作笔记', 'expr'), t3tag(TYPE_LABEL[it.type], PRAC_TAG[it.type])];
-  if (G.ids.length > 1) tags.push(t3tag((it.type === 'expr' ? '语义组 · ' : '同组 · ') + G.name));
   const fieldsFor = DETAIL_FIELDS[it.type] || [];
   const missing = fieldsFor.filter(([k]) => !it[k]).map(([, l]) => l);
+  const sub = G.ids.length > 1 ? G.name : '独立卡片';
   let html;
   if (it.type === 'grammar') {
     const d = diff(it.wrong || '', it.en);
-    html = dHero(tags, esc(it.en), it.zh ? '中文解释：' + it.zh : '', 28) +
-      sec3('错误和正确对照', '划掉的是写错的地方', badGood(d.userHTML, d.correctHTML));
+    html = dHead('语法卡', sub, esc(it.en), it.zh) +
+      (it.wrong ? dSec('错误和正确', `<div class="d-pair"><b class="x">✕</b><span class="en">${d.userHTML}</span><b class="ok">✓</b><span class="en">${d.correctHTML}</span></div>`) : '') +
+      (it.rule ? dSec('规则', `<p class="d-rule">${esc(it.rule)}</p>`) : '') +
+      (it.ex ? dSec('更多正确例句', dQuote(esc(it.ex), '', '', true)) : '') +
+      (it.limit ? dSec('注意', dDl([['使用限制', esc(it.limit)]])) : '');
   } else if (it.type === 'pattern') {
     const ps = patParts(it.en);
-    html = dHero(tags, patHTML(it.en, true), it.zh ? '中文功能：' + it.zh : '', 28) +
-      (ps.length > 1 ? sec3('结构', '绿色是固定部分，要一字不差；虚线框是自己填的内容', `<div class="t-card2"><div class="d-struct">${ps.flatMap((p, i) => (p ? [`<span class="d-fixed en">${esc(p)}</span>`] : []).concat(i < ps.length - 1 ? ['<span class="d-slot">自己填</span>'] : [])).join('<i>+</i>')}</div></div>`) : '');
+    html = dHead('句型卡', sub, patHTML(it.en), it.zh) +
+      (ps.length > 1 ? dSec('结构', `<div class="d-struct">${ps.flatMap((p, i) => (p ? [`<span class="d-fixed en">${esc(p)}</span>`] : []).concat(i < ps.length - 1 ? ['<span class="d-slot">完整的内容（自己填）</span>'] : [])).join('<i>+</i>')}</div><small class="muted">下划线是固定部分，要一字不差；虚线框里自己填</small>`) : '') +
+      (it.ex ? dSec('例句', dQuote(highlightIn(it.ex, exHL(it.ex, it)))) : '') +
+      dSec('用法', dDl([['可替换', esc(it.slots || '')], ['适用场景', esc(it.scene || '')], ['常见错误', it.err ? errHTML(it.err) : '']]));
   } else {
-    html = dHero(tags, esc(it.en), it.zh, 30);
-  }
-  const card = (k, v) => {
-    if (k === 'ex') return `<div class="t-card2"><span class="en">${it.type === 'grammar' ? esc(v) : highlightIn(v, exHL(v, it))}</span></div>`;
-    if (k === 'col') return `<div class="t-card2"><span class="en">${esc(v)}</span></div>`;
-    return `<div class="t-card2"><span>${esc(v)}</span></div>`;
-  };
-  html += fieldsFor.filter(([k]) => it[k]).map(([k, l]) => sec3(l, '', card(k, it[k]))).join('');
-  if (it.type === 'expr' && G.ids.length > 1) {
     const sib = G.ids.filter(x => x !== it.id).map(x => ITEMS.get(x));
-    html += sec3('同组的其他表达', '同一个意思还能怎么说', `<div class="t-grid3">${sib.map(o => `<button class="t-card2 d-sib" type="button" data-go="item:${esc(o.id)}"><span class="en">${esc(o.en)}</span><small class="muted">${esc(o.zh || '')}</small></button>`).join('')}</div>`);
+    html = dHead('表达卡', sub, esc(it.en), it.zh) +
+      (it.ex ? dSec('例句', dQuote(highlightIn(it.ex, exHL(it.ex, it)))) : '') +
+      (it.col ? dSec('搭配', `<div class="en d-col">${colHTML(it.col)}</div>`, /\//.test(it.col) ? '标绿的词可以换着用' : '') : '') +
+      dSec('用法', dDl([['使用场景', esc(it.usage || '')], ['常见错误', it.err ? errHTML(it.err) : '']])) +
+      (sib.length ? dSec('同组的其他表达', `<div class="d-sibs">${sib.map(o => `<button class="en" type="button" data-go="item:${esc(o.id)}">${esc(o.en)}</button>`).join('<i>·</i>')}</div>`) : '');
   }
   if (missing.length) html += `<div class="fill-hint"><span>还可以补充：${missing.join('、')}</span><button class="btn btn-soft btn-sm" type="button" data-go="edit:${esc(it.id)}">补充内容</button></div>`;
   return html;
 }
 
+/* ---------- 右边一栏（设计稿 AT） ---------- */
+function itemWrongs(it) {
+  const s = S.items[it.id] || {}, ans = it.en;
+  const list = (s.wrongs || []).slice(-5).reverse().map(w => ({ label: `${fmtMD(w.t)} · ${RL3[w.r] || '写错'}`, input: w.input }));
+  if (it.type === 'grammar' && it.wrong) list.push({ label: '原始笔记 · 导入时的错误写法', input: it.wrong });
+  if (!list.length) return `<span class="note-line">${s.wrong ? `之前写错过 ${s.wrong} 次，没有留下原文。` : '还没有写错过。'}复习时写错的答案会自动收在这里。</span>`;
+  return list.map(w => { const d = diff(w.input, ans); return `<div class="t-wrong"><small>${esc(w.label)}</small><span class="en">${d.userHTML}</span><span class="en ok">→ ${esc(ans)}</span></div>`; }).join('');
+}
+function nextOf(it, G) {
+  if (G.ids.length > 1) return G.ids[(G.ids.indexOf(it.id) + 1) % G.ids.length];
+  if (it.lib !== 'notes') return null;
+  const ids = S.notes.items.filter(x => x.setId === it.setId).map(x => x.id);
+  return ids.length > 1 ? ids[(ids.indexOf(it.id) + 1) % ids.length] : null;
+}
+const MODE_OPTS = [['memory', '记忆', '进入新学和复习'], ['reference', '资料', '只查阅，不复习'], ['paused', '暂缓', '先放一边，之后再决定']];
+function itemSide(it, G) {
+  const s = S.items[it.id] || {}, m = modeOf(it.id), notes = it.lib === 'notes';
+  let big, sub;
+  if (!confirmedItem(it)) { big = '待整理'; sub = '这份笔记确认后才进入学习'; }
+  else if (m === 'reference') { big = '资料'; sub = '不复习 · 切到“记忆”后才进入新学和复习'; }
+  else if (m === 'paused') { big = '暂缓'; sub = '先放一边，不出现在新学和复习里'; }
+  else if (s.stage == null) { big = '等待学习'; sub = '在“今日学习”里学过之后开始安排复习'; }
+  else { big = s.next <= dayStart() ? '今天要复习' : STAGE_LABEL[Math.min(s.stage, LADDER.length - 1)]; sub = `下次 ${fmtMD(s.next)} ${histDots(s.hist).replace('t-dots', 't-dots d-dots')}`; }
+  const ml = MODE_OPTS.find(x => x[0] === m)[1];
+  const menu = ui.dMode === it.id ? `<div class="d-menu" role="menu">${MODE_OPTS.map(([k, t, d]) => `<button type="button" role="menuitemradio" aria-checked="${k === m}" data-a="dmodeset" data-id="${esc(it.id)}" data-m="${k}" class="${k === m ? 'on' : ''}"><b>${k === m ? '✓ ' : ''}${t}</b><small>${d}</small></button>`).join('')}</div>` : '';
+  const nid = nextOf(it, G), nx = nid && ITEMS.get(nid);
+  const wN = Math.max(s.wrong || 0, (s.wrongs || []).length) + (it.type === 'grammar' && it.wrong ? 1 : 0);
+  const row = (k, t, r) => `<button class="d-row" type="button" data-a="dfold" data-k="${k}" aria-expanded="${ui.dOpen === k}"><span>${t}</span><span class="muted">${r} ${ui.dOpen === k ? '▴' : '›'}</span></button>`;
+  const noteEdit = ui.noteOpen === it.id;
+  return `<aside class="d-side">
+    <div class="d-st"><div class="d-sthead"><b>${big}</b><button class="d-modebtn" type="button" data-a="dmode" data-id="${esc(it.id)}" aria-haspopup="menu" aria-expanded="${ui.dMode === it.id}">${ml} ▾</button></div><span class="d-stsub">${sub}</span>${menu}</div>
+    ${nx ? `<button class="d-next" type="button" data-a="nextitem" data-id="${esc(nid)}"><span><small>下一条</small><b class="en">${esc(nx.en)}</b></span>${svg('chev')}</button>` : ''}
+    <button class="d-pracbtn" type="button" data-a="dprac" data-id="${esc(it.id)}"><span><b>练一遍</b><small>${PRAC_HOW[it.type]} · 不记录</small></span>${svg('chev')}</button>
+    <div class="d-rows">
+      ${row('wr', '我写错过的', wN ? wN + ' 次' : '还没有')}${ui.dOpen === 'wr' ? `<div class="d-rowin">${itemWrongs(it)}</div>` : ''}
+      ${noteEdit ? `<div class="d-rowin"><span class="muted" style="font-size:12px">个人备注</span><textarea class="note" data-note="${esc(it.id)}" placeholder="记录自己的用法、易错点或出处">${esc(s.note || '')}</textarea><button class="t-link-btn" type="button" data-a="dnote" data-id="">保存并收起</button></div>`
+        : `<button class="d-row" type="button" data-a="dnote" data-id="${esc(it.id)}"><span>个人备注</span><span class="muted">${s.note ? '修改' : '＋ 写备注'} ›</span></button>${s.note ? `<div class="d-notefull">${esc(s.note)}</div>` : ''}`}
+      ${notes && it.raw ? row('raw', '原始笔记', it.line ? `第 ${it.line} 行` : '查看') + (ui.dOpen === 'raw' ? `<div class="d-rowin"><span class="d-raw">${esc(it.raw)}</span></div>` : '') : ''}
+    </div>
+    ${notes || it.custom ? `<div class="d-foot"><button type="button" data-go="edit:${esc(it.id)}">编辑卡片</button>·<button type="button" class="danger" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button></div>` : ''}
+  </aside>`;
+}
+
 function vItemDetail(it) {
   const G = GROUPS.get(it.gid);
+  if (ui.dFor !== it.id) { ui.dFor = it.id; ui.dOpen = null; ui.dMode = null; }
   const main = it.lib === 'function' ? fnMain(it, G) : noteMain(it, G);
   const s = S.items[it.id] || {};
   const fav = `<button class="btn ${s.fav ? 'btn-soft d-faved' : 'btn-outline'} btn-sm" type="button" data-a="fav" data-id="${esc(it.id)}" aria-pressed="${!!s.fav}">${s.fav ? '★ 已收藏' : '☆ 收藏'}</button>`;
-  return { title: it.lib === 'function' ? it.en : G.ids.length < 2 ? '独立卡片' : G.name, crumb: groupCrumb(G), actions: fav, body: `<div class="t-detail"><div class="t-dmain">${main}</div>${itemSide(it, G)}</div>` };
+  return { title: it.lib === 'function' ? it.en : G.ids.length < 2 ? '独立卡片' : G.name, crumb: groupCrumb(G), actions: fav, body: `<div class="d-detail"><div class="d-main">${main}</div>${itemSide(it, G)}</div>` };
 }
 
 /* ---------- 练一遍（AR） ---------- */
@@ -4587,6 +4668,9 @@ function detailClick(a, el) {
   const id = el.dataset.id;
   if (a === 'dnote') { const t = document.querySelector('textarea[data-note]'); if (t) { st(t.dataset.note).note = t.value.trim(); save(); }
     ui.noteOpen = id || null; render(); if (id) { const t = document.querySelector('[data-note]'); if (t) t.focus(); } return true; }
+  if (a === 'dfold') { const k = el.dataset.k; ui.dOpen = ui.dOpen === k ? null : k; render(); return true; }
+  if (a === 'dmode') { ui.dMode = ui.dMode === id ? null : id; render(); return true; }
+  if (a === 'dmodeset') { st(id).mode = el.dataset.m; ui.dMode = null; save(); render(); toast('已改为' + MODE_OPTS.find(x => x[0] === el.dataset.m)[1]); return true; }
   if (a === 'dprac') { ui.iprac = { id, fb: null, hinted: false }; go({ v: 'iprac' }); return true; }
   if (a === 'dpracagain') { ui.iprac.fb = null; ui.iprac.hinted = false; render(true); return true; }
   return false;
