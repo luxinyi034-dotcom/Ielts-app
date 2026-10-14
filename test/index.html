@@ -1041,12 +1041,6 @@ button.d-cmprow:hover, .d-sib:hover { outline: 1.5px solid var(--line); }
   .d-dl { grid-template-columns: 68px minmax(0, 1fr); }
 }
 .d-hl { background: var(--sage-soft); color: var(--sage-deep); border-radius: 5px; padding: 0 4px; }
-/* 下一条固定在右下角（版本标记和测试台按钮的上面） */
-.d-detail { padding-bottom: 96px; }
-.d-nextfix { position: fixed; z-index: 30; right: calc(58px + env(safe-area-inset-right, 0px)); bottom: calc(68px + env(safe-area-inset-bottom, 0px)); width: 260px; box-shadow: 0 10px 28px -8px rgba(63,74,65,.35); }
-@media (max-width: 720px) {
-  .d-nextfix { left: 16px; right: 16px; width: auto; bottom: calc(138px + env(safe-area-inset-bottom, 0px)); }
-}
 </style>
 </head>
 <body>
@@ -4634,16 +4628,16 @@ function itemSide(it, G) {
   const noteEdit = ui.noteOpen === it.id;
   return `<aside class="d-side">
     <div class="d-st"><div class="d-sthead"><b>${big}</b><button class="d-modebtn" type="button" data-a="dmode" data-id="${esc(it.id)}" aria-haspopup="menu" aria-expanded="${ui.dMode === it.id}">${ml} ▾</button></div><span class="d-stsub">${sub}</span>${menu}</div>
-    <button class="d-pracbtn" type="button" data-a="dprac" data-id="${esc(it.id)}"><span><b>练一遍</b><small>${PRAC_HOW[it.type]} · 不记录</small></span>${svg('chev')}</button>
     <div class="d-rows">
       ${row('wr', '我写错过的', wN ? wN + ' 次' : '还没有')}${ui.dOpen === 'wr' ? `<div class="d-rowin">${itemWrongs(it)}</div>` : ''}
       ${noteEdit ? `<div class="d-rowin"><span class="muted" style="font-size:12px">个人备注</span><textarea class="note" data-note="${esc(it.id)}" placeholder="记录自己的用法、易错点或出处">${esc(s.note || '')}</textarea><button class="t-link-btn" type="button" data-a="dnote" data-id="">保存并收起</button></div>`
         : `<button class="d-row" type="button" data-a="dnote" data-id="${esc(it.id)}"><span>个人备注</span><span class="muted">${s.note ? '修改' : '＋ 写备注'} ›</span></button>${s.note ? `<div class="d-notefull">${esc(s.note)}</div>` : ''}`}
       ${notes && it.raw ? row('raw', '原始笔记', it.line ? `第 ${it.line} 行` : '查看') + (ui.dOpen === 'raw' ? `<div class="d-rowin"><span class="d-raw">${esc(it.raw)}</span></div>` : '') : ''}
     </div>
+    <button class="d-pracbtn" type="button" data-a="dprac" data-id="${esc(it.id)}"><span><b>练一遍</b><small>${PRAC_HOW[it.type]} · 不记录</small></span>${svg('chev')}</button>
+    ${nx ? `<button class="d-next" type="button" data-a="nextitem" data-id="${esc(nid)}"><span><small>下一条</small><b class="en">${esc(nx.en)}</b></span>${svg('chev')}</button>` : ''}
     ${notes || it.custom ? `<div class="d-foot"><button type="button" data-go="edit:${esc(it.id)}">编辑卡片</button>·<button type="button" class="danger" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button></div>` : ''}
-  </aside>
-  ${nx ? `<button class="d-next d-nextfix" type="button" data-a="nextitem" data-id="${esc(nid)}"><span><small>下一条</small><b class="en">${esc(nx.en)}</b></span>${svg('chev')}</button>` : ''}`;
+  </aside>`;
 }
 
 function vItemDetail(it) {
