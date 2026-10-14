@@ -938,6 +938,34 @@ button.r-row:hover { background: var(--linen); }
 .r-chip.hichip.on { background: var(--wk-tag); border-color: var(--wk-line); color: var(--wk-txt); font-weight: 500; }
 .r-weakkey.plain { color: var(--warm); font-weight: 400; } .r-weakkey.plain i { display: none; }
 .r-sort button.dir { border: 1px solid var(--line); background: var(--paper); color: var(--ink); margin-left: 4px; }
+
+/* ---------- v8 详情页：功能表达 · 写作笔记（AM–AP）· 练一遍（AR） ---------- */
+.d-slot { display: inline-block; margin: 0 4px; padding: 0 10px; border: 1.5px dashed var(--sage); border-radius: 8px; font-family: var(--f-ui); font-size: 14px; color: var(--muted); vertical-align: middle; line-height: 1.7; }
+.d-slot.big { font-size: 16px; }
+.d-struct { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.d-struct i { font-style: normal; color: var(--muted); }
+.d-fixed { padding: 2px 10px; border-radius: 8px; background: var(--sage-soft); color: var(--sage-deep); font-size: 17px; }
+.d-syn { font-size: 17px; }
+.d-cmp { display: flex; flex-direction: column; gap: 4px; }
+.d-cmprow { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, 1.4fr); gap: 10px; align-items: center; padding: 8px 12px; border-radius: 12px; background: var(--paper-2); border: 0; font-size: 13px; text-align: left; color: var(--ink); }
+.d-cmprow .en { font-family: var(--f-en); font-size: 15px; }
+.d-cmprow.cur { background: var(--sage-soft); } .d-cmprow.cur .en { font-weight: 600; }
+.d-cmprow.head { background: transparent; padding: 0 12px; font-size: 11px; color: var(--muted); }
+button.d-cmprow:hover, .d-sib:hover { outline: 1.5px solid var(--line); }
+.d-sib { border: 0; text-align: left; color: var(--ink); }
+.d-err { background: var(--wrong-soft); }
+.d-raw { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--warm); line-height: 1.6; word-break: break-word; }
+.d-note { font-size: 14px; white-space: pre-wrap; }
+.t-dside textarea.note { min-height: 80px; }
+.d-pracbtn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 16px; border: 0; border-radius: 14px; background: var(--sage-deep); color: var(--paper); text-align: left; }
+.d-pracbtn span { display: flex; flex-direction: column; } .d-pracbtn b { font-size: 15px; } .d-pracbtn small { font-size: 12px; opacity: .85; }
+.d-pracbtn svg { width: 18px; height: 18px; flex: none; }
+.d-faved { background: #FBF4DD; color: #9A7A22; }
+.d-wrongq { font-size: 24px; }
+@media (max-width: 640px) {
+  .d-cmprow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .d-cmprow.head { display: none; }
+}
 </style>
 </head>
 <body>
@@ -2535,6 +2563,7 @@ function vGroup(r) {
 function vItem(r) {
   const it = ITEMS.get(r.id);
   if (!it) return { redirect: { v: 'home' } };
+  if (it.lib === 'function' || it.lib === 'notes') return vItemDetail(it);
   const G = GROUPS.get(it.gid);
   const s = S.items[it.id] || {};
   const block = (label, val, cls = '') => val ? `<div class="field-block ${cls}"><span class="label">${label}</span><div class="val ${cls.includes('en') ? 'en' : ''}">${val}</div></div>` : '';
@@ -3988,6 +4017,7 @@ function t3ctx() {
     return { h: u, id: q.id, ans: tget(q.id).en };
   }
   if (v === 'tpara' && ui.t3pp) { const P = ui.t3pp, id = feKey(P); return id ? { h: P, id, ans: blankAnswer(id), prac: true, pp: true } : null; }
+  if (v === 'iprac') { const p = ui.iprac; return { h: p, id: p.id, ans: pracAns(ITEMS.get(p.id)), prac: true }; }
   if (v === 'tprac') { const p = ui.t3prac; return { h: p, id: p.ids[p.i], ans: anyItem(p.ids[p.i]).en, prac: true }; }
   return null;
 }
@@ -4398,6 +4428,175 @@ function recInput(t) {
 }
 T3VIEWS.records = vRecords3;
 
+/* ============================================================
+   详情页：功能表达（AM）· 表达卡（AN）· 句型卡（AO）· 语法卡（AP）
+   练一遍（AR）：单独的练习页，不记录、不改复习安排
+   ============================================================ */
+const DETAIL_FIELDS = {
+  expr: [['col', '搭配'], ['ex', '例句'], ['usage', '使用场景'], ['err', '常见错误']],
+  pattern: [['slots', '可替换位置'], ['ex', '例句'], ['scene', '适用场景'], ['err', '常见错误']],
+  grammar: [['rule', '规则'], ['ex', '更多正确例句'], ['limit', '使用限制 / 例外']],
+};
+const PRAC_HOW = { fn: '看中文写出这条表达', expr: '看中文写出英文', pattern: '看中文功能写出句型', grammar: '看错误句子改成正确的' };
+const PRAC_TAG = { fn: 'grammar', expr: 'expr', pattern: 'pattern', grammar: 'grammar' };
+
+// 句型里 … 前后的固定部分；练一遍和结构拆解都用它
+const patParts = en => en.split(/\s*(?:\.\.\.|…)\s*/).map(x => x.trim());
+function pracAns(it) { return it.type === 'fn' || it.type === 'pattern' ? fixedPart(it.en) : it.en; }
+
+function dHero(tags, enHTML, zh, size) {
+  return `<section class="t-hero"><div class="tags">${tags.join('')}</div>
+    <div class="en t-hero-en" style="font-size:${size}px">${enHTML}</div>${zh ? `<div class="zh">${esc(zh)}</div>` : ''}</section>`;
+}
+function patHTML(en, big) {
+  const ps = patParts(en);
+  if (ps.length < 2) return esc(en);
+  return ps.map((p, i) => (p ? esc(p) : '') + (i < ps.length - 1 ? `<span class="d-slot${big ? ' big' : ''}">${i === 0 && ps.length === 2 ? '自己填' : '…'}</span>` : '')).join(' ');
+}
+// 例句里要标出的部分：整条找不到时，去掉开头的 have / be 等动词再找（has had a profound impact on）
+function exHL(v, it) {
+  if (it.type === 'pattern') return [fixedPart(it.en)];
+  const low = v.toLowerCase(), en = it.en.replace(/\s*(?:\.\.\.|…)\s*/g, ' ').trim();
+  if (low.includes(en.toLowerCase())) return [en];
+  const rest = en.split(' ').slice(1).join(' ');
+  return rest && low.includes(rest.toLowerCase()) ? [rest] : [en];
+}
+function badGood(bad, good) {
+  return `<div class="t-grid2"><div class="t-badbox"><small>✕ 错误写法</small><span class="en">${bad}</span></div><div class="t-okbox"><small>✓ 正确写法</small><span class="en">${good}</span></div></div>`;
+}
+
+function itemWrongs(it) {
+  const s = S.items[it.id] || {}, ans = it.en;
+  const list = (s.wrongs || []).slice(-5).reverse().map(w => ({ label: `${fmtMD(w.t)} · ${RL3[w.r] || '写错'}`, input: w.input }));
+  if (it.type === 'grammar' && it.wrong) list.push({ label: '原始笔记 · 导入时的错误写法', input: it.wrong });
+  if (!list.length) return `<span class="note-line">还没有写错过。${s.wrong ? `（之前写错过 ${s.wrong} 次，没有留下原文）` : '复习时写错的答案会自动收在这里。'}</span>`;
+  return list.map(w => { const d = diff(w.input, ans); return `<div class="t-wrong"><small>${esc(w.label)}</small><span class="en">${d.userHTML}</span><span class="en ok">→ ${esc(ans)}</span></div>`; }).join('');
+}
+
+function itemSide(it, G) {
+  const s = S.items[it.id] || {}, m = modeOf(it.id), notes = it.lib === 'notes';
+  const set = notes ? noteSet(it.setId) : null;
+  const path = notes
+    ? `我的写作笔记 › ${esc(set ? set.title : '手动添加')} › <b>${esc(G.ids.length < 2 ? '独立卡片' : G.name)}</b>`
+    : `功能表达 › <b>${esc(G.fn)}</b>`;
+  let status;
+  if (!confirmedItem(it)) status = `<b class="t-stage">待整理</b><span class="note-line">这份笔记还没确认，确认后才进入学习。</span>`;
+  else if (m === 'reference') status = `<b class="t-stage">资料 · 不复习</b><span class="note-line">${notes ? '' : '功能表达默认是资料；'}切到“记忆”后才进入新学和复习。</span>`;
+  else if (m === 'paused') status = `<b class="t-stage">暂缓</b><span class="note-line">先放一边，不出现在新学和复习里。</span>`;
+  else if (s.stage == null) status = `<b class="t-stage">等待学习</b><span class="note-line">在“今日学习”里学过之后开始安排复习。</span>`;
+  else status = `<b class="t-stage">${s.next <= dayStart() ? '今天要复习' : STAGE_LABEL[Math.min(s.stage, LADDER.length - 1)] + ' · 下次 ' + fmtMD(s.next)}</b><span class="note-line">每张卡单独安排</span>${histDots(s.hist)}`;
+  const raw = notes && it.raw ? `<div class="blk"><small>原始笔记</small><span class="d-raw">${it.line ? `第 ${it.line} 行 · ` : ''}${esc(it.raw)}</span></div>` : '';
+  const open = ui.noteOpen === it.id;
+  const note = s.note && !open
+    ? `<div class="d-note">${esc(s.note)}</div><button class="t-link-btn" type="button" data-a="dnote" data-id="${esc(it.id)}">修改备注</button>`
+    : open ? `<textarea class="note" data-note="${esc(it.id)}" placeholder="记录自己的用法、易错点或出处">${esc(s.note || '')}</textarea><button class="t-link-btn" type="button" data-a="dnote" data-id="">收起</button>`
+    : `<button class="t-link-btn" type="button" data-a="dnote" data-id="${esc(it.id)}">＋ 写备注</button>`;
+  const idx = G.ids.indexOf(it.id), nextId = G.ids[(idx + 1) % G.ids.length];
+  const edit = notes || it.custom;
+  return `<aside class="t-dside">
+    <div class="blk"><small>在哪里</small><span class="path">${path}</span><button class="t-link-btn" type="button" data-go="group:${esc(G.id)}">${notes ? '回到这一组 ›' : '查看这个功能的全部表达 ›'}</button></div>
+    ${raw}
+    <div class="blk"><small>学习方式</small>${modeToggle(it.id, true)}<span class="note-line">资料只查阅，不进新学和复习；暂缓先放一边，之后再决定。</span></div>
+    <div class="blk"><small>复习状态</small>${status}</div>
+    <div class="blk"><small>我写错过的</small>${itemWrongs(it)}</div>
+    <div class="blk"><small>个人备注</small>${note}</div>
+    <div class="blk">
+      <button class="d-pracbtn" type="button" data-a="dprac" data-id="${esc(it.id)}"><span><b>练一遍</b><small>${PRAC_HOW[it.type]} · 不记录成绩</small></span>${svg('chev')}</button>
+      <div class="btn-row">${G.ids.length > 1 ? `<button class="btn btn-outline btn-sm" type="button" data-a="nextitem" data-id="${esc(nextId)}">组内下一条</button>` : ''}
+        ${edit ? `<button class="btn btn-soft btn-sm" type="button" data-go="edit:${esc(it.id)}">编辑卡片</button><button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button>` : ''}</div>
+    </div>
+  </aside>`;
+}
+
+function fnMain(it, G) {
+  const others = G.ids.map(x => ITEMS.get(x));
+  const cmp = `<div class="d-cmp"><div class="d-cmprow head"><span>表达</span><span>后面接</span><span>语气</span><span>区别</span></div>${others.map(o => {
+    const cur = o.id === it.id;
+    return `<${cur ? 'div' : `button type="button" data-go="item:${esc(o.id)}"`} class="d-cmprow ${cur ? 'cur' : ''}"><span class="en">${esc(o.en)}</span><span>${esc(o.syntax || '')}</span><span>${esc(o.tone || '')}</span><span class="muted">${esc(o.diff || '')}</span></${cur ? 'div' : 'button'}>`;
+  }).join('')}</div>`;
+  const fp = fixedPart(it.en), low = fp.toLowerCase();
+  const used = [...T.arg.values()].filter(A => A.para.toLowerCase().includes(low)).slice(0, 2).map(A => {
+    const tp = T.topic.get(A.topic);
+    return `<button class="t-card2 line" type="button" data-go="tpara:${A.id}" style="text-align:left"><small class="muted">主题表达范文里用到 · ${esc(tp.name)} · 论点 ${A.n} ${esc(A.short)}</small><span class="en">${markText(sentenceWith(A.para, fp), [{ p: fp }])}</span></button>`;
+  }).join('');
+  const syn = it.syntax ? `<div class="t-card2"><span class="en d-syn">${esc(it.syntax)}</span></div>` : '';
+  return dHero([t3tag('功能表达', 'grammar'), t3tag(G.fn)], esc(it.en), it.zh, 30) +
+    (syn ? sec3('句法结构', '后面接什么', syn) : '') +
+    (it.tone ? sec3('语气', '', `<div class="chips">${it.tone.split(/[；;]/).map(x => x.trim()).filter(Boolean).map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>`) : '') +
+    (others.length > 1 ? sec3('近义比较', '同一个写作功能里怎么选', cmp) : '') +
+    (it.ex || used ? sec3('例句', '', `<div class="rows">${it.ex ? `<div class="t-card2"><span class="en">${highlightIn(it.ex, [fp])}</span></div>` : ''}${used}</div>`) : '') +
+    (it.err ? sec3('常见错误', '', `<div class="t-card2 d-err"><span>${esc(it.err)}</span></div>`) : '');
+}
+
+function noteMain(it, G) {
+  const set = noteSet(it.setId);
+  const tags = [t3tag('写作笔记', 'expr'), t3tag(TYPE_LABEL[it.type], PRAC_TAG[it.type])];
+  if (G.ids.length > 1) tags.push(t3tag((it.type === 'expr' ? '语义组 · ' : '同组 · ') + G.name));
+  const fieldsFor = DETAIL_FIELDS[it.type] || [];
+  const missing = fieldsFor.filter(([k]) => !it[k]).map(([, l]) => l);
+  let html;
+  if (it.type === 'grammar') {
+    const d = diff(it.wrong || '', it.en);
+    html = dHero(tags, esc(it.en), it.zh ? '中文解释：' + it.zh : '', 28) +
+      sec3('错误和正确对照', '划掉的是写错的地方', badGood(d.userHTML, d.correctHTML));
+  } else if (it.type === 'pattern') {
+    const ps = patParts(it.en);
+    html = dHero(tags, patHTML(it.en, true), it.zh ? '中文功能：' + it.zh : '', 28) +
+      (ps.length > 1 ? sec3('结构', '绿色是固定部分，要一字不差；虚线框是自己填的内容', `<div class="t-card2"><div class="d-struct">${ps.flatMap((p, i) => (p ? [`<span class="d-fixed en">${esc(p)}</span>`] : []).concat(i < ps.length - 1 ? ['<span class="d-slot">自己填</span>'] : [])).join('<i>+</i>')}</div></div>`) : '');
+  } else {
+    html = dHero(tags, esc(it.en), it.zh, 30);
+  }
+  const card = (k, v) => {
+    if (k === 'ex') return `<div class="t-card2"><span class="en">${it.type === 'grammar' ? esc(v) : highlightIn(v, exHL(v, it))}</span></div>`;
+    if (k === 'col') return `<div class="t-card2"><span class="en">${esc(v)}</span></div>`;
+    return `<div class="t-card2"><span>${esc(v)}</span></div>`;
+  };
+  html += fieldsFor.filter(([k]) => it[k]).map(([k, l]) => sec3(l, '', card(k, it[k]))).join('');
+  if (it.type === 'expr' && G.ids.length > 1) {
+    const sib = G.ids.filter(x => x !== it.id).map(x => ITEMS.get(x));
+    html += sec3('同组的其他表达', '同一个意思还能怎么说', `<div class="t-grid3">${sib.map(o => `<button class="t-card2 d-sib" type="button" data-go="item:${esc(o.id)}"><span class="en">${esc(o.en)}</span><small class="muted">${esc(o.zh || '')}</small></button>`).join('')}</div>`);
+  }
+  if (missing.length) html += `<div class="fill-hint"><span>还可以补充：${missing.join('、')}</span><button class="btn btn-soft btn-sm" type="button" data-go="edit:${esc(it.id)}">补充内容</button></div>`;
+  return html;
+}
+
+function vItemDetail(it) {
+  const G = GROUPS.get(it.gid);
+  const main = it.lib === 'function' ? fnMain(it, G) : noteMain(it, G);
+  const s = S.items[it.id] || {};
+  const fav = `<button class="btn ${s.fav ? 'btn-soft d-faved' : 'btn-outline'} btn-sm" type="button" data-a="fav" data-id="${esc(it.id)}" aria-pressed="${!!s.fav}">${s.fav ? '★ 已收藏' : '☆ 收藏'}</button>`;
+  return { title: it.lib === 'function' ? it.en : G.ids.length < 2 ? '独立卡片' : G.name, crumb: groupCrumb(G), actions: fav, body: `<div class="t-detail"><div class="t-dmain">${main}</div>${itemSide(it, G)}</div>` };
+}
+
+/* ---------- 练一遍（AR） ---------- */
+function vItemPrac() {
+  const p = ui.iprac, it = p && ITEMS.get(p.id);
+  if (!it) return { redirect: { v: 'home' } };
+  const ans = pracAns(it), fb = p.fb;
+  let prompt;
+  if (it.type === 'grammar') prompt = `<div class="prompt-zh en d-wrongq">${esc(it.wrong)}</div>${it.zh ? `<span class="note-line">${esc(it.zh)}</span>` : ''}`;
+  else prompt = `<div class="prompt-zh">${esc(it.zh || TYPE_LABEL[it.type])}</div>${it.type === 'pattern' && patParts(it.en).length > 1 ? `<span class="note-line">只检查固定部分，… 的内容不用写</span>` : ''}`;
+  return {
+    title: '练一遍', crumb: [TYPE_LABEL[it.type]], focus: true,
+    body: `<div class="session"><div class="session-head"><div class="progress" style="flex:1"><span>练一遍 · 不记录成绩，不改复习安排</span></div><button class="btn btn-outline btn-sm" type="button" data-a="back">结束练习</button></div>
+      <div class="qcard"><div class="qtype">${t3tag(TYPE_LABEL[it.type], PRAC_TAG[it.type])}<span>${PRAC_HOW[it.type]}</span></div>
+        ${prompt}
+        ${fb ? `<input class="answer" type="text" value="${esc(fb.input)}" readonly>` + t3fb(fb, ans, true) + `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="dpracagain" data-enter>再写一次</button><button class="btn btn-outline" type="button" data-a="back">回到详情页</button></div>` : ansForm(p, ans, { ph: it.type === 'grammar' ? '写出改正后的句子' : it.type === 'pattern' ? '写出句型的固定部分' : '写出英文', submit: '检查' })}
+      </div></div>`,
+  };
+}
+
+function detailClick(a, el) {
+  const id = el.dataset.id;
+  if (a === 'dnote') { const t = document.querySelector('textarea[data-note]'); if (t) { st(t.dataset.note).note = t.value.trim(); save(); }
+    ui.noteOpen = id || null; render(); if (id) { const t = document.querySelector('[data-note]'); if (t) t.focus(); } return true; }
+  if (a === 'dprac') { ui.iprac = { id, fb: null, hinted: false }; go({ v: 'iprac' }); return true; }
+  if (a === 'dpracagain') { ui.iprac.fb = null; ui.iprac.hinted = false; render(true); return true; }
+  return false;
+}
+
+T3VIEWS.iprac = vItemPrac;
+
 
 const VIEWS = {
   home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
@@ -4469,6 +4668,7 @@ document.addEventListener('click', e => {
   if (el.dataset.go) { go(parseRoute(el.dataset.go)); return; }
   const a = el.dataset.a, id = el.dataset.id;
   if (a && a.startsWith('t3') && t3click(a, el)) return;
+  if (a && a.startsWith('d') && detailClick(a, el)) return;
   switch (a) {
     case 'back': back(); break;
     case 'hidehint': S.user.hintClosed = true; save(); render(); break;
@@ -4502,6 +4702,7 @@ document.addEventListener('click', e => {
     case 'rate': {
       const rs = S.reviewSession, iid = rs.ids[rs.i];
       applyRating(iid, el.dataset.r, ITEMS.get(iid).type);
+      if (el.dataset.r !== 'rem' && rs.fb && rs.fb.input && !rs.fb.revealed) { const w = st(iid); (w.wrongs = w.wrongs || []).push({ t: Date.now(), input: rs.fb.input, r: el.dataset.r }); if (w.wrongs.length > 20) w.wrongs.shift(); }
       rs.ratings[iid] = el.dataset.r; rs.i++; rs.fb = null;
       if (rs.i >= rs.ids.length) finishReview(); else save();
       render(true);
@@ -4734,7 +4935,7 @@ assemble();
 t3init();
 t3assemble();
 // 测试台（test.html）用：正式版不设 __TEST__，这里不会执行
-if (window.__TEST__) window.__app = { S: () => S, save, render, go, goRoot, cur, ui, T, AR, IR, TR, t3plan, t3StartRev, dayStart, addDays, dayKey, fmtMD, STAGE_LABEL, RL3, TIER_LABEL, tierOf, ctxAnswer: () => { try { const c = t3ctx(); return c ? c.ans : null; } catch (e) { return null; } } };
+if (window.__TEST__) window.__app = { S: () => S, items: () => ITEMS, assemble, createNoteSet, save, render, go, goRoot, cur, ui, T, AR, IR, TR, t3plan, t3StartRev, dayStart, addDays, dayKey, fmtMD, STAGE_LABEL, RL3, TIER_LABEL, tierOf, ctxAnswer: () => { try { const c = t3ctx(); return c ? c.ans : null; } catch (e) { return null; } } };
 const startHash = (location.hash || '').slice(1);
 if (VIEWS[startHash] && ['home', 'today', 'topics', 'funcs', 'notes', 'favs', 'records', 'library', 'tsettings'].includes(startHash)) stack = [{ v: startHash }];
 render(true);
@@ -4910,6 +5111,36 @@ render(true);
       A.ui.recTab = 'list';
       A.save(); A.goRoot({ v: 'records' }); close(); flash('已造好一批学习记录：有薄弱、补练、不同档位和来源');
     },
+    notes: function () {
+      reset();
+      var S = A.S(), now = Date.now();
+      S.notes = { sets: [], groups: [], items: [] }; S.items = {};
+      var text = [
+        '# 强调深远影响',
+        '- have a profound impact on 对……产生深远影响',
+        '  - 搭配：have a profound / significant / lasting impact on sth',
+        '  - 例句：Social media has had a profound impact on the way young people communicate.',
+        '  - 场景：强调影响深远且持久，比 affect 更正式，适合主体段的结果句。',
+        '  - 常见错误：impact 后用 on，不写 have a profound impact to',
+        '- exert a considerable influence on 施加相当大的影响',
+        '- play a pivotal role in 在……中起关键作用',
+        '# 表达原因的句型',
+        '- One reason for this is that ... 其中一个原因是……',
+        '  - 可替换：this 可换成具体现象；that 后接完整的原因句',
+        '  - 例句：One reason for this is that housing in big cities is expensive.',
+        '# 我的语法错误',
+        '- ❌ have a great influence to → ✅ have a great influence on 介词用 on',
+        '  - 规则：influence 作名词表示“对……的影响”时，介词用 on',
+        '- ❌ The number of cars are increasing. → ✅ The number of cars is increasing. 主语是 the number，谓语用单数'
+      ].join('\n');
+      A.createNoteSet(text, '2026-10-06 写作笔记', { confirmed: true }); A.assemble();
+      var ids = S.notes.items.map(function (n) { return n.id; });
+      var expr = S.notes.items[0], gram = S.notes.items.filter(function (n) { return n.type === 'grammar'; })[0];
+      S.items[expr.id] = { mode: 'memory', stage: 2, next: inDays(6), last: now - DAY, wrong: 1, fav: true, note: '写结果句时用，别和 affect 混用', hist: [{ r: 'rem', t: now - 9 * DAY, p: 'new' }, { r: 'rem', t: now - 8 * DAY }, { r: 'vag', t: now - DAY }], wrongs: [{ t: now - DAY, input: 'have a profound impact to', r: 'vag' }] };
+      S.items[gram.id] = { mode: 'memory', stage: 0, next: inDays(1), last: now, wrong: 1, hist: [{ r: 'fgt', t: now, p: 'new' }], wrongs: [{ t: now, input: 'have a great influence for', r: 'fgt' }] };
+      A.save(); A.goRoot({ v: 'notes' }); A.go({ v: 'item', id: expr.id }); close();
+      flash('已导入一份示例笔记：表达卡（已收藏、有备注和写错记录）、句型卡、语法卡。功能表达在左边“功能表达”里');
+    },
     afterLearn: function () {
       reset();
       var ids = comboArgs(); makeCombo(sel.topic, ids);
@@ -5003,6 +5234,7 @@ render(true);
       '<button class="b" data-tb="sc" data-s="afterLearn">刚学完，等明天复习<small>再点“前进 1 天”</small></button>' +
       '<button class="b" data-tb="sc" data-s="paraPractice">范文默写练习<small>不记录，可换难度</small></button>' +
       '<button class="b p" data-tb="sc" data-s="records">学习记录<small style="color:#E5E9DF">造一批数据，看 4 个分页</small></button>' +
+      '<button class="b p" data-tb="sc" data-s="notes">笔记卡详情页<small style="color:#E5E9DF">导入示例笔记，看详情页和练一遍</small></button>' +
       '</div></section>' +
 
       '<section class="tb-sec"><h4>复习 · 选中的论点</h4><div class="tb-grid">' +

@@ -95,5 +95,19 @@
     ],
     "commit": "73f6fb8",
     "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v7/ielts-writing"
+  },
+  {
+    "version": "v8",
+    "title": "第八版：功能表达和写作笔记的详情页",
+    "date": "2026-10-14",
+    "notes": [
+      "功能表达每条有自己的详情页，重点是近义比较表；范文里用到的例句自动列出",
+      "表达卡、句型卡、语法卡的新详情页：搭配、同组表达、句型结构拆解、错误和正确对照",
+      "右边一栏：在哪里、原始笔记、学习方式（记忆 / 资料 / 暂缓）、复习状态、我写错过的、个人备注",
+      "详情页上不再放输入框：点“练一遍”进入单独的练习页，可看提示 / 答案，不记录",
+      "测试台新增“笔记卡详情页”场景：一键导入示例笔记"
+    ],
+    "commit": "5dd24b9",
+    "source": "https://github.com/luxinyi034-dotcom/-/tree/ielts-v8/ielts-writing"
   }
 ]
