@@ -1678,7 +1678,7 @@ function toast(msg) {
    ============================================================ */
 const KEY = 'ielts-writing-app.v2';
 function defaults() {
-  return { v: 2, user: { name: 'Emily' }, items: {}, custom: { groups: [], items: [] }, notes: { sets: [], groups: [], items: [] }, newSession: null, reviewSession: null, log: {}, seeded: false };
+  return { v: 2, user: { name: 'Emily' }, items: {}, custom: { groups: [], items: [] }, notes: { sets: [], groups: [], items: [] }, imports: [], newSession: null, reviewSession: null, log: {}, seeded: false };
 }
 function load() {
   try {
@@ -2678,7 +2678,7 @@ function vFuncs() {
   const fns = FUNCTION_GROUPS.map(f => GROUPS.get(f.id))
     .concat([...GROUPS.values()].filter(G => G.lib === 'function' && G.kind === 'fn' && gstats(G).total));
   return {
-    title: '功能表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-go="import">${svg('upload')}导入功能表达</button>`,
+    title: '功能表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="fn">${svg('upload')}导入功能表达</button>`,
     body: `<p class="warm" style="max-width:64ch">功能表达是可迁移的写作表达，不是万能模板。默认作为资料查阅；需要主动写出的条目，切换为“记忆”后才进入新学和复习。</p>
     <div class="rows">${fns.map((G, i) => {
       const s = gstats(G);
@@ -2893,7 +2893,7 @@ function vNotes() {
   }).join('');
   return {
     title: '我的写作笔记', crumb: ['表达库'],
-    actions: `<button class="btn btn-soft" type="button" data-go="import">${svg('upload')}导入笔记</button>`,
+    actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="notes">${svg('upload')}导入笔记</button>`,
     body: `<div class="section-head"><div class="seg" role="group" aria-label="卡片类型">${filters.map(([k, t]) => `<button type="button" data-a="nfilter" data-f="${k}" aria-pressed="${f === k}">${t}</button>`).join('')}</div><span class="hint">先按语义组展示，展开后查看具体卡片</span></div>
       ${sets.length ? body : `<div class="empty"><h3>还没有写作笔记</h3><p>粘贴文字或导入 Markdown 文件，系统会把内容分成表达卡、句型卡和语法卡，并建议语义分组。</p><button class="btn btn-soft" type="button" data-go="import">导入笔记</button></div>`}`,
   };
@@ -2954,8 +2954,8 @@ function vTriage(r) {
   const fnHTML = fns.length ? `<section class="tgroup"><div class="tgroup-head"><span class="tag">功能表达</span><span class="note-line">${fns.length} 条，确认后并进对应的功能</span></div>${fns.map(card).join('')}</section>` : '';
   const mem = all.filter(i => modeOf(i.id) === 'memory').length;
   return {
-    title: set.confirmed ? '整理笔记' : '确认整理结果', crumb: ['我的写作笔记', set.title],
-    body: `<p class="warm" style="max-width:68ch">系统已把内容分成表达卡、句型卡和语法卡，并按标题建议了语义组。可以修改文字、更改类型、移动到其他组或删除。学习方式按笔记里写的【记忆】【资料】【暂缓】，没写的按设置里的默认值，每张都可以改。</p>
+    title: set.confirmed ? '整理笔记' : '确认整理结果', crumb: [fns.length && fns.length === all.length ? '功能表达' : '我的写作笔记', set.title],
+    body: `<p class="warm" style="max-width:68ch">${fns.length && fns.length === all.length ? `这次导入的是功能表达，确认后并进对应的功能，和 App 自带的表达一起比较。` : `系统已把内容分成${fns.length ? "功能表达、" : ""}表达卡、句型卡和语法卡，并按标题建议了语义组。可以修改文字、更改类型、移动到其他组或删除。`}学习方式按笔记里写的【记忆】【资料】【暂缓】，没写的按设置里的默认值，每张都可以改。</p>
       ${unrecHTML}${fnHTML}
       ${sem.map(g => `<section class="tgroup"><div class="tgroup-head"><span class="tag ${g.kind}">${KIND_LABEL[g.kind]}</span><input data-gname="${esc(g.id)}" value="${esc(g.name)}" aria-label="语义组名称"><span class="note-line">${itemsOf(g.id).length} 张</span></div>${itemsOf(g.id).map(card).join('')}</section>`).join('')}
       ${solo.length ? `<section class="tgroup"><div class="tgroup-head"><span class="tag">独立卡片</span><span class="note-line">没有相近内容的卡片保留为独立项</span></div>${solo.map(g => card(itemsOf(g.id)[0])).join('')}</section>` : ''}
@@ -3279,7 +3279,7 @@ function t3Topics() {
   const themes = [...new Set(T.topics.map(t => t.theme))];
   const oldThemes = [...new Set(TOPIC_GROUPS.map(g => g.topic))];
   return {
-    title: '主题表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-go="import">${svg('upload')}导入话题</button>`,
+    title: '主题表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="topic">${svg('upload')}导入话题</button>`,
     body: `<p class="warm" style="max-width:64ch">大主题 → 话题 → 立场 → 论点。每次新学一个话题里的 3 个论点，正好是一篇作文 3 个主体段的写作思路。</p>
     ${themes.map(th => `<section class="section"><div class="section-head"><h3>${esc(th)}</h3></div><div class="rows">${T.topics.filter(t => t.theme === th).map(tp => {
       const s = topicStats(tp);
@@ -5059,44 +5059,53 @@ function vTopicImport() {
 }
 
 /* ---------- 导入页：三种内容都能粘贴 ---------- */
-function vImport2() {
+const IMP_KIND = {
+  notes: { title: '导入写作笔记', name: () => dayKey() + ' 写作笔记', hint: '写作笔记：表达卡、句型卡、语法卡' },
+  fn: { title: '导入功能表达', name: () => dayKey() + ' 功能表达', hint: '功能表达：标题写成 # 功能：……' },
+  topic: { title: '导入话题', name: () => dayKey() + ' 话题', hint: '主题表达：# 话题 → ## 立场 → ### 论点' },
+};
+function vImport2(r) {
+  const K = IMP_KIND[r.id] || null;
   const D = ui.impText || '';
+  const help = { notes: `<span>写作笔记</span><div>一行一张卡：英文 + 中文。<code># 标题</code> 下面是一组。<code>❌ 错 → ✅ 对</code> 是语法卡，含 <code>...</code> / <code>sb</code> / <code>sth</code> 是句型卡。下一行缩进写“例句：”“搭配：”“场景：”“常见错误：”“可替换：”“规则：”“限制：”。</div>`,
+    fn: `<span>功能表达</span><div>标题写成 <code># 功能：原因与解释</code>（和 App 里的功能同名就并进去，不同名就新建），下面一行一条：英文 + 中文；可加“后面接：”“语气：”“区别：”“例句：”“常见错误：”。</div>`,
+    topic: `<span>主题表达</span><div><code># 话题：…</code> → <code>## 立场：…</code> → <code>### 论点：短名</code>，下面第一行是论点句，再写“解释：”“结果：”“举例：”和“范文：”。<code>## 话题词汇</code> 下面一行一个词，可加“范畴：”“词性：”“例句：”“动词搭配：”。</div>` };
+  const order = K ? [r.id].concat(['notes', 'fn', 'topic'].filter(k => k !== r.id)) : ['notes', 'fn', 'topic'];
+  const SL = { notes: '写作笔记', fn: '功能表达', topic: '话题' };
   return {
-    title: '导入', crumb: ['表达库'],
+    title: K ? K.title : '导入', crumb: ['表达库'],
+    actions: (S.imports || []).length ? `<button class="btn btn-outline btn-sm" type="button" data-go="imphist">导入记录 · ${S.imports.length}</button>` : '',
     body: `<form class="form" data-form="import" style="max-width:900px">
-      <div class="privacy">${svg('lock')}<span>文件只在这台设备上读取和整理，不会上传到网络。导入后先看一遍认出来的结果，确认后才进入学习。</span></div>
-      <label class="fld">这次导入的名称<input name="title" value="${esc(ui.impTitle || dayKey() + ' 写作笔记')}"></label>
-      <label class="fld">内容<textarea name="text" id="import-text" style="min-height:300px" placeholder="写作笔记、功能表达、主题表达都可以粘贴在这里，可以写在同一份里">${esc(D)}</textarea></label>
-      <details class="i-help"><summary>怎么写（点开看格式）</summary>
-        <div class="d-dl">
-          <span>写作笔记</span><div>一行一张卡：英文 + 中文。<code># 标题</code> 下面是一组。<code>❌ 错 → ✅ 对</code> 是语法卡，含 <code>...</code> / <code>sb</code> / <code>sth</code> 是句型卡。下一行缩进写“例句：”“搭配：”“场景：”“常见错误：”“可替换：”“规则：”“限制：”。</div>
-          <span>功能表达</span><div>标题写成 <code># 功能：原因与解释</code>，下面按表达卡写；可加“后面接：”“语气：”“区别：”“例句：”。</div>
-          <span>主题表达</span><div><code># 话题：…</code> → <code>## 立场：…</code> → <code>### 论点：短名</code>，下面第一行是论点句，再写“解释：”“结果：”“举例：”和“范文：”。<code>## 话题词汇</code> 下面一行一个词，可加“范畴：”“词性：”“例句：”“动词搭配：”。</div>
+      <div class="privacy">${svg('lock')}<span>文件只在这台设备上读取和整理，不会上传到网络。导入前可以先看每一条的详情页、直接编辑；确认后才进入学习。每次导入都会留在“导入记录”里。</span></div>
+      <label class="fld">这次导入的名称<input name="title" value="${esc(ui.impTitle || (K ? K.name() : dayKey() + ' 导入'))}"></label>
+      <label class="fld">内容${K ? `<small class="muted" style="font-weight:400">　${K.hint}；其他两种也可以写在同一份里</small>` : ''}<textarea name="text" id="import-text" style="min-height:300px" placeholder="粘贴要导入的内容">${esc(D)}</textarea></label>
+      <details class="i-help" ${K ? 'open' : ''}><summary>怎么写（点开看格式）</summary>
+        <div class="d-dl">${order.map(k => help[k]).join('')}
           <span>学习方式</span><div>行末或标题后面写【记忆】【资料】【暂缓】；不写就用<button class="t-link-btn" type="button" data-go="tsettings">设置</button>里的默认值。</div>
         </div></details>
       <div class="form-msg" id="form-msg"></div>
       <div class="btn-row"><button class="btn btn-primary" type="submit">整理</button>
         <label class="btn btn-outline file-btn">${svg('upload')}导入 .md / .txt 文件<input type="file" id="md-file" accept=".md,.markdown,.txt,text/markdown,text/plain"></label>
-        <span class="note-line">填入示例：</span><button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="notes">写作笔记</button><button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="fn">功能表达</button><button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="topic">话题</button></div>
+        <span class="note-line">填入示例（会替换上面的内容）：</span>${order.map(k => `<button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="${k}">${SL[k]}</button>`).join('')}</div>
     </form>`,
   };
 }
 function runImport(text, title, source) {
-  ui.impDone = null;
   const P = parseTopics(text);
   let setId = null;
   if (P.rest.trim()) setId = createNoteSet(P.rest, title, { source });
   P.blocks.forEach(B => { if (!B.merge) B.newId = 'u' + uid(); });
   if (P.blocks.length) { ui.impPreview = false; S.t3.impDraft = { blocks: P.blocks, setId, text, title }; assemble(); save(); replaceRoute({ v: 'timport' }); return true; }
-  if (setId) { assemble(); save(); replaceRoute({ v: 'triage', id: setId }); return true; }
+  if (setId) { addImportRec({ title, setId }); assemble(); save(); replaceRoute({ v: 'triage', id: setId }); return true; }
   return false;
 }
 function importClick(a, el) {
   if (a === 'impsample') {
     const ta = document.querySelector('#import-text'), k = el.dataset.k;
-    const add = { notes: SAMPLE_NOTE, fn: SAMPLE_FN, topic: SAMPLE_TOPIC }[k];
-    ta.value = (ta.value.trim() ? ta.value.trim() + '\n\n' : '') + add;
+    ta.value = { notes: SAMPLE_NOTE, fn: SAMPLE_FN, topic: SAMPLE_TOPIC }[k];
     return true;
+  }
+  if (a === 'impopen') { ui.impText = ''; ui.impTitle = ''; go({ v: 'import', id: el.dataset.k }); return true;
   }
   if (a === 'impback') { replaceRoute({ v: 'timport' }); return true; }
   if (a === 'impok') {
@@ -5105,10 +5114,10 @@ function importClick(a, el) {
     const before = new Set([...T.item.keys(), ...T.term.keys()]);
     applyTopics(D.blocks);
     const setId = D.setId;
-    ui.impDone = { tids: D.blocks.map(B => B.tid), ids: [...T.item.keys(), ...T.term.keys()].filter(k => !before.has(k)), setId: null };
+    const rec = addImportRec({ title: D.title, tids: D.blocks.map(B => B.tid), ids: [...T.item.keys(), ...T.term.keys()].filter(k => !before.has(k)), setId: setId || null });
     S.t3.impDraft = null; save();
     toast('话题已导入');
-    if (setId && noteSet(setId)) replaceRoute({ v: 'triage', id: setId }); else replaceRoute({ v: 'impdone' });
+    if (setId && noteSet(setId)) replaceRoute({ v: 'triage', id: setId }); else replaceRoute({ v: 'impdone', id: rec.id });
     return true;
   }
   if (a === 'impedit' || a === 'impcancel') {
@@ -5149,14 +5158,57 @@ function defModeSettings() {
   </section>`;
 }
 
-/* ---------- 导入完成：列出这次导入的全部内容，每一条都能点进详情页 ---------- */
-function vImportDone() {
-  const D = ui.impDone;
-  if (!D) return { redirect: { v: 'import' } };
+/* ---------- 导入记录：每次导入留一条，随时回来看导入了什么 ---------- */
+function addImportRec(o) {
+  S.imports = S.imports || [];
+  const rec = Object.assign({ id: 'im' + uid(), at: Date.now(), tids: [], ids: [], setId: null }, o);
+  S.imports.push(rec);
+  return rec;
+}
+function recFinishNotes(setId) {
+  S.imports = S.imports || [];
+  let rec = S.imports.find(x => x.setId === setId);
+  if (!rec) { const set = noteSet(setId); rec = addImportRec({ title: set ? set.title : '写作笔记', setId }); }
+  return rec;
+}
+function recCounts(rec) {
+  const ids = new Set(rec.ids || []);
+  const args = [...T.arg.keys()].filter(a => ids.has(a + ':s')).length, terms = (rec.ids || []).filter(x => T.term.has(x)).length;
+  const its = rec.setId ? S.notes.items.filter(i => i.setId === rec.setId) : [];
+  const n = k => its.filter(i => i.type === k).length;
+  return [[args, '个论点'], [terms, '个话题词汇'], [n('fn'), '条功能表达'], [n('expr'), '张表达卡'], [n('pattern'), '张句型卡'], [n('grammar'), '张语法卡']].filter(x => x[0]).map(x => x.join(' ')).join(' · ') || '没有内容（可能已经删除）';
+}
+function vImportHist() {
+  const L = (S.imports || []).slice().reverse();
+  return {
+    title: '导入记录', crumb: ['导入'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="">${svg('upload')}导入</button>`,
+    body: `<div class="session wide"><p class="warm">每次导入都留在这里。点开看那一次导入了哪些内容，每一条都能点进详情页。</p>
+      <div class="rows">${L.map(r => { const d = new Date(r.at); return `<button class="row tap" type="button" data-go="impdone:${r.id}"><div class="body"><span class="title">${esc(r.title)}</span><span class="sub">${recCounts(r)}</span><span class="meta"><span>${d.getMonth() + 1} 月 ${d.getDate()} 日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</span>${r.setId && noteSet(r.setId) && !noteSet(r.setId).confirmed ? statusHTML('待整理') : ''}</span></div>${svg('chev')}</button>`; }).join('') || '<p class="note-line">还没有导入过。</p>'}</div></div>`,
+  };
+}
+function vImportDone(r) {
+  const list = S.imports || [];
+  const rec = list.find(x => x.id === r.id) || list[list.length - 1];
+  if (!rec) return { redirect: { v: 'imphist' } };
   const link = (go, en, zh, tag) => `<button class="i-done" type="button" data-go="${go}"><span>${tag ? `<small>${esc(tag)}</small>` : ''}<span class="en">${esc(en)}</span>${zh ? `<small class="zh">${esc(zh)}</small>` : ''}</span>${svg('chev')}</button>`;
+  const ML = id => modeOf(id) === 'memory' ? '记忆' : modeOf(id) === 'paused' ? '暂缓' : '资料';
   let html = '';
-  const ids = new Set(D.ids || []);
-  for (const tid of D.tids || []) {
+  const set = rec.setId && noteSet(rec.setId);
+  const its = set ? S.notes.items.filter(i => i.setId === set.id) : [];
+  const fns = its.filter(i => i.type === 'fn');
+  if (set && !set.confirmed) html += `<div class="i-msg bad"><b>写作笔记还没确认</b><span>这次导入的笔记卡还在确认页，确认后才进入学习。</span><button class="btn btn-primary btn-sm" type="button" data-go="triage:${set.id}" style="align-self:flex-start">去确认</button></div>`;
+  if (fns.length) {
+    const byG = [...new Set(fns.map(i => i.gid))];
+    html += `<section class="i-topic"><div class="d-lab"><b>功能表达 · ${fns.length} 条</b><i></i><button class="t-link-btn" type="button" data-go="funcs">打开功能表达 ›</button></div>
+      ${byG.map(g => { const G = GROUPS.get(g); return `<div class="i-donegrp"><span class="note-line">${esc(G ? G.fn : '')}${G ? ` · <button class="t-link-btn" type="button" data-go="group:${esc(g)}">看这个功能的全部表达 ›</button>` : ''}</span>${fns.filter(i => i.gid === g).map(i => link('item:' + i.id, i.en, i.zh, ML(i.id))).join('')}</div>`; }).join('')}</section>`;
+  }
+  const notesOnly = its.filter(i => i.type !== 'fn');
+  if (notesOnly.length) {
+    html += `<section class="i-topic"><div class="d-lab"><b>写作笔记 · ${notesOnly.length} 张</b><i></i><button class="t-link-btn" type="button" data-go="notes">打开写作笔记 ›</button></div>
+      ${[['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']].map(([k, l]) => { const L = notesOnly.filter(i => i.type === k); return L.length ? `<div class="i-donegrp"><span class="note-line">${l} · ${L.length} 张</span>${L.map(i => link('item:' + i.id, i.en, i.type === 'grammar' ? '改正：' + i.wrong : i.zh, ML(i.id))).join('')}</div>` : ''; }).join('')}</section>`;
+  }
+  const ids = new Set(rec.ids || []);
+  for (const tid of rec.tids || []) {
     const tp = T.topic.get(tid); if (!tp) continue;
     const args = tp.args.filter(a => ids.has(a + ':s'));
     const terms = tp.terms.filter(t => ids.has(t));
@@ -5164,18 +5216,14 @@ function vImportDone() {
       ${args.map(aid => { const A = T.arg.get(aid); return `<div class="i-donegrp"><span class="note-line">论点 ${A.n} · ${esc(A.short)} · ${esc(A.stance)}</span>${A.items.map(x => { const it = T.item.get(x); return link(it.kind === 'sent' ? 'targ:' + aid : 'texp:' + x, it.en, it.zh, it.role); }).join('')}</div>`; }).join('')}
       ${terms.length ? `<div class="i-donegrp"><span class="note-line">话题词汇 · ${terms.length} 个</span>${terms.map(t => { const w = T.term.get(t); return link('tterm:' + t, w.en, w.zh, w.cat); }).join('')}</div>` : ''}</section>`;
   }
-  const set = D.setId && noteSet(D.setId);
-  if (set) {
-    const its = S.notes.items.filter(i => i.setId === set.id);
-    const byType = [['fn', '功能表达'], ['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']];
-    html += `<section class="i-topic"><div class="d-lab"><b>写作笔记 · ${esc(set.title)}</b><i></i><button class="t-link-btn" type="button" data-go="notes">打开写作笔记 ›</button></div>
-      ${byType.map(([k, l]) => { const L = its.filter(i => i.type === k); return L.length ? `<div class="i-donegrp"><span class="note-line">${l} · ${L.length} 张</span>${L.map(i => link('item:' + i.id, i.en, i.type === 'grammar' ? '改正：' + i.wrong : i.zh, modeOf(i.id) === 'memory' ? '记忆' : modeOf(i.id) === 'paused' ? '暂缓' : '资料')).join('')}</div>` : ''; }).join('')}</section>`;
-  }
-  return { title: '导入完成', crumb: ['导入'], body: `<div class="session wide"><p class="warm">下面是这次导入的全部内容，点任意一条看详情页；看完按返回回到这一页。</p>${html || '<p class="note-line">这次没有导入新的内容。</p>'}</div>` };
+  const d = new Date(rec.at);
+  return { title: rec.title, crumb: ['导入记录'], actions: `<button class="btn btn-outline btn-sm" type="button" data-go="imphist">全部导入记录</button>`,
+    body: `<div class="session wide"><p class="warm">${d.getMonth() + 1} 月 ${d.getDate()} 日导入 · ${recCounts(rec)}。点任意一条看详情页；以后在“导入记录”里随时能回到这一页。</p>${html || '<p class="note-line">这次导入的内容已经删除了。</p>'}</div>` };
 }
 
 T3VIEWS.timport = vTopicImport;
 T3VIEWS.impdone = vImportDone;
+T3VIEWS.imphist = vImportHist;
 
 /* ---------- 示例（导入页的“填入示例”和测试台用） ---------- */
 const SAMPLE_FN = `# 功能：原因与解释
@@ -5653,10 +5701,11 @@ document.addEventListener('click', e => {
       const set = noteSet(id); if ((set.unrec || []).length) break; set.confirmed = true;
       S.notes.items.filter(x => x.setId === id).forEach(x => { if (!(S.items[x.id] && S.items[x.id].mode)) st(x.id).mode = defMode(x); });
       assemble(); save(); toast('已确认导入');
-      ui.impDone = Object.assign(ui.impDone || {}, { setId: id }); replaceRoute({ v: 'impdone' });
+      const rec = recFinishNotes(id); save(); replaceRoute({ v: 'impdone', id: rec.id });
       break;
     }
     case 'tdiscard': case 'delset': {
+      if (a === 'tdiscard') S.imports = (S.imports || []).filter(x => !(x.setId === id && !(x.tids || []).length));
       const gone = new Set(S.notes.items.filter(x => x.setId === id).map(x => x.id));
       S.notes.items = S.notes.items.filter(x => x.setId !== id);
       S.notes.groups = S.notes.groups.filter(g => g.setId !== id);
