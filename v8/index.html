@@ -1741,7 +1741,7 @@ function defMode(it) { if (!it) return 'reference'; if (it.defMode) return it.de
 function st(id) { return S.items[id] || (S.items[id] = { hist: [], wrong: 0 }); }
 function modeOf(id) { const s = S.items[id]; return (s && s.mode) || defMode(ITEMS.get(id)); }
 function studied(id) { const s = S.items[id]; return !!(s && s.stage != null); }
-function confirmedItem(it) { if (!it) return false; if (it.lib !== 'notes') return true; const set = noteSet(it.setId); return !set || set.confirmed; }
+function confirmedItem(it) { if (!it) return false; if (!it.setId) return true; const set = noteSet(it.setId); return !set || set.confirmed; }
 function active(id) { return confirmedItem(ITEMS.get(id)); }
 function isDue(id) { const s = S.items[id]; return active(id) && modeOf(id) === 'memory' && studied(id) && s.next <= dayStart(); }
 
@@ -2938,7 +2938,7 @@ function vTriage(r) {
         <input data-tf="zh" data-id="${esc(it.id)}" value="${esc(it.zh)}" aria-label="中文">
         ${it.type === 'grammar' ? `<input class="en" data-tf="wrong" data-id="${esc(it.id)}" value="${esc(it.wrong)}" aria-label="错误写法" placeholder="原来的错误写法" style="grid-column:1/-1">` : ''}
       </div>
-      <div class="raw" style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span>原始：${esc(it.raw || '')}${it.line ? ` · 第 ${it.line} 行` : ''}</span><button class="t-link-btn" type="button" data-go="item:${esc(it.id)}">看详情页 ›</button></div>
+      <div class="raw" style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span>原始：${esc(it.raw || '')}${it.line ? ` · 第 ${it.line} 行` : ''}</span><span style="display:inline-flex;gap:12px"><button class="t-link-btn" type="button" data-a="iedit" data-id="${esc(it.id)}">编辑</button><button class="t-link-btn" type="button" data-go="item:${esc(it.id)}">看详情页 ›</button></span></div>
     </div>`;
   };
   const sem = groups.filter(g => g.kind !== 'fn' && itemsOf(g.id).length >= 2);
@@ -4114,7 +4114,7 @@ function t3ArgDetail(r) {
   const same = others.map(x => { const B = T.arg.get(x), s = B.side === A.side; return `<button class="t-other s${B.side}" type="button" data-go="targ:${x}"><small>${esc(B.stance)} · ${s ? '同一边' : '写让步段时用'}</small><b>论点 ${B.n} · ${esc(B.short)}</b><small>${esc(B.zh)}</small></button>`; }).join('');
   const preview = A.para.length > 150 ? A.para.slice(0, A.para.indexOf(' ', 140)) + ' …' : A.para;
   return {
-    title: `论点 ${A.n} · ${A.short}`, crumb: [tp.name, '论点句'], actions: ui.impPreview ? '' : t3fav(sid) + editBtn(sid) + modTag(A.id),
+    title: `论点 ${A.n} · ${A.short}`, crumb: [tp.name, '论点句'], actions: ui.impPreview ? editBtn(sid) : t3fav(sid) + editBtn(sid) + modTag(A.id),
     body: `${previewBanner()}<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('论点句', 'core'), t3tag(A.stance)], A.en, A.zh, 26)}
       ${sec3('段落骨架', '这一段怎么展开：一句论点，三条展开', `<div class="t-chainlist">${chain}</div>`)}
@@ -4134,7 +4134,7 @@ function t3ExpDetail(r) {
   const leads = `<div class="t-grid3">${(LEADS[it.role] || []).map(l => `<div class="t-lead en">${esc(l)}</div>`).join('')}</div><span class="note-line">按“作用”自动显示，不用导入。</span>`;
   const alts = it.alt && it.alt.length ? `<details class="t-alts"><summary><b>可替换写法 · ${it.alt.length} 条</b><span class="gap">写作时可以用，默写时不算对</span></summary><div class="en">${it.alt.map(esc).join('　·　')}</div></details>` : '';
   return {
-    title: `论点 ${A.n} · ${A.short} · ${it.role}`, crumb: [tp.name, '展开表达'], actions: ui.impPreview ? '' : t3fav(it.id) + editBtn(it.id) + modTag(it.id),
+    title: `论点 ${A.n} · ${A.short} · ${it.role}`, crumb: [tp.name, '展开表达'], actions: ui.impPreview ? editBtn(it.id) : t3fav(it.id) + editBtn(it.id) + modTag(it.id),
     body: `${previewBanner()}<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('展开表达', 'expr'), t3tag(it.role, 'know')], it.en, it.zh, 30)}
       <section class="t-ctx"><span class="note-line">所属论点 · 论点 ${A.n} ${esc(A.short)}</span><span class="en">${esc(A.en)}</span></section>
@@ -4155,7 +4155,7 @@ function t3TermDetail(r) {
   const fam = tp.terms.filter(x => x !== t.id && T.term.get(x).cat === t.cat);
   const famList = (fam.length ? fam : tp.terms.filter(x => x !== t.id)).map(x => { const w = T.term.get(x), m = termMem(x); return `<button class="t-tchip ${m ? 'on' : ''}" type="button" data-go="tterm:${x}"><span class="en">${esc(w.en)}</span> <small>· ${m ? '已在记' : '资料'}</small></button>`; }).join('');
   return {
-    title: t.en, crumb: [tp.name, '话题词汇'], actions: ui.impPreview ? '' : t3fav(t.id) + editBtn(t.id) + modTag(t.id),
+    title: t.en, crumb: [tp.name, '话题词汇'], actions: ui.impPreview ? editBtn(t.id) : t3fav(t.id) + editBtn(t.id) + modTag(t.id),
     body: `${previewBanner()}<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('话题词汇', 'term'), t3tag('范畴 · ' + t.cat), t.pos ? t3tag(t.pos) : ''], t.en, t.zh, 34)}
       ${gram ? sec3('词性和单复数', '“形式不对”最常出在这里', gram) : ''}
@@ -5022,9 +5022,9 @@ function previewAssemble(D) {
 }
 function endPreview() { if (ui.impPreview) { ui.impPreview = false; t3assemble(); } }
 // 离开导入预览（去了别的页面）就把预览收掉，存档里没导入的话题不会出现在别处
-const PREVIEW_VIEWS = new Set(['timport', 'targ', 'texp', 'tterm', 'tpara']);
+const PREVIEW_VIEWS = new Set(['timport', 'targ', 'texp', 'tterm', 'tpara', 'edit']);
 function impPreviewGuard() { if (ui.impPreview && !PREVIEW_VIEWS.has(cur().v)) endPreview(); }
-const previewBanner = () => ui.impPreview ? `<div class="i-msg i-prev"><b>导入前的预览</b><span>这些内容还没有导入，确认导入后才会保存。</span><button class="btn btn-outline btn-sm" type="button" data-a="impback">回到导入预览</button></div>` : '';
+const previewBanner = () => ui.impPreview ? `<div class="i-msg i-prev"><b>导入前的预览</b><span>这些内容还没有导入。可以点右上角“编辑”直接改，改的就是这次要导入的内容；确认导入后才会保存。</span><button class="btn btn-outline btn-sm" type="button" data-a="impback">回到导入预览</button></div>` : '';
 
 /* ---------- 主题表达导入预览（第 41 节） ---------- */
 function vTopicImport() {
@@ -5050,10 +5050,10 @@ function vTopicImport() {
   return {
     title: '确认导入话题', crumb: ['导入'],
     body: `<div class="session wide">
-      <p class="warm">${blocks.length} 个话题${nNotes ? `；另外有 ${nNotes} 张笔记卡，确认后接着整理` : ''}。点任意一条可以先看详情页的效果。论点什么时候背，还是在“选论点”时决定。</p>
+      <p class="warm">${blocks.length} 个话题${nNotes ? `；另外有 ${nNotes} 张笔记卡，确认后接着整理` : ''}。点任意一条可以先看详情页的效果，在详情页里点“编辑”可以直接改。论点什么时候背，还是在“选论点”时决定。</p>
       ${body}
       <div class="sticky-bar"><span class="summary">${errs ? `<b style="color:var(--wrong)">${errs} 处</b>要先改原文` : '没有问题，可以导入'}</span>
-        <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="impcancel">放弃</button><button class="btn btn-outline" type="button" data-a="impedit">回去改原文</button><button class="btn btn-primary" type="button" data-a="impok" ${errs ? 'disabled' : ''}>确认导入</button></div></div>
+        <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="impcancel">放弃</button><button class="btn btn-outline" type="button" data-a="impedit" ${D.edited ? 'data-confirm="会丢掉在预览里的修改"' : ''}>回去改原文</button><button class="btn btn-primary" type="button" data-a="impok" ${errs ? 'disabled' : ''}>确认导入</button></div></div>
     </div>`,
   };
 }
@@ -5266,7 +5266,23 @@ const overOf = key => (S.t3 && S.t3.over && S.t3.over[key]) || null;
 const topicOf = id => id.startsWith('tt:') ? id.split(':')[1] : id.split(':')[1];
 
 /* 要编辑的东西：类型、现在的值、存到哪里 */
+/* 导入前预览里的条目：找到草稿里对应的论点 / 展开表达 / 词汇 */
+function draftTarget(id) {
+  const D = S.t3.impDraft;
+  if (!ui.impPreview || !D) return null;
+  for (const B of D.blocks) {
+    for (const s of B.stances) for (const A of s.args) {
+      if (!A.pid) continue;
+      if (id === A.pid + ':s') return { kind: 'sent', key: id, src: 'draft', B, A, vals: { en: A.en, zh: A.zh, short: A.short, slots: A.pattern ? (A.pattern.slots || []).join(' / ') : '', apply: A.pattern ? A.pattern.apply || '' : '', para: A.para } };
+      const k = A.exps.findIndex((e, i) => id === `${A.pid}:e${i + 1}`);
+      if (k >= 0) { const e = A.exps[k]; return { kind: 'exp', key: id, src: 'draft', B, A, e, vals: { en: e.en, zh: e.zh, role: e.role, ppara: e.para || e.en, base: e.base || '', col: (e.col || []).join('\n'), parts: (e.parts || []).map(p => p.join(' ')).join(' | '), usage: e.usage || '', alt: (e.alt || []).join(' / '), apara: A.para } }; }
+    }
+    for (const t of B.terms) if (t.pid === id) return { kind: 'term', key: id, src: 'draft', B, t, vals: { en: t.en, zh: t.zh, cat: t.cat || '', pos: t.pos || '', ex: t.ex || '', exZh: t.exZh || '', verbs: (t.verbs || []).map(v => v.join(' ')).join('\n'), ok: (t.ok || []).join(' / '), bad: (t.bad || []).join(' / ') } };
+  }
+  return null;
+}
 function editTarget(id) {
+  const dt = draftTarget(id); if (dt) return dt;
   if (id.startsWith('a:') || id.startsWith('tt:')) {
     const builtin = BUILTIN_TOPICS.has(topicOf(id));
     if (id.startsWith('tt:')) {
@@ -5312,7 +5328,7 @@ function vEditItem(r) {
   const vals = ui.editDraft && ui.editDraft.id === r.id ? ui.editDraft.vals : E.vals;
   const lock = editLock(E);
   const W = ui.editWarn && ui.editWarn.id === r.id ? ui.editWarn : null;
-  const crumb = E.src === 'topic' ? [T.topic.get(topicOf(r.id)).name, EDIT_TITLE[E.kind]] : groupCrumb(GROUPS.get(E.it.gid));
+  const crumb = E.src === 'topic' || E.src === 'draft' ? [T.topic.get(topicOf(r.id)).name, EDIT_TITLE[E.kind]] : groupCrumb(GROUPS.get(E.it.gid));
   let extra = '';
   if (E.src === 'note') {
     const its = S.notes.items, it = its.find(x => x.id === r.id);
@@ -5321,7 +5337,7 @@ function vEditItem(r) {
       <span class="muted">所属组</span><select class="e-in sm" name="gid">${groups.map(g => `<option value="${esc(g.id)}" ${g.id === it.gid ? 'selected' : ''}>${esc(its.filter(x => x.gid === g.id).length > 1 ? g.name : '独立卡片 · ' + g.name)}</option>`).join('')}<option value="new">新建一组</option></select></div>`;
   }
   const side = `<aside class="d-side">
-      <div class="e-note"><b>正在编辑</b><span>改的内容只影响这一条的显示和练习题；<b>学习进度、复习日期、写错记录都不变</b>。</span></div>
+      <div class="e-note"><b>正在编辑</b><span>${E.src === 'draft' ? '这是<b>导入前的预览</b>：改的内容直接改到这次导入里，确认导入后才保存。' : E.src === 'note' && !confirmedItem(E.it) ? '这张卡<b>还没确认导入</b>：改完回到确认页，确认后才进入学习。' : '改的内容只影响这一条的显示和练习题；<b>学习进度、复习日期、写错记录都不变</b>。'}</span></div>
       ${W ? `<div class="e-warn">${W.msg}${W.choices ? `<div class="btn-row">${W.choices.map(([a, t]) => `<button class="btn btn-sm ${a === 'both' ? 'btn-primary' : 'btn-outline'}" type="button" data-a="ieditfix" data-id="${esc(r.id)}" data-k="${a}">${t}</button>`).join('')}</div>` : ''}</div>` : ''}
       ${E.builtin ? `<div class="e-tip">这是 App 自带的内容。改的是你自己这一份，详情页会标“已修改”；随时可以恢复原样。</div>` : ''}
       <button class="btn btn-primary e-btn" type="submit" ${lock ? 'disabled' : ''}>保存</button>
@@ -5374,6 +5390,7 @@ const changed = (E, vals) => Object.keys(vals).some(k => (vals[k] || '') !== (E.
 function saveEdit(E, vals, type, gid) {
   const id = ui.editDraft.id;
   const over = S.t3.over || (S.t3.over = {});
+  if (E.src === 'draft') return saveDraftEdit(E, vals);
   if (E.src === 'topic') {
     if (E.kind === 'sent') {
       if (changed(E, vals)) {
@@ -5411,6 +5428,35 @@ function saveEdit(E, vals, type, gid) {
   }
   ui.editDraft = null; ui.editWarn = null;
   save(); back(); toast('已保存修改');
+}
+
+function saveDraftEdit(E, vals) {
+  const D = S.t3.impDraft, A = E.A;
+  let route = null;
+  if (E.kind === 'sent') {
+    Object.assign(A, { en: vals.en, zh: vals.zh, short: vals.short || A.short, para: vals.para });
+    A.pattern = vals.slots ? { slots: slashList(vals.slots), apply: vals.apply } : undefined;
+  } else if (E.kind === 'exp') {
+    const e = E.e;
+    Object.assign(e, { en: vals.en, zh: vals.zh, role: vals.role, base: vals.base, usage: vals.usage, col: vals.col.split('\n').map(x => x.trim()).filter(Boolean), alt: slashList(vals.alt) });
+    e.para = vals.ppara && vals.ppara !== vals.en ? vals.ppara : undefined;
+    e.parts = vals.parts ? vals.parts.split(/\s*[|｜]\s*/).map(p => { const i = p.search(CJK); return i > 0 ? [p.slice(0, i).trim(), p.slice(i).trim()] : [p.trim(), '']; }) : undefined;
+    A.para = vals.apara;
+  } else {
+    const t = E.t;
+    Object.assign(t, { en: vals.en, zh: vals.zh, cat: vals.cat, pos: vals.pos, ex: vals.ex, exZh: vals.exZh, ok: slashList(vals.ok), bad: slashList(vals.bad),
+      verbs: vals.verbs.split('\n').map(x => x.trim()).filter(Boolean).map(x => { const s = splitEnZh(x); return [s.en, s.zh]; }) });
+    route = 'term';
+  }
+  D.edited = true;
+  // 重新检查这个话题，再组一次预览（检查要在真实数据上做）
+  endPreview(); checkTopic(E.B); previewAssemble(D);
+  ui.editDraft = null; ui.editWarn = null;
+  save();
+  // 改了词汇的英文，它的 id 也变了：把下面那一页换成新的 id 再回去
+  if (route && E.t.pid !== E.key && stack.length > 1) { stack.pop(); stack[stack.length - 1] = { v: 'tterm', id: E.t.pid }; render(true); }
+  else back();
+  toast('已改到这次导入里');
 }
 
 /* 把自带内容的改动叠加上去（t3assemble / assemble 结束时调用） */
