@@ -1076,6 +1076,25 @@ button.d-cmprow:hover, .d-sib:hover { outline: 1.5px solid var(--line); }
 .i-donegrp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 8px; }
 .i-donegrp > .note-line { grid-column: 1 / -1; margin-top: 4px; }
 @media (max-width: 640px) { .i-donegrp { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- 编辑详情页（BR–BT） ---------- */
+.e-main { gap: 16px; }
+.e-fld { display: flex; flex-direction: column; gap: 6px; }
+.e-fld .d-lab small { font-size: 12px; color: var(--muted); }
+.e-in { width: 100%; box-sizing: border-box; border: 1.5px solid var(--line); border-radius: 12px; background: #FFFFFF; padding: 9px 14px; font: 15px/1.55 var(--f-ui); color: var(--ink); }
+.e-in.en { font-family: var(--f-en); font-size: 16px; }
+.e-in.big { font-size: 26px; padding: 10px 14px; }
+.e-in:focus { outline: none; border-color: var(--sage-deep); }
+.e-in:placeholder-shown { border-style: dashed; }
+textarea.e-in { resize: vertical; }
+.e-in.sm { width: auto; min-width: 160px; padding: 6px 12px; font-size: 14px; border-radius: 999px; }
+.e-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+.e-note { border-radius: 18px; background: var(--sage-soft); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.e-note > b { font-family: var(--f-title); font-size: 19px; color: var(--sage-deep); }
+.e-note span { font-size: 13px; color: var(--warm); line-height: 1.6; }
+.e-warn { border-radius: 14px; background: var(--wrong-soft); padding: 12px 14px; font-size: 13px; color: var(--wrong); line-height: 1.6; display: flex; flex-direction: column; gap: 8px; }
+.e-tip { border-radius: 14px; border: 1px dashed var(--line); padding: 10px 14px; font-size: 13px; color: var(--warm); line-height: 1.6; }
+.e-btn { width: 100%; justify-content: center; }
 </style>
 </head>
 <body>
@@ -1706,6 +1725,7 @@ function assemble() {
     const G = GROUPS.get(it.gid); if (!G) continue;
     ITEMS.set(it.id, Object.assign({}, it, { lib: it.type === 'fn' ? 'function' : 'notes' })); G.ids.push(it.id);
   }
+  applyFnOver();
 }
 
 function noteSet(id) { return S.notes.sets.find(s => s.id === id); }
@@ -3051,6 +3071,7 @@ function t3assemble() {
     }
     T.topics.push(top); T.topic.set(tp.id, top);
   }
+  applyTopicOver();
 }
 const tget = id => T.item.get(id) || T.term.get(id);
 const RL3 = { rem: '记得', vag: '模糊', fgt: '忘记' };
@@ -3067,7 +3088,7 @@ STATUS_CLS['已学完'] = 's-stable';
 
 /* ---------- 存档 ---------- */
 function t3init() {
-  const d = { arg: {}, it: {}, term: {}, fav: {}, combos: [], learn: null, rev: null, revDone: null, set: {}, imp: { topics: [], ext: {} }, impDraft: null };
+  const d = { arg: {}, it: {}, term: {}, fav: {}, combos: [], learn: null, rev: null, revDone: null, set: {}, imp: { topics: [], ext: {} }, impDraft: null, over: {} };
   S.t3 = Object.assign(d, S.t3 || {});
   S.t3.set = Object.assign({ exam: '', shrink: false, extend: false, weakN: 3, weakM: 2, weakLast: true }, S.t3.set || {});
   S.t3.set.defMode = Object.assign({}, DEF_MODE, S.t3.set.defMode || {});
@@ -4083,7 +4104,7 @@ function t3ArgDetail(r) {
   const same = others.map(x => { const B = T.arg.get(x), s = B.side === A.side; return `<button class="t-other s${B.side}" type="button" data-go="targ:${x}"><small>${esc(B.stance)} · ${s ? '同一边' : '写让步段时用'}</small><b>论点 ${B.n} · ${esc(B.short)}</b><small>${esc(B.zh)}</small></button>`; }).join('');
   const preview = A.para.length > 150 ? A.para.slice(0, A.para.indexOf(' ', 140)) + ' …' : A.para;
   return {
-    title: `论点 ${A.n} · ${A.short}`, crumb: [tp.name, '论点句'], actions: t3fav(sid),
+    title: `论点 ${A.n} · ${A.short}`, crumb: [tp.name, '论点句'], actions: t3fav(sid) + editBtn(sid) + modTag(A.id),
     body: `<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('论点句', 'core'), t3tag(A.stance)], A.en, A.zh, 26)}
       ${sec3('段落骨架', '这一段怎么展开：一句论点，三条展开', `<div class="t-chainlist">${chain}</div>`)}
@@ -4103,7 +4124,7 @@ function t3ExpDetail(r) {
   const leads = `<div class="t-grid3">${(LEADS[it.role] || []).map(l => `<div class="t-lead en">${esc(l)}</div>`).join('')}</div><span class="note-line">按“作用”自动显示，不用导入。</span>`;
   const alts = it.alt && it.alt.length ? `<details class="t-alts"><summary><b>可替换写法 · ${it.alt.length} 条</b><span class="gap">写作时可以用，默写时不算对</span></summary><div class="en">${it.alt.map(esc).join('　·　')}</div></details>` : '';
   return {
-    title: `论点 ${A.n} · ${A.short} · ${it.role}`, crumb: [tp.name, '展开表达'], actions: t3fav(it.id),
+    title: `论点 ${A.n} · ${A.short} · ${it.role}`, crumb: [tp.name, '展开表达'], actions: t3fav(it.id) + editBtn(it.id) + modTag(it.id),
     body: `<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('展开表达', 'expr'), t3tag(it.role, 'know')], it.en, it.zh, 30)}
       <section class="t-ctx"><span class="note-line">所属论点 · 论点 ${A.n} ${esc(A.short)}</span><span class="en">${esc(A.en)}</span></section>
@@ -4124,7 +4145,7 @@ function t3TermDetail(r) {
   const fam = tp.terms.filter(x => x !== t.id && T.term.get(x).cat === t.cat);
   const famList = (fam.length ? fam : tp.terms.filter(x => x !== t.id)).map(x => { const w = T.term.get(x), m = termMem(x); return `<button class="t-tchip ${m ? 'on' : ''}" type="button" data-go="tterm:${x}"><span class="en">${esc(w.en)}</span> <small>· ${m ? '已在记' : '资料'}</small></button>`; }).join('');
   return {
-    title: t.en, crumb: [tp.name, '话题词汇'], actions: t3fav(t.id),
+    title: t.en, crumb: [tp.name, '话题词汇'], actions: t3fav(t.id) + editBtn(t.id) + modTag(t.id),
     body: `<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('话题词汇', 'term'), t3tag('范畴 · ' + t.cat), t.pos ? t3tag(t.pos) : ''], t.en, t.zh, 34)}
       ${gram ? sec3('词性和单复数', '“形式不对”最常出在这里', gram) : ''}
@@ -4697,7 +4718,7 @@ function noteMain(it, G) {
       dSec('用法', dDl([['使用场景', esc(it.usage || '')], ['常见错误', it.err ? errHTML(it.err) : '']])) +
       (sib.length ? dSec('同组的其他表达', `<div class="d-sibs">${sib.map(o => `<button class="en" type="button" data-go="item:${esc(o.id)}">${esc(o.en)}</button>`).join('<i>·</i>')}</div>`) : '');
   }
-  if (missing.length) html += `<div class="fill-hint"><span>还可以补充：${missing.join('、')}</span><button class="btn btn-soft btn-sm" type="button" data-go="edit:${esc(it.id)}">补充内容</button></div>`;
+  if (missing.length) html += `<div class="fill-hint"><span>还可以补充：${missing.join('、')}</span><button class="btn btn-soft btn-sm" type="button" data-a="iedit" data-id="${esc(it.id)}">补充内容</button></div>`;
   return html;
 }
 
@@ -4741,7 +4762,7 @@ function itemSide(it, G) {
     <button class="d-pracbtn" type="button" data-a="dprac" data-id="${esc(it.id)}"><span><b>练一遍</b><small>${PRAC_HOW[it.type]} · 不记录</small></span>${svg('chev')}</button>
     ${nx ? `<button class="d-next" type="button" data-a="nextitem" data-id="${esc(nid)}"><span><small>下一条</small><b class="en">${esc(nx.en)}</b></span>${svg('chev')}</button>` : ''}
     ${!notes && it.setId ? `<div class="d-foot"><span>导入的功能表达</span>·<button type="button" class="danger" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button></div>` : ''}
-    ${notes || it.custom ? `<div class="d-foot"><button type="button" data-go="edit:${esc(it.id)}">编辑卡片</button>·<button type="button" class="danger" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button></div>` : ''}
+    ${notes || it.custom ? `<div class="d-foot"><button type="button" data-a="iedit" data-id="${esc(it.id)}">编辑卡片</button>·<button type="button" class="danger" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button></div>` : ''}
   </aside>`;
 }
 
@@ -4751,7 +4772,8 @@ function vItemDetail(it) {
   const main = it.lib === 'function' ? fnMain(it, G) : noteMain(it, G);
   const s = S.items[it.id] || {};
   const fav = `<button class="btn ${s.fav ? 'btn-soft d-faved' : 'btn-outline'} btn-sm" type="button" data-a="fav" data-id="${esc(it.id)}" aria-pressed="${!!s.fav}">${s.fav ? '★ 已收藏' : '☆ 收藏'}</button>`;
-  return { title: it.lib === 'function' ? G.fn : G.ids.length < 2 ? '独立卡片' : G.name, crumb: it.lib === 'function' ? ['功能表达'] : groupCrumb(G), actions: fav, body: `<div class="d-detail"><div class="d-main">${main}</div>${itemSide(it, G)}</div>` };
+  const acts = fav + editBtn(it.id) + (it.builtin ? modTag(it.id) : '');
+  return { title: it.lib === 'function' ? G.fn : G.ids.length < 2 ? '独立卡片' : G.name, crumb: it.lib === 'function' ? ['功能表达'] : groupCrumb(G), actions: acts, body: `<div class="d-detail"><div class="d-main">${main}</div>${itemSide(it, G)}</div>` };
 }
 
 /* ---------- 练一遍（AR） ---------- */
@@ -4945,7 +4967,7 @@ const cleanArg = A => ({ short: A.short, en: A.en, zh: A.zh, para: A.para.replac
 const cleanTerm = t => ({ en: t.en, zh: t.zh, cat: t.cat || '其他', pos: t.pos, ex: t.ex, exZh: t.exZh, verbs: t.verbs, ok: t.ok, bad: t.bad });
 
 function applyTopics(blocks) {
-  const imp = S.t3.imp;
+  const imp = S.t3.imp || (S.t3.imp = { topics: [], ext: {} });
   const modes = [];
   for (const B of blocks) {
     const stances = B.stances.map(s => ({ name: s.name, idea: s.idea, args: s.args.filter(a => !a.skip).map(cleanArg) }));
@@ -5178,6 +5200,217 @@ const SAMPLE_TOPIC = `# 话题：城市交通与拥堵
   - 范畴：环境　词性：n. 常用复数
   - 例句：Better public transport can cut vehicle emissions.`;
 
+/* ============================================================
+   编辑详情页（设计稿 BR–BT）：右上角“编辑”，每一块原地变成输入框
+   App 自带的主题表达和功能表达：改动存在 S.t3.over，随时恢复原样；
+   写作笔记和导入的功能表达：直接改笔记里的这张卡。学习进度都不变。
+   ============================================================ */
+const ROLES = ['解释', '结果', '举例', '原因', '对比', '让步', '补充', '影响'];
+// [字段, 标签, 样式]：en 英文字体；big 大字；area 多行；note 说明
+const EDIT_SPEC = {
+  sent: [['en', '论点句', 'en big area'], ['zh', '中文', ''], ['short', '短名', '', '话题页和学习记录里显示'], ['slots', '句型里可替换的词', 'en', '用 / 隔开'], ['apply', '换个话题的例子', 'en'], ['para', '范文段落', 'en area', '论点句要在范文里出现']],
+  exp: [['en', '展开表达', 'en big'], ['zh', '中文', ''], ['role', '作用', 'role'], ['ppara', '范文里的写法', 'en', '复习的范文填空考这一句'], ['base', '原形', 'en'], ['col', '搭配', 'area', '每行一条'], ['parts', '拆分', '', '词 说明 | 词 说明'], ['usage', '提醒', ''], ['alt', '也可以说', 'en', '用 / 隔开'], ['apara', '所在的范文段落', 'en area', '论点句里的范文也在这里改']],
+  term: [['en', '话题词汇', 'en big'], ['zh', '中文', ''], ['cat', '范畴', ''], ['pos', '词性', ''], ['ex', '例句', 'en area', '例句填空考这一句'], ['exZh', '例句的中文', ''], ['verbs', '动词搭配', 'area', '每行一条：英文 中文'], ['ok', '这样写', 'en', '用 / 隔开'], ['bad', '不这样写', 'en', '用 / 隔开']],
+  fn: [['en', '功能表达', 'en big'], ['zh', '中文', ''], ['syntax', '后面接', ''], ['tone', '语气', ''], ['diff', '区别', '', '近义比较表里这一条的“区别”'], ['ex', '例句', 'en area'], ['err', '常见错误', '', '写成 错 → 对，错的部分会划掉']],
+  expr: [['en', '表达', 'en big'], ['zh', '中文', ''], ['ex', '例句', 'en area', '自动标出这条表达'], ['col', '搭配', 'en', '用 / 隔开的词会标绿'], ['usage', '使用场景', ''], ['err', '常见错误', '', '写成 错 → 对，错的部分会划掉']],
+  pattern: [['en', '句型', 'en big', '用 ... 表示自己填的部分'], ['zh', '中文功能', ''], ['slots', '可替换', ''], ['ex', '例句', 'en area'], ['scene', '适用场景', ''], ['err', '常见错误', '']],
+  grammar: [['en', '正确写法', 'en big'], ['wrong', '错误写法', 'en'], ['zh', '中文解释', ''], ['rule', '规则', ''], ['ex', '更多正确例句', 'en area'], ['limit', '使用限制', '']],
+};
+const EDIT_TITLE = { sent: '论点句', exp: '展开表达', term: '话题词汇', fn: '功能表达', expr: '表达卡', pattern: '句型卡', grammar: '语法卡' };
+const BUILTIN_TOPICS = new Set(TOPICS3.map(t => t.id));
+const overOf = key => (S.t3 && S.t3.over && S.t3.over[key]) || null;
+const topicOf = id => id.startsWith('tt:') ? id.split(':')[1] : id.split(':')[1];
+
+/* 要编辑的东西：类型、现在的值、存到哪里 */
+function editTarget(id) {
+  if (id.startsWith('a:') || id.startsWith('tt:')) {
+    const builtin = BUILTIN_TOPICS.has(topicOf(id));
+    if (id.startsWith('tt:')) {
+      const t = T.term.get(id); if (!t) return null;
+      return { kind: 'term', key: id, builtin, src: 'topic', vals: { en: t.en, zh: t.zh, cat: t.cat || '', pos: t.pos || '', ex: t.ex || '', exZh: t.exZh || '', verbs: (t.verbs || []).map(v => v.join(' ')).join('\n'), ok: (t.ok || []).join(' / '), bad: (t.bad || []).join(' / ') } };
+    }
+    const it = T.item.get(id); if (!it) return null;
+    const A = T.arg.get(it.arg);
+    if (it.kind === 'sent') return { kind: 'sent', key: A.id, builtin, src: 'topic', A, vals: { en: A.en, zh: A.zh, short: A.short, slots: A.pattern ? (A.pattern.slots || []).join(' / ') : '', apply: A.pattern ? A.pattern.apply || '' : '', para: A.para } };
+    return { kind: 'exp', key: id, builtin, src: 'topic', A, vals: { en: it.en, zh: it.zh, role: it.role, ppara: it.para || it.en, base: it.base || '', col: (it.col || []).join('\n'), parts: (it.parts || []).map(p => p.join(' ')).join(' | '), usage: it.usage || '', alt: (it.alt || []).join(' / '), apara: A.para } };
+  }
+  const it = ITEMS.get(id); if (!it) return null;
+  const K = it.type === 'fn' ? 'fn' : it.type;
+  if (!EDIT_SPEC[K]) return null;
+  const vals = {}; EDIT_SPEC[K].forEach(([k]) => { vals[k] = it[k] || ''; });
+  return { kind: K, key: id, builtin: !!it.builtin, src: it.setId ? 'note' : 'fn', it, vals };
+}
+/* 正在新学或复习这一条时不能改 */
+function editLock(E) {
+  if (E.src === 'topic') {
+    const argId = E.kind === 'term' ? null : (E.A && E.A.id);
+    const L = S.t3.learn, R = S.t3.rev;
+    if (L && L.step !== 'done' && ((argId && L.args.includes(argId)) || (E.kind === 'term' && (L.terms || []).includes(E.key)))) return '这一条正在今日新学里，学完再改。';
+    if (R && R.queue.some(q => q.id === argId || q.id === E.key)) return '这一条在今天的复习里，复习完再改。';
+    return '';
+  }
+  if (S.newSession && S.newSession.ids.includes(E.key)) return '这一条正在新学里，学完再改。';
+  if (S.reviewSession && S.reviewSession.ids.includes(E.key)) return '这一条在今天的复习里，复习完再改。';
+  return '';
+}
+
+function editField(E, [k, label, style, note], v) {
+  const en = style.includes('en'), big = style.includes('big'), area = style.includes('area');
+  let ctl;
+  if (style === 'role') ctl = `<select class="e-in" name="${k}">${ROLES.map(r => `<option ${r === v ? 'selected' : ''}>${r}</option>`).join('')}</select>`;
+  else if (area) ctl = `<textarea class="e-in ${en ? 'en' : ''} ${big ? 'big' : ''}" name="${k}" rows="${big ? 2 : k === 'para' || k === 'apara' ? 5 : 3}" placeholder="（还没写）">${esc(v)}</textarea>`;
+  else ctl = `<input class="e-in ${en ? 'en' : ''} ${big ? 'big' : ''}" name="${k}" value="${esc(v)}" placeholder="（还没写）" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">`;
+  return `<label class="e-fld"><span class="d-lab"><b>${label}</b>${note ? `<small>${note}</small>` : ''}<i></i></span>${ctl}</label>`;
+}
+function vEditItem(r) {
+  const E = editTarget(r.id);
+  if (!E) return { redirect: { v: 'home' } };
+  const vals = ui.editDraft && ui.editDraft.id === r.id ? ui.editDraft.vals : E.vals;
+  const lock = editLock(E);
+  const W = ui.editWarn && ui.editWarn.id === r.id ? ui.editWarn : null;
+  const crumb = E.src === 'topic' ? [T.topic.get(topicOf(r.id)).name, EDIT_TITLE[E.kind]] : groupCrumb(GROUPS.get(E.it.gid));
+  let extra = '';
+  if (E.src === 'note') {
+    const its = S.notes.items, it = its.find(x => x.id === r.id);
+    const groups = S.notes.groups.filter(g => g.setId === it.setId && g.kind === it.type && g.kind !== 'fn' && its.filter(x => x.gid === g.id).length >= (g.id === it.gid ? 1 : 1));
+    if (it.type !== 'fn') extra = `<div class="e-row"><span class="muted">卡片类型</span>${segHTML('type', [['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']], ui.editDraft && ui.editDraft.id === r.id && ui.editDraft.type || it.type)}
+      <span class="muted">所属组</span><select class="e-in sm" name="gid">${groups.map(g => `<option value="${esc(g.id)}" ${g.id === it.gid ? 'selected' : ''}>${esc(its.filter(x => x.gid === g.id).length > 1 ? g.name : '独立卡片 · ' + g.name)}</option>`).join('')}<option value="new">新建一组</option></select></div>`;
+  }
+  const side = `<aside class="d-side">
+      <div class="e-note"><b>正在编辑</b><span>改的内容只影响这一条的显示和练习题；<b>学习进度、复习日期、写错记录都不变</b>。</span></div>
+      ${W ? `<div class="e-warn">${W.msg}${W.choices ? `<div class="btn-row">${W.choices.map(([a, t]) => `<button class="btn btn-sm ${a === 'both' ? 'btn-primary' : 'btn-outline'}" type="button" data-a="ieditfix" data-id="${esc(r.id)}" data-k="${a}">${t}</button>`).join('')}</div>` : ''}</div>` : ''}
+      ${E.builtin ? `<div class="e-tip">这是 App 自带的内容。改的是你自己这一份，详情页会标“已修改”；随时可以恢复原样。</div>` : ''}
+      <button class="btn btn-primary e-btn" type="submit" ${lock ? 'disabled' : ''}>保存</button>
+      <button class="btn btn-outline e-btn" type="button" data-a="ieditcancel">取消</button>
+      ${E.builtin && overOf(E.key) ? `<button class="t-link-btn" type="button" data-a="ieditreset" data-id="${esc(r.id)}" data-confirm="确认恢复" style="text-align:center">恢复原样</button>` : ''}
+    </aside>`;
+  return {
+    title: '编辑' + EDIT_TITLE[E.kind], crumb, focus: false,
+    body: `<form class="d-detail" data-form="iedit" data-id="${esc(r.id)}" autocomplete="off">
+      <div class="d-main e-main">${lock ? `<div class="i-msg bad"><b>现在不能改</b><span>${lock}</span></div>` : ''}
+        ${EDIT_SPEC[E.kind].map(f => editField(E, f, vals[f[0]] || '')).join('')}${extra}
+        <div class="form-msg" id="form-msg"></div></div>${side}</form>`,
+  };
+}
+
+/* ---------- 保存 ---------- */
+const lowIn = (hay, n) => !!n && String(hay).toLowerCase().includes(String(n).toLowerCase());
+function replaceOnce(hay, from, to) {
+  const i = hay.toLowerCase().indexOf(from.toLowerCase());
+  return i < 0 ? null : hay.slice(0, i) + to + hay.slice(i + from.length);
+}
+function editSubmit(f, fix) {
+  const id = f.dataset.id, E = editTarget(id);
+  if (!E || editLock(E)) return;
+  const vals = {};
+  EDIT_SPEC[E.kind].forEach(([k]) => { const el = f.querySelector(`[name="${k}"]`); vals[k] = el ? el.value.trim() : ''; });
+  const seg = f.querySelector('[data-seg="type"]'), gsel = f.querySelector('[name="gid"]');
+  ui.editDraft = { id, vals, type: seg ? seg.dataset.value : null };
+  const msg = t => { const m = document.querySelector('#form-msg'); if (m) m.textContent = t; };
+  if (!vals.en) return msg('英文不能为空。');
+  // 范文对不上：先问是一起改范文，还是只改英文（设计稿 BS）
+  if (E.kind === 'sent') {
+    if (!lowIn(vals.para, vals.en)) {
+      if (fix === 'both') { const p = replaceOnce(vals.para, E.vals.en, vals.en); if (p == null) return warn(id, '范文里也找不到原来的论点句，请直接在“范文段落”里改。'); vals.para = p; }
+      else if (fix !== 'only') return warn(id, `论点句改成了“${esc(vals.en)}”，范文里还是原来的写法。`, [['both', '同时改范文'], ['only', '只改英文']]);
+    }
+  }
+  if (E.kind === 'exp') {
+    if (vals.en !== E.vals.en && vals.ppara === E.vals.ppara && E.vals.ppara.toLowerCase() === E.vals.en.toLowerCase()) {
+      if (fix === 'both') { const p = replaceOnce(vals.apara, E.vals.ppara, vals.en); if (p == null) return warn(id, '范文里找不到原来的写法，请直接改“所在的范文段落”。'); vals.apara = p; vals.ppara = vals.en; }
+      else if (fix !== 'only') return warn(id, `英文改成了“${esc(vals.en)}”，范文里还是“${esc(E.vals.ppara)}”。`, [['both', '同时改范文'], ['only', '只改英文（范文里的写法不变）']]);
+    }
+    if (!lowIn(vals.apara, vals.ppara || vals.en)) return warn(id, '“范文里的写法”在范文段落里找不到。复习的范文填空要用它，请改成范文里的原样。');
+  }
+  if (E.kind === 'term' && vals.ex && !lowIn(vals.ex, vals.en)) msg('提醒：例句里没有这个词，例句填空会出不了题。');
+  saveEdit(E, vals, seg && seg.dataset.value, gsel && gsel.value);
+}
+function warn(id, msg, choices) { ui.editWarn = { id, msg, choices }; render(); }
+const changed = (E, vals) => Object.keys(vals).some(k => (vals[k] || '') !== (E.vals[k] || ''));
+function saveEdit(E, vals, type, gid) {
+  const id = ui.editDraft.id;
+  const over = S.t3.over || (S.t3.over = {});
+  if (E.src === 'topic') {
+    if (E.kind === 'sent') {
+      if (changed(E, vals)) {
+        const o = Object.assign(over[E.key] || {}, { en: vals.en, zh: vals.zh, short: vals.short, para: vals.para, pattern: vals.slots ? { slots: slashList(vals.slots), apply: vals.apply } : undefined });
+        o.sentPara = lowIn(vals.para, vals.en) ? undefined : (o.sentPara || E.vals.en);
+        over[E.key] = o;
+      }
+    } else if (E.kind === 'exp') {
+      if (changed(E, vals)) {
+        over[E.key] = Object.assign(over[E.key] || {}, { en: vals.en, zh: vals.zh, role: vals.role, para: vals.ppara || vals.en, base: vals.base, usage: vals.usage,
+          col: vals.col.split('\n').map(x => x.trim()).filter(Boolean), alt: slashList(vals.alt),
+          parts: vals.parts ? vals.parts.split(/\s*[|｜]\s*/).map(p => { const i = p.search(CJK); return i > 0 ? [p.slice(0, i).trim(), p.slice(i).trim()] : [p.trim(), '']; }) : undefined });
+        if (vals.apara !== E.vals.apara) { over[E.A.id] = Object.assign(over[E.A.id] || {}, { para: vals.apara }); over[E.key].touchedPara = true; }
+      }
+    } else if (changed(E, vals)) {
+      over[E.key] = Object.assign(over[E.key] || {}, { en: vals.en, zh: vals.zh, cat: vals.cat, pos: vals.pos, ex: vals.ex, exZh: vals.exZh,
+        verbs: vals.verbs.split('\n').map(x => x.trim()).filter(Boolean).map(x => { const s = splitEnZh(x); return [s.en, s.zh]; }), ok: slashList(vals.ok), bad: slashList(vals.bad) });
+    }
+    t3assemble();
+  } else if (E.src === 'fn') {
+    if (changed(E, vals)) over[E.key] = Object.assign(over[E.key] || {}, vals);
+    assemble();
+  } else {
+    const it = S.notes.items.find(x => x.id === E.key);
+    if (type === 'grammar' && !vals.wrong) return document.querySelector('#form-msg').textContent = '语法卡需要填写原来的错误写法。';
+    Object.assign(it, vals);
+    if (type && type !== it.type) {
+      it.type = type;
+      const ng = 'ng:' + uid(); S.notes.groups.push({ id: ng, setId: it.setId, kind: type, name: it.en }); it.gid = ng;
+    } else if (gid && gid !== it.gid) {
+      if (gid === 'new') { const ng = 'ng:' + uid(); S.notes.groups.push({ id: ng, setId: it.setId, kind: it.type, name: '新的一组' }); it.gid = ng; }
+      else it.gid = gid;
+    }
+    pruneNoteGroups(); assemble();
+  }
+  ui.editDraft = null; ui.editWarn = null;
+  save(); back(); toast('已保存修改');
+}
+
+/* 把自带内容的改动叠加上去（t3assemble / assemble 结束时调用） */
+function applyTopicOver() {
+  const over = (S.t3 && S.t3.over) || {};
+  for (const [k, o] of Object.entries(over)) {
+    if (T.arg.has(k)) {
+      const A = T.arg.get(k), sent = T.item.get(k + ':s');
+      ['short', 'para', 'en', 'zh'].forEach(f => { if (o[f] != null) A[f] = o[f]; });
+      if ('pattern' in o) A.pattern = o.pattern;
+      sent.en = A.en; sent.zh = A.zh; sent.para = o.sentPara || A.en;
+    } else if (T.item.has(k)) { const { touchedPara, ...rest } = o; Object.assign(T.item.get(k), rest); }
+    else if (T.term.has(k)) Object.assign(T.term.get(k), o);
+  }
+}
+function applyFnOver() {
+  const over = (S.t3 && S.t3.over) || {};
+  for (const [k, o] of Object.entries(over)) if (k.startsWith('f:') && ITEMS.has(k)) Object.assign(ITEMS.get(k), o);
+}
+const editBtn = id => `<button class="btn btn-outline btn-sm" type="button" data-a="iedit" data-id="${esc(id)}">编辑</button>`;
+const modTag = key => overOf(key) ? '<span class="tag" title="和 App 自带的不一样，可以在编辑里恢复原样">已修改</span>' : '';
+
+function editClick(a, el) {
+  if (a === 'iedit') { ui.editDraft = null; ui.editWarn = null; go({ v: 'edit', id: el.dataset.id }); return true; }
+  if (a === 'ieditcancel') { ui.editDraft = null; ui.editWarn = null; back(); return true; }
+  if (a === 'ieditfix') { const f = document.querySelector('form[data-form="iedit"]'); ui.editWarn = null; editSubmit(f, el.dataset.k); return true; }
+  if (a === 'ieditreset') {
+    const E = editTarget(el.dataset.id);
+    if (E) {
+      const o = S.t3.over[E.key];
+      // 这条表达改动时一起改过的范文段落，也一起恢复
+      if (E.kind === 'exp' && o && o.touchedPara && S.t3.over[E.A.id]) { delete S.t3.over[E.A.id].para; if (!Object.keys(S.t3.over[E.A.id]).length) delete S.t3.over[E.A.id]; }
+      delete S.t3.over[E.key];
+    }
+    ui.editDraft = null; ui.editWarn = null;
+    if (E.src === 'topic') t3assemble(); else assemble();
+    save(); back(); toast('已恢复原样');
+    return true;
+  }
+  return false;
+}
+
+T3VIEWS.edit = vEditItem;
+
 
 const VIEWS = {
   home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
@@ -5251,6 +5484,7 @@ document.addEventListener('click', e => {
   if (a && a.startsWith('t3') && t3click(a, el)) return;
   if (a && a.startsWith('d') && detailClick(a, el)) return;
   if (a && (a.startsWith('imp') || a === 'tunrec') && importClick(a, el)) return;
+  if (a && a.startsWith('iedit') && editClick(a, el)) return;
   switch (a) {
     case 'back': back(); break;
     case 'hidehint': S.user.hintClosed = true; save(); render(); break;
@@ -5365,6 +5599,7 @@ document.addEventListener('submit', e => {
   const f = e.target;
   const kind = f.dataset.form;
   if (kind && kind.startsWith('t3')) { t3submit(kind, f); return; }
+  if (kind === 'iedit') { editSubmit(f); return; }
   if (kind === 'answer') {
     const inp = f.querySelector('.answer');
     if (inp.readOnly) return;
