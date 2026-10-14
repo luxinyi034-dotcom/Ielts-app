@@ -1098,6 +1098,14 @@ textarea.e-in { resize: vertical; }
 .e-warn { border-radius: 14px; background: var(--wrong-soft); padding: 12px 14px; font-size: 13px; color: var(--wrong); line-height: 1.6; display: flex; flex-direction: column; gap: 8px; }
 .e-tip { border-radius: 14px; border: 1px dashed var(--line); padding: 10px 14px; font-size: 13px; color: var(--warm); line-height: 1.6; }
 .e-btn { width: 100%; justify-content: center; }
+.i-plink { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; border: 0; background: transparent; padding: 0; text-align: left; color: inherit; width: 100%; }
+.i-arg > .i-plink .en { font-family: var(--f-en); font-size: 17px; color: var(--ink); }
+.i-arg > .i-plink small { font-size: 12.5px; color: var(--warm); }
+.i-exps .i-plink { flex-direction: row; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13px; }
+.i-look { font-size: 12px; color: var(--sage-deep); white-space: nowrap; }
+.i-plink:hover .en { text-decoration: underline; text-decoration-color: var(--sage); }
+.i-prev { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 14px; background: var(--sage-soft); }
+.i-prev b { color: var(--sage-deep); }
 </style>
 </head>
 <body>
@@ -2091,6 +2099,7 @@ function renderSide() {
 }
 
 function render(scroll) {
+  impPreviewGuard();
   const r = cur();
   const fn = VIEWS[r.v] || VIEWS.home;
   let out;
@@ -3368,7 +3377,7 @@ function t3Para(r) {
     title: `论点 ${A.n} 的范文段落`, crumb: [tp.name, A.stance],
     actions: `<div class="seg" role="group" aria-label="论点">${tp.args.map(id => `<button type="button" data-a="t3para" data-id="${id}" aria-pressed="${id === A.id}">论点 ${T.arg.get(id).n}</button>`).join('')}</div>`,
     focus: !!P,
-    body: `<div class="t-para-grid${P ? ' pp' : ''}">${left}
+    body: `${previewBanner()}<div class="t-para-grid${P ? ' pp' : ''}">${left}
       <aside class="t-para-side">
         <div class="t-label">论点句${P ? ' · 练习时英文先遮住，点一下显示' : ''}</div>
         <button class="t-box" type="button" data-go="targ:${A.id}" data-hk="${A.id}:s"><span class="en${mk()}"${P ? ' data-a="t3unmask"' : ''} style="font-weight:600">${esc(A.en)}</span><span class="zh">${esc(A.zh)}</span></button>
@@ -4077,6 +4086,7 @@ function t3Side(id) {
       ? `<b class="t-stage">${r.pend ? '等你确认是否从头开始' : STAGE_LABEL[r.stage] + ' · 下次 ' + fmtMD(r.next)}</b><span class="note-line">${it.kind === 'exp' ? `跟着论点 ${A.n} 一起安排${(S.t3.it[id] || {}).makeup ? ' · 在补练中（' + fmtMD(S.t3.it[id].makeup) + '）' : ''}` : `整个论点一起安排，${A.items.length} 条共用这个日期`}</span>${histDots(it.kind === 'exp' ? (S.t3.it[id] || {}).hist : r.hist)}`
       : `<b class="t-stage">资料 · 不复习</b><span class="note-line">选进写作组合后才会复习</span>${learnedArg(A.id) ? '' : `<button class="btn btn-soft btn-sm" type="button" data-go="tpick:${tp.id}">去选论点</button>`}`;
   }
+  if (ui.impPreview) status = `<b class="t-stage">还没导入</b><span class="note-line">${isTerm ? '确认导入后按笔记里写的【记忆】【资料】，没写就按设置里的默认值' : '确认导入后，在“选论点”时选进写作组合才开始学和复习'}</span>`;
   return `<aside class="t-dside">
     <div class="blk"><small>在哪里</small><span class="path">${path}</span>${back}</div>
     <div class="blk"><small>复习状态</small>${status}</div>
@@ -4107,8 +4117,8 @@ function t3ArgDetail(r) {
   const same = others.map(x => { const B = T.arg.get(x), s = B.side === A.side; return `<button class="t-other s${B.side}" type="button" data-go="targ:${x}"><small>${esc(B.stance)} · ${s ? '同一边' : '写让步段时用'}</small><b>论点 ${B.n} · ${esc(B.short)}</b><small>${esc(B.zh)}</small></button>`; }).join('');
   const preview = A.para.length > 150 ? A.para.slice(0, A.para.indexOf(' ', 140)) + ' …' : A.para;
   return {
-    title: `论点 ${A.n} · ${A.short}`, crumb: [tp.name, '论点句'], actions: t3fav(sid) + editBtn(sid) + modTag(A.id),
-    body: `<div class="t-detail"><div class="t-dmain">
+    title: `论点 ${A.n} · ${A.short}`, crumb: [tp.name, '论点句'], actions: ui.impPreview ? '' : t3fav(sid) + editBtn(sid) + modTag(A.id),
+    body: `${previewBanner()}<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('论点句', 'core'), t3tag(A.stance)], A.en, A.zh, 26)}
       ${sec3('段落骨架', '这一段怎么展开：一句论点，三条展开', `<div class="t-chainlist">${chain}</div>`)}
       ${pat ? sec3('句型', '标出的部分可以换，句子结构可以搬到别的话题', pat) : ''}
@@ -4127,8 +4137,8 @@ function t3ExpDetail(r) {
   const leads = `<div class="t-grid3">${(LEADS[it.role] || []).map(l => `<div class="t-lead en">${esc(l)}</div>`).join('')}</div><span class="note-line">按“作用”自动显示，不用导入。</span>`;
   const alts = it.alt && it.alt.length ? `<details class="t-alts"><summary><b>可替换写法 · ${it.alt.length} 条</b><span class="gap">写作时可以用，默写时不算对</span></summary><div class="en">${it.alt.map(esc).join('　·　')}</div></details>` : '';
   return {
-    title: `论点 ${A.n} · ${A.short} · ${it.role}`, crumb: [tp.name, '展开表达'], actions: t3fav(it.id) + editBtn(it.id) + modTag(it.id),
-    body: `<div class="t-detail"><div class="t-dmain">
+    title: `论点 ${A.n} · ${A.short} · ${it.role}`, crumb: [tp.name, '展开表达'], actions: ui.impPreview ? '' : t3fav(it.id) + editBtn(it.id) + modTag(it.id),
+    body: `${previewBanner()}<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('展开表达', 'expr'), t3tag(it.role, 'know')], it.en, it.zh, 30)}
       <section class="t-ctx"><span class="note-line">所属论点 · 论点 ${A.n} ${esc(A.short)}</span><span class="en">${esc(A.en)}</span></section>
       ${parts ? sec3('搭配', '哪些词要连在一起用', parts) : ''}
@@ -4148,8 +4158,8 @@ function t3TermDetail(r) {
   const fam = tp.terms.filter(x => x !== t.id && T.term.get(x).cat === t.cat);
   const famList = (fam.length ? fam : tp.terms.filter(x => x !== t.id)).map(x => { const w = T.term.get(x), m = termMem(x); return `<button class="t-tchip ${m ? 'on' : ''}" type="button" data-go="tterm:${x}"><span class="en">${esc(w.en)}</span> <small>· ${m ? '已在记' : '资料'}</small></button>`; }).join('');
   return {
-    title: t.en, crumb: [tp.name, '话题词汇'], actions: t3fav(t.id) + editBtn(t.id) + modTag(t.id),
-    body: `<div class="t-detail"><div class="t-dmain">
+    title: t.en, crumb: [tp.name, '话题词汇'], actions: ui.impPreview ? '' : t3fav(t.id) + editBtn(t.id) + modTag(t.id),
+    body: `${previewBanner()}<div class="t-detail"><div class="t-dmain">
       ${t3hero([t3tag('话题词汇', 'term'), t3tag('范畴 · ' + t.cat), t.pos ? t3tag(t.pos) : ''], t.en, t.zh, 34)}
       ${gram ? sec3('词性和单复数', '“形式不对”最常出在这里', gram) : ''}
       ${verbs ? sec3('常用的动词搭配', '只记名词写不出句子', verbs) : ''}
@@ -4969,40 +4979,70 @@ const cleanArg = A => ({ short: A.short, en: A.en, zh: A.zh, para: A.para.replac
   exps: A.exps.map(e => { const x = { role: e.role, en: e.en, zh: e.zh }; ['base', 'lead', 'usage', 'parts'].forEach(k => { if (e[k]) x[k] = e[k]; }); if (e.para) x.para = e.para; if (e.col.length) x.col = e.col; if (e.alt.length) x.alt = e.alt; return x; }) });
 const cleanTerm = t => ({ en: t.en, zh: t.zh, cat: t.cat || '其他', pos: t.pos, ex: t.ex, exZh: t.exZh, verbs: t.verbs, ok: t.ok, bad: t.bad });
 
-function applyTopics(blocks) {
-  const imp = S.t3.imp || (S.t3.imp = { topics: [], ext: {} });
+/* 把这次的话题并进 imp：新话题用草稿里定好的 id，预览和真正导入的 id 一样 */
+function mergeBlocks(blocks, imp) {
   const modes = [];
   for (const B of blocks) {
-    const stances = B.stances.map(s => ({ name: s.name, idea: s.idea, args: s.args.filter(a => !a.skip).map(cleanArg) }));
+    const stances = B.stances.map(s => ({ name: s.name, idea: s.idea, args: s.args.filter(a => !a.skip).map(cleanArg) })).filter(s => s.args.length || !B.merge);
     const terms = B.terms.filter(t => !t.skip);
     let tid = B.merge;
     if (tid) {
       const ext = imp.ext[tid] || (imp.ext[tid] = { stances: [], terms: [] });
-      stances.forEach(s => { if (!s.args.length) return; const e = ext.stances.find(x => x.name === s.name); if (e) e.args.push(...s.args); else ext.stances.push(s); });
+      // 总是接在最后：同名立场也新加一段，已经导入过的论点编号不会变
+      ext.stances.push(...stances);
       ext.terms.push(...terms.map(cleanTerm));
     } else {
-      tid = 'u' + uid();
+      tid = B.newId || ('u' + uid());
       imp.topics.push({ id: tid, theme: B.theme || '我导入的话题', name: B.name, concepts: B.concepts, stances, terms: terms.map(cleanTerm) });
     }
     terms.forEach(t => modes.push([`tt:${tid}:${slug(t.en)}`, t.mode || setDefMode('term')]));
     B.tid = tid;
   }
+  return modes;
+}
+function applyTopics(blocks) {
+  const imp = S.t3.imp || (S.t3.imp = { topics: [], ext: {} });
+  ui.impPreview = false;
+  const modes = mergeBlocks(blocks, imp);
   t3assemble();
   modes.forEach(([id, m]) => { if (T.term.has(id) && m === 'memory') TR(id).mode = 'memory'; });
 }
+/* 导入前的预览：用草稿临时组一份 T，存档里的 imp 不动 */
+function previewAssemble(D) {
+  const real = S.t3.imp || { topics: [], ext: {} };
+  S.t3.imp = JSON.parse(JSON.stringify(real));
+  mergeBlocks(D.blocks, S.t3.imp);
+  t3assemble();
+  S.t3.imp = real;
+  ui.impPreview = true;
+  // 每个论点、词汇在预览里的 id
+  for (const B of D.blocks) {
+    const tp = T.topic.get(B.tid);
+    const args = tp.args.map(a => T.arg.get(a));
+    B.stances.forEach(s => s.args.forEach(A => { if (A.skip) return; const m = args.filter(x => x.en === A.en && x.short === A.short).pop(); A.pid = m && m.id; }));
+    B.terms.forEach(t => { if (!t.skip) t.pid = `tt:${B.tid}:${slug(t.en)}`; });
+  }
+}
+function endPreview() { if (ui.impPreview) { ui.impPreview = false; t3assemble(); } }
+// 离开导入预览（去了别的页面）就把预览收掉，存档里没导入的话题不会出现在别处
+const PREVIEW_VIEWS = new Set(['timport', 'targ', 'texp', 'tterm', 'tpara']);
+function impPreviewGuard() { if (ui.impPreview && !PREVIEW_VIEWS.has(cur().v)) endPreview(); }
+const previewBanner = () => ui.impPreview ? `<div class="i-msg i-prev"><b>导入前的预览</b><span>这些内容还没有导入，确认导入后才会保存。</span><button class="btn btn-outline btn-sm" type="button" data-a="impback">回到导入预览</button></div>` : '';
 
 /* ---------- 主题表达导入预览（第 41 节） ---------- */
 function vTopicImport() {
   const D = S.t3.impDraft;
   if (!D) return { redirect: { v: 'import' } };
   const blocks = D.blocks;
+  if (!ui.impPreview) previewAssemble(D);
+  const plink = (id, html) => id ? `<button class="i-plink" type="button" data-go="${id}">${html}<span class="i-look">看详情页 ›</span></button>` : html;
   const errs = blocks.reduce((a, B) => a + B.errors.length, 0);
   const set = D.setId && noteSet(D.setId), nNotes = set ? S.notes.items.filter(i => i.setId === set.id).length : 0;
   const body = blocks.map(B => {
-    const args = B.stances.map(s => `<div class="i-stance"><b>${esc(s.name)}</b>${s.idea ? `<small>${esc(s.idea)}</small>` : ''}${s.args.map(A => `<div class="i-arg ${A.skip ? 'skip' : ''}"><span class="i-short">论点 · ${esc(A.short)}${A.skip ? ' · 已有，跳过' : ''}</span><span class="en">${esc(A.en || '（没有论点句）')}</span><small>${esc(A.zh)}</small>
-      ${A.exps.length ? `<div class="i-exps">${A.exps.map(e => `<span><i>${esc(e.role)}</i><span class="en">${esc(e.en)}</span> <small>${esc(e.zh)}</small></span>`).join('')}</div>` : ''}
+    const args = B.stances.map(s => `<div class="i-stance"><b>${esc(s.name)}</b>${s.idea ? `<small>${esc(s.idea)}</small>` : ''}${s.args.map(A => `<div class="i-arg ${A.skip ? 'skip' : ''}"><span class="i-short">论点 · ${esc(A.short)}${A.skip ? ' · 已有，跳过' : ''}</span>${plink(A.pid && 'targ:' + A.pid, `<span class="en">${esc(A.en || '（没有论点句）')}</span><small>${esc(A.zh)}</small>`)}
+      ${A.exps.length ? `<div class="i-exps">${A.exps.map((e, k) => plink(A.pid && 'texp:' + A.pid + ':e' + (k + 1), `<span><i>${esc(e.role)}</i><span class="en">${esc(e.en)}</span> <small>${esc(e.zh)}</small></span>`)).join('')}</div>` : ''}
       <small class="${A.para ? 'muted' : 'i-bad'}">${A.para ? '范文 ' + A.para.split(/\s+/).length + ' 个词' : '缺范文'}</small></div>`).join('')}</div>`).join('');
-    const terms = B.terms.length ? `<div class="i-stance"><b>话题词汇 · ${B.terms.length} 个</b><div class="chips">${B.terms.map(t => `<span class="chip ${t.skip ? 'muted' : ''}"><span class="en">${esc(t.en)}</span> ${esc(t.zh)}${t.mode === 'memory' ? ' · 记忆' : ''}</span>`).join('')}</div></div>` : '';
+    const terms = B.terms.length ? `<div class="i-stance"><b>话题词汇 · ${B.terms.length} 个</b><div class="chips">${B.terms.map(t => t.pid ? `<button class="chip" type="button" data-go="tterm:${t.pid}"><span class="en">${esc(t.en)}</span> ${esc(t.zh)}${t.mode === 'memory' ? ' · 记忆' : ''} ›</button>` : `<span class="chip muted"><span class="en">${esc(t.en)}</span> ${esc(t.zh)}</span>`).join('')}</div></div>` : '';
     return `<section class="i-topic">
       <div class="d-lab"><b>${B.merge ? '补进已有话题' : '新话题'}</b><i></i></div>
       <div class="i-head"><span class="en">${esc(B.name)}</span><small>${esc(B.theme || (B.merge ? T.topic.get(B.merge).theme : '我导入的话题'))}${B.concepts.length ? ' · ' + B.concepts.map(esc).join('、') : ''}</small></div>
@@ -5013,7 +5053,7 @@ function vTopicImport() {
   return {
     title: '确认导入话题', crumb: ['导入'],
     body: `<div class="session wide">
-      <p class="warm">${blocks.length} 个话题${nNotes ? `；另外有 ${nNotes} 张笔记卡，确认后接着整理` : ''}。论点什么时候背，还是在“选论点”时决定。</p>
+      <p class="warm">${blocks.length} 个话题${nNotes ? `；另外有 ${nNotes} 张笔记卡，确认后接着整理` : ''}。点任意一条可以先看详情页的效果。论点什么时候背，还是在“选论点”时决定。</p>
       ${body}
       <div class="sticky-bar"><span class="summary">${errs ? `<b style="color:var(--wrong)">${errs} 处</b>要先改原文` : '没有问题，可以导入'}</span>
         <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="impcancel">放弃</button><button class="btn btn-outline" type="button" data-a="impedit">回去改原文</button><button class="btn btn-primary" type="button" data-a="impok" ${errs ? 'disabled' : ''}>确认导入</button></div></div>
@@ -5049,7 +5089,8 @@ function runImport(text, title, source) {
   const P = parseTopics(text);
   let setId = null;
   if (P.rest.trim()) setId = createNoteSet(P.rest, title, { source });
-  if (P.blocks.length) { S.t3.impDraft = { blocks: P.blocks, setId, text, title }; assemble(); save(); replaceRoute({ v: 'timport' }); return true; }
+  P.blocks.forEach(B => { if (!B.merge) B.newId = 'u' + uid(); });
+  if (P.blocks.length) { ui.impPreview = false; S.t3.impDraft = { blocks: P.blocks, setId, text, title }; assemble(); save(); replaceRoute({ v: 'timport' }); return true; }
   if (setId) { assemble(); save(); replaceRoute({ v: 'triage', id: setId }); return true; }
   return false;
 }
@@ -5060,8 +5101,10 @@ function importClick(a, el) {
     ta.value = (ta.value.trim() ? ta.value.trim() + '\n\n' : '') + add;
     return true;
   }
+  if (a === 'impback') { replaceRoute({ v: 'timport' }); return true; }
   if (a === 'impok') {
     const D = S.t3.impDraft; if (!D || D.blocks.some(B => B.errors.length)) return true;
+    endPreview();
     const before = new Set([...T.item.keys(), ...T.term.keys()]);
     applyTopics(D.blocks);
     const setId = D.setId;
@@ -5072,6 +5115,7 @@ function importClick(a, el) {
     return true;
   }
   if (a === 'impedit' || a === 'impcancel') {
+    endPreview();
     const D = S.t3.impDraft;
     if (D && D.setId) { const id = D.setId; S.notes.items = S.notes.items.filter(x => x.setId !== id); S.notes.groups = S.notes.groups.filter(g => g.setId !== id); S.notes.sets = S.notes.sets.filter(s => s.id !== id); assemble(); }
     ui.impText = a === 'impedit' && D ? D.text : ''; ui.impTitle = a === 'impedit' && D ? D.title : '';
