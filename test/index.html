@@ -1041,6 +1041,35 @@ button.d-cmprow:hover, .d-sib:hover { outline: 1.5px solid var(--line); }
   .d-dl { grid-template-columns: 68px minmax(0, 1fr); }
 }
 .d-hl { background: var(--sage-soft); color: var(--sage-deep); border-radius: 5px; padding: 0 4px; }
+
+/* ---------- 导入（第七部分）：导入页说明、话题预览、确认页提醒 ---------- */
+.i-help { border: 1px solid var(--line); border-radius: var(--r-md); padding: 10px 16px; background: var(--paper); }
+.i-help summary { cursor: pointer; font-size: 14px; color: var(--sage-deep); }
+.i-help .d-dl { margin-top: 10px; font-size: 13.5px; }
+.i-help code { font-size: 12.5px; background: var(--paper-2); padding: 0 4px; border-radius: 4px; }
+.i-topic { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; }
+.i-head { display: flex; flex-direction: column; gap: 2px; }
+.i-head .en { font-family: var(--f-title); font-size: 26px; color: var(--ink); }
+.i-head small { font-size: 13px; color: var(--muted); }
+.i-msg { border-radius: 14px; background: var(--paper-2); padding: 10px 14px; display: flex; flex-direction: column; gap: 3px; font-size: 13.5px; color: var(--warm); }
+.i-msg b { color: var(--ink); font-size: 13px; }
+.i-msg.bad { background: var(--wrong-soft); color: var(--ink); } .i-msg.bad b { color: var(--wrong); }
+.i-raw { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--warm); margin-top: 4px; }
+.i-stance { display: flex; flex-direction: column; gap: 8px; }
+.i-stance > b { font-size: 14px; color: var(--sage-deep); } .i-stance > small { font-size: 12.5px; color: var(--muted); margin-top: -6px; }
+.i-arg { border: 1px solid var(--line); border-radius: 16px; background: #FFFFFF; padding: 12px 16px; display: flex; flex-direction: column; gap: 3px; }
+.i-arg.skip { opacity: .55; }
+.i-short { font-size: 12px; color: var(--sage-deep); font-weight: 600; }
+.i-arg > .en { font-family: var(--f-en); font-size: 17px; color: var(--ink); }
+.i-arg > small { font-size: 12.5px; color: var(--warm); }
+.i-exps { display: flex; flex-direction: column; gap: 3px; margin: 6px 0 2px; padding-left: 12px; border-left: 2px solid var(--sage-soft); }
+.i-exps > span { font-size: 13px; }
+.i-exps i { font-style: normal; font-size: 11.5px; color: var(--sage-deep); margin-right: 8px; }
+.i-exps .en { font-family: var(--f-en); font-size: 15px; } .i-exps small { color: var(--muted); }
+.i-bad { color: var(--wrong) !important; }
+.tcard.warn { border-color: #E3B8AD; }
+.tcard-warn { font-size: 12.5px; color: var(--wrong); margin-bottom: 6px; }
+.i-stance .chip .en { margin-right: 4px; }
 </style>
 </head>
 <body>
@@ -1666,15 +1695,15 @@ function assemble() {
     const G = GROUPS.get(it.gid); if (!G) continue;
     ITEMS.set(it.id, Object.assign({}, it, { custom: true })); G.ids.push(it.id);
   }
-  for (const g of S.notes.groups) GROUPS.set(g.id, Object.assign({}, g, { lib: 'notes', ids: [] }));
+  for (const g of S.notes.groups) GROUPS.set(g.id, Object.assign({}, g, g.kind === 'fn' ? { lib: 'function', fn: g.name, scene: '' } : { lib: 'notes' }, { ids: [] }));
   for (const it of S.notes.items) {
     const G = GROUPS.get(it.gid); if (!G) continue;
-    ITEMS.set(it.id, Object.assign({}, it, { lib: 'notes' })); G.ids.push(it.id);
+    ITEMS.set(it.id, Object.assign({}, it, { lib: it.type === 'fn' ? 'function' : 'notes' })); G.ids.push(it.id);
   }
 }
 
 function noteSet(id) { return S.notes.sets.find(s => s.id === id); }
-function defMode(it) { if (!it) return 'reference'; if (it.defMode) return it.defMode; return it.type === 'core' ? 'memory' : 'reference'; }
+function defMode(it) { if (!it) return 'reference'; if (it.defMode) return it.defMode; if (it.type === 'fn') return setDefMode('fn'); return it.type === 'core' ? 'memory' : 'reference'; }
 function st(id) { return S.items[id] || (S.items[id] = { hist: [], wrong: 0 }); }
 function modeOf(id) { const s = S.items[id]; return (s && s.mode) || defMode(ITEMS.get(id)); }
 function studied(id) { const s = S.items[id]; return !!(s && s.stage != null); }
@@ -1866,7 +1895,17 @@ const NOTE_FIELDS = [
   ['slots', /^(?:可替换|可替换位置|替换)$/],
   ['rule', /^(?:规则|语法规则|rule)$/i],
   ['limit', /^(?:限制|使用限制)$/],
+  ['syntax', /^(?:后面接|句法|句法结构)$/],
+  ['tone', /^(?:语气|语气和边界)$/],
+  ['diff', /^(?:区别|近义区别)$/],
 ];
+/* 学习方式标记：写在行末或标题后面 */
+const MODE_TAG = /\s*[【\[]\s*(记忆|资料|暂缓)\s*[】\]]\s*/;
+const MODE_OF_TAG = { 记忆: 'memory', 资料: 'reference', 暂缓: 'paused' };
+function takeMode(line) { const m = line.match(MODE_TAG); return m ? { line: line.replace(MODE_TAG, ' ').trim(), mode: MODE_OF_TAG[m[1]] } : { line, mode: null }; }
+/* 设置里的默认学习方式（第 42 节）；S.t3 还没建好时用默认值 */
+const DEF_MODE = { expr: 'memory', pattern: 'memory', grammar: 'memory', fn: 'reference', term: 'reference' };
+function setDefMode(kind) { const d = S.t3 && S.t3.set && S.t3.set.defMode; return (d && d[kind]) || DEF_MODE[kind]; }
 function fieldLine(line) {
   const m = line.match(/^([^:：\s]{1,8})\s*[:：]\s*(.+)$/);
   if (!m) return null;
@@ -1876,60 +1915,90 @@ function fieldLine(line) {
 function parseNotes(text) {
   const lines = String(text || '').replace(/\r/g, '').split('\n');
   const secs = []; let cur = { heading: '', cards: [] }; secs.push(cur);
+  const unrec = [];
   const wrongMark = /^(?:❌|✗|✘|×|错误\s*[:：]|wrong\s*[:：])\s*/i;
   const arrow = /\s*(?:→|->|=>|⇒)\s*|\s*(?:✅|✓|✔|√|正确\s*[:：])\s*/;
   lines.forEach((rawLine, idx) => {
     let line = rawLine.trim();
     if (!line) return;
     const h = line.match(/^#{1,6}\s+(.+)$/);
-    if (h) { cur = { heading: h[1].trim(), cards: [] }; secs.push(cur); return; }
+    if (h) {
+      const t = takeMode(h[1].trim()), fn = t.line.match(/^功能\s*[:：]\s*(.+)$/);
+      cur = { heading: fn ? fn[1].trim() : t.line, fn: !!fn, mode: t.mode, cards: [] }; secs.push(cur); return;
+    }
     line = line.replace(/^>\s*/, '').replace(/^(?:[-*+•·]|\d+[.)、])\s+/, '').replace(/^\[[ xX]\]\s+/, '').trim();
     if (!line) return;
+    const tm = takeMode(line); line = tm.line;
     const fl = fieldLine(line);
     const last = cur.cards[cur.cards.length - 1];
     if (fl && last) { last.fields = last.fields || {}; last.fields[fl.key] = last.fields[fl.key] ? last.fields[fl.key] + '；' + fl.val : fl.val; return; }
     let card = null;
-    if (wrongMark.test(line)) {
-      const parts = line.replace(wrongMark, '').split(arrow).filter(s => s && s.trim());
+    const parts = line.replace(wrongMark, '').split(arrow).filter(x => x && x.trim());
+    if (!cur.fn && (wrongMark.test(line) || (parts.length >= 2 && /[A-Za-z]/.test(parts[0]) && !CJK.test(parts[0])))) {
       if (parts.length >= 2) {
-        const { en, zh } = splitEnZh(parts.slice(1).join(' '));
+        let { en, zh } = splitEnZh(parts.slice(1).join(' '));
+        // 中文解释以英文单词开头时（know 不与 knowledge 搭配），句号后面的几个词归到解释里
+        const m = zh && en.match(/^(.*[.!?])\s+(\S+(?:\s+\S+){0,2})$/);
+        if (m) { en = m[1]; zh = m[2] + ' ' + zh; }
         if (en) card = { kind: 'grammar', wrong: stripTail(parts[0]), en, zh };
       }
     } else {
       const { en, zh } = splitEnZh(line);
-      if (en && /[A-Za-z]/.test(en)) card = { kind: isPattern(en) ? 'pattern' : 'expr', en, zh };
+      if (en && /[A-Za-z]/.test(en)) card = { kind: cur.fn ? 'fn' : isPattern(en) ? 'pattern' : 'expr', en, zh };
     }
-    if (card) { card.raw = rawLine.trim(); card.line = idx + 1; card.flag = /[!！]|常错|易错/.test(line); cur.cards.push(card); }
+    if (card) { card.raw = rawLine.trim(); card.line = idx + 1; card.mode = tm.mode; cur.cards.push(card); }
+    else unrec.push({ line: idx + 1, text: rawLine.trim() });
   });
-  return secs.filter(s => s.cards.length);
+  const out = secs.filter(s => s.cards.length);
+  out.unrec = unrec;
+  return out;
 }
-function addNoteItem(c, setId, gid, grouped) {
-  const def = c.kind === 'expr' ? (grouped || c.flag ? 'memory' : 'reference') : 'memory';
+function addNoteItem(c, setId, gid, secMode) {
+  const def = c.mode || secMode || setDefMode(c.kind);
   const f = c.fields || {};
   // 句型卡的“场景”存为适用场景
   if (c.kind === 'pattern' && f.usage && !f.scene) { f.scene = f.usage; delete f.usage; }
-  S.notes.items.push(Object.assign({ id: 'n:' + uid(), setId, gid, type: c.kind, en: c.en, zh: c.zh, wrong: c.wrong || '', usage: '', err: '', raw: c.raw, line: c.line, defMode: def }, f));
+  const it = Object.assign({ id: 'n:' + uid(), setId, gid, type: c.kind, en: c.en, zh: c.zh, wrong: c.wrong || '', usage: '', err: '', raw: c.raw, line: c.line, defMode: def }, f);
+  S.notes.items.push(it);
+  return it;
+}
+/* 导入的功能表达并进 App 自带的同名功能；没有就新建一个功能组 */
+function fnGroupFor(name, setId) {
+  const g = FUNCTION_GROUPS.find(x => x.fn === name);
+  if (g) return g.id;
+  const old = S.notes.groups.find(x => x.kind === 'fn' && x.name === name);
+  if (old) return old.id;
+  const id = 'nf:' + uid();
+  S.notes.groups.push({ id, setId, kind: 'fn', name });
+  return id;
 }
 function createNoteSet(text, title, opts = {}) {
-  const secs = parseNotes(text);
+  const secs = opts.secs || parseNotes(text);
   const setId = 'ns:' + uid();
   let count = 0;
   for (const sec of secs) {
+    if (sec.fn) {
+      const gid = fnGroupFor(sec.heading, setId);
+      sec.cards.forEach(c => addNoteItem(c, setId, gid, sec.mode));
+      count += sec.cards.length;
+      continue;
+    }
     for (const kind of ['expr', 'pattern', 'grammar']) {
       const cards = sec.cards.filter(c => c.kind === kind);
       if (!cards.length) continue;
       if (sec.heading && cards.length >= 2) {
         const gid = 'ng:' + uid();
         S.notes.groups.push({ id: gid, setId, kind, name: sec.heading });
-        cards.forEach(c => addNoteItem(c, setId, gid, true));
+        cards.forEach(c => addNoteItem(c, setId, gid, sec.mode));
       } else {
-        cards.forEach(c => { const gid = 'ng:' + uid(); S.notes.groups.push({ id: gid, setId, kind, name: c.en }); addNoteItem(c, setId, gid, false); });
+        cards.forEach(c => { const gid = 'ng:' + uid(); S.notes.groups.push({ id: gid, setId, kind, name: c.en }); addNoteItem(c, setId, gid, sec.mode); });
       }
       count += cards.length;
     }
   }
-  if (!count) return null;
-  S.notes.sets.push({ id: setId, title, created: Date.now(), confirmed: !!opts.confirmed, source: opts.source || '粘贴的文字' });
+  const unrec = (secs.unrec || []).slice();
+  if (!count && !unrec.length) return null;
+  S.notes.sets.push({ id: setId, title, created: Date.now(), confirmed: !!opts.confirmed, source: opts.source || '粘贴的文字', unrec });
   return setId;
 }
 function pruneNoteGroups() {
@@ -2571,14 +2640,15 @@ function vTopic(r) {
 }
 function vFuncs() {
   const colors = ['var(--sage)', 'var(--blush)', 'var(--beige)'];
-  const fns = FUNCTION_GROUPS.map(f => GROUPS.get(f.id));
+  const fns = FUNCTION_GROUPS.map(f => GROUPS.get(f.id))
+    .concat([...GROUPS.values()].filter(G => G.lib === 'function' && G.kind === 'fn' && gstats(G).total));
   return {
-    title: '功能表达', crumb: ['表达库'],
+    title: '功能表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-go="import">${svg('upload')}导入功能表达</button>`,
     body: `<p class="warm" style="max-width:64ch">功能表达是可迁移的写作表达，不是万能模板。默认作为资料查阅；需要主动写出的条目，切换为“记忆”后才进入新学和复习。</p>
     <div class="rows">${fns.map((G, i) => {
       const s = gstats(G);
       const extra = [...GROUPS.values()].filter(x => x.lib === 'function' && x.independent && x.parent === G.id);
-      return `<button class="row tap bar-left" style="--c:${colors[i % 3]}" type="button" data-go="group:${esc(G.id)}"><div class="body"><span class="title">${esc(G.fn)}</span><span class="sub">${esc(G.scene)}</span><span class="meta"><span>${s.total} 条表达</span><span>记忆 ${s.mem}</span>${s.due ? statusHTML('待复习') : ''}</span></div>${svg('chev')}</button>` +
+      return `<button class="row tap bar-left" style="--c:${colors[i % 3]}" type="button" data-go="group:${esc(G.id)}"><div class="body"><span class="title">${esc(G.fn)}${G.kind === 'fn' ? ' <span class="tag">导入</span>' : ''}</span><span class="sub">${esc(G.scene || '导入时新建的功能')}</span><span class="meta"><span>${s.total} 条表达</span><span>记忆 ${s.mem}</span>${s.due ? statusHTML('待复习') : ''}</span></div>${svg('chev')}</button>` +
         extra.map(X => `<button class="row tap" style="margin-left:28px" type="button" data-go="group:${esc(X.id)}"><div class="body"><span class="title en">${esc(X.name)} <span class="tag">独立项</span></span><span class="meta">${esc(G.fn)} · ${statusHTML(gstats(X).status)}</span></div>${svg('chev')}</button>`).join('');
     }).join('')}</div>`,
   };
@@ -2815,15 +2885,17 @@ function vTriage(r) {
   const itemsOf = gid => S.notes.items.filter(i => i.gid === gid);
   const card = it => {
     const sameKind = groups.filter(g => g.kind === it.type && itemsOf(g.id).length >= 2);
-    return `<div class="tcard">
+    const noZh = !it.zh && it.type !== 'grammar';
+    return `<div class="tcard ${noZh ? 'warn' : ''}">
+      ${noZh ? '<div class="tcard-warn">缺中文：练一遍要看中文出题，补上更好（下面的中文框可以直接填）</div>' : ''}
       <div class="tcard-top">
-        <div class="seg small" role="group" aria-label="卡片类型">${[['expr', '表达'], ['pattern', '句型'], ['grammar', '语法']].map(([k, t]) => `<button type="button" data-a="ttype" data-id="${esc(it.id)}" data-t="${k}" aria-pressed="${it.type === k}">${t}</button>`).join('')}</div>
-        <div class="btn-row">${modeToggle(it.id)}
-          <select data-tmove="${esc(it.id)}" aria-label="所属语义组" style="border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--paper);font-size:14px;max-width:180px">
+        ${it.type === 'fn' ? `<span class="tag">功能表达 · ${esc((GROUPS.get(it.gid) || {}).fn || '')}</span>` : `<div class="seg small" role="group" aria-label="卡片类型">${[['expr', '表达'], ['pattern', '句型'], ['grammar', '语法']].map(([k, t]) => `<button type="button" data-a="ttype" data-id="${esc(it.id)}" data-t="${k}" aria-pressed="${it.type === k}">${t}</button>`).join('')}</div>`}
+        <div class="btn-row">${modeToggle(it.id, true)}
+          ${it.type === 'fn' ? '' : `<select data-tmove="${esc(it.id)}" aria-label="所属语义组" style="border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--paper);font-size:14px;max-width:180px">
             ${sameKind.map(g => `<option value="${esc(g.id)}" ${g.id === it.gid ? 'selected' : ''}>${esc(g.name)}</option>`).join('')}
             <option value="solo" ${sameKind.some(g => g.id === it.gid) ? '' : 'selected'}>独立项</option>
             <option value="new">新建语义组</option>
-          </select>
+          </select>`}
           <button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="tdel" data-id="${esc(it.id)}">删除</button></div>
       </div>
       <div class="fields">
@@ -2834,18 +2906,27 @@ function vTriage(r) {
       <div class="raw">原始：${esc(it.raw || '')}${it.line ? ` · 第 ${it.line} 行` : ''}</div>
     </div>`;
   };
-  const sem = groups.filter(g => itemsOf(g.id).length >= 2);
-  const solo = groups.filter(g => itemsOf(g.id).length === 1);
+  const sem = groups.filter(g => g.kind !== 'fn' && itemsOf(g.id).length >= 2);
+  const solo = groups.filter(g => g.kind !== 'fn' && itemsOf(g.id).length === 1);
   const all = S.notes.items.filter(i => i.setId === set.id);
+  const fns = all.filter(i => i.type === 'fn');
+  const unrec = set.unrec || [];
+  const unrecHTML = unrec.length ? `<section class="tgroup i-unrec"><div class="tgroup-head"><span class="tag" style="background:var(--wrong-soft);color:var(--wrong)">没认出来 · ${unrec.length} 行</span><span class="note-line">每一行选一个处理方式，全部处理完才能确认导入</span></div>
+    ${unrec.map((u, i) => `<div class="tcard warn"><div class="raw" style="font-size:14px;color:var(--ink)">第 ${u.line} 行：${esc(u.text)}</div><div class="btn-row">
+      <button class="btn btn-outline btn-sm" type="button" data-a="tunrec" data-id="${esc(set.id)}" data-i="${i}" data-act="card">当成表达卡</button>
+      <button class="btn btn-outline btn-sm" type="button" data-a="tunrec" data-id="${esc(set.id)}" data-i="${i}" data-act="note">当成上一张卡的备注</button>
+      <button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="tunrec" data-id="${esc(set.id)}" data-i="${i}" data-act="drop">不要这一行</button></div></div>`).join('')}</section>` : '';
+  const fnHTML = fns.length ? `<section class="tgroup"><div class="tgroup-head"><span class="tag">功能表达</span><span class="note-line">${fns.length} 条，确认后并进对应的功能</span></div>${fns.map(card).join('')}</section>` : '';
   const mem = all.filter(i => modeOf(i.id) === 'memory').length;
   return {
     title: set.confirmed ? '整理笔记' : '确认整理结果', crumb: ['我的写作笔记', set.title],
-    body: `<p class="warm" style="max-width:68ch">系统已把内容分成表达卡、句型卡和语法卡，并按标题建议了语义组。可以修改文字、更改类型、移动到其他组或删除。语法错误和句型默认记忆，同组表达默认记忆，零散表达默认资料。</p>
+    body: `<p class="warm" style="max-width:68ch">系统已把内容分成表达卡、句型卡和语法卡，并按标题建议了语义组。可以修改文字、更改类型、移动到其他组或删除。学习方式按笔记里写的【记忆】【资料】【暂缓】，没写的按设置里的默认值，每张都可以改。</p>
+      ${unrecHTML}${fnHTML}
       ${sem.map(g => `<section class="tgroup"><div class="tgroup-head"><span class="tag ${g.kind}">${KIND_LABEL[g.kind]}</span><input data-gname="${esc(g.id)}" value="${esc(g.name)}" aria-label="语义组名称"><span class="note-line">${itemsOf(g.id).length} 张</span></div>${itemsOf(g.id).map(card).join('')}</section>`).join('')}
       ${solo.length ? `<section class="tgroup"><div class="tgroup-head"><span class="tag">独立卡片</span><span class="note-line">没有相近内容的卡片保留为独立项</span></div>${solo.map(g => card(itemsOf(g.id)[0])).join('')}</section>` : ''}
       ${all.length ? '' : '<div class="empty"><h3>卡片已全部删除</h3><p>可以放弃这次导入，重新粘贴内容。</p></div>'}
       <div class="sticky-bar"><span class="summary">共 <b>${all.length}</b> 张卡片 · <b>${mem}</b> 条记忆、<b>${all.length - mem}</b> 条资料</span>
-        <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="tdiscard" data-id="${esc(set.id)}" data-confirm="确认放弃">放弃导入</button>${set.confirmed ? '' : `<button class="btn btn-primary" type="button" data-a="tconfirm" data-id="${esc(set.id)}" ${all.length ? '' : 'disabled'}>确认整理结果</button>`}</div></div>`,
+        <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="tdiscard" data-id="${esc(set.id)}" data-confirm="确认放弃">放弃导入</button>${set.confirmed ? '' : `<button class="btn btn-primary" type="button" data-a="tconfirm" data-id="${esc(set.id)}" ${all.length && !unrec.length ? '' : 'disabled'}>${unrec.length ? `还有 ${unrec.length} 行没处理` : '确认整理结果'}</button>`}</div></div>`,
   };
 }
 
@@ -2928,13 +3009,26 @@ function vRecords() {
    ============================================================ */
 const T = { topics: [], topic: new Map(), arg: new Map(), item: new Map(), term: new Map() };
 function t3assemble() {
-  for (const tp of TOPICS3) {
+  T.topics.length = 0; T.topic.clear(); T.arg.clear(); T.item.clear(); T.term.clear();
+  const imp = (S.t3 && S.t3.imp) || { topics: [], ext: {} };
+  for (const tp of TOPICS3.concat(imp.topics || [])) {
     const top = Object.assign({}, tp, { args: [], terms: [] });
+    // 导入时补进同名话题的内容（第 40 节）：新论点接在后面，已有论点的编号不变
+    const ext = (imp.ext || {})[tp.id] || { stances: [], terms: [] };
+    const stances = tp.stances.map(s => ({ name: s.name, idea: s.idea }));
+    const list = [];
+    tp.stances.forEach((s, si) => s.args.forEach(a => list.push([si, a])));
+    ext.stances.forEach(es => {
+      let si = stances.findIndex(s => s.name === es.name);
+      if (si < 0) { stances.push({ name: es.name, idea: es.idea || '' }); si = stances.length - 1; }
+      es.args.forEach(a => list.push([si, a]));
+    });
+    top.stances = stances;
     let n = 0;
-    tp.stances.forEach((s, si) => s.args.forEach(a => {
+    list.forEach(([si, a]) => {
       n++;
       const id = `a:${tp.id}:${n}`;
-      const A = Object.assign({}, a, { id, n, topic: tp.id, side: si, stance: s.name, items: [] });
+      const A = Object.assign({}, a, { id, n, topic: tp.id, side: si, stance: stances[si].name, items: [] });
       const sent = { id: id + ':s', kind: 'sent', arg: id, role: '论点句', en: a.en, zh: a.zh, para: a.en };
       T.item.set(sent.id, sent); A.items.push(sent.id);
       a.exps.forEach((e, k) => {
@@ -2942,9 +3036,10 @@ function t3assemble() {
         T.item.set(it.id, it); A.items.push(it.id);
       });
       T.arg.set(id, A); top.args.push(id);
-    }));
-    for (const t of tp.terms) {
+    });
+    for (const t of tp.terms.concat(ext.terms)) {
       const id = `tt:${tp.id}:${slug(t.en)}`;
+      if (T.term.has(id)) continue;
       T.term.set(id, Object.assign({}, t, { id, kind: 'term', topic: tp.id }));
       top.terms.push(id);
     }
@@ -2966,9 +3061,10 @@ STATUS_CLS['已学完'] = 's-stable';
 
 /* ---------- 存档 ---------- */
 function t3init() {
-  const d = { arg: {}, it: {}, term: {}, fav: {}, combos: [], learn: null, rev: null, revDone: null, set: {} };
+  const d = { arg: {}, it: {}, term: {}, fav: {}, combos: [], learn: null, rev: null, revDone: null, set: {}, imp: { topics: [], ext: {} }, impDraft: null };
   S.t3 = Object.assign(d, S.t3 || {});
   S.t3.set = Object.assign({ exam: '', shrink: false, extend: false, weakN: 3, weakM: 2, weakLast: true }, S.t3.set || {});
+  S.t3.set.defMode = Object.assign({}, DEF_MODE, S.t3.set.defMode || {});
   if (S.t3.revDone && S.t3.revDone.day !== dayKey()) S.t3.revDone = null;
 }
 const AR = id => S.t3.arg[id] || (S.t3.arg[id] = { hist: [] });
@@ -3147,7 +3243,7 @@ function t3Topics() {
   const themes = [...new Set(T.topics.map(t => t.theme))];
   const oldThemes = [...new Set(TOPIC_GROUPS.map(g => g.topic))];
   return {
-    title: '主题表达', crumb: ['表达库'],
+    title: '主题表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-go="import">${svg('upload')}导入话题</button>`,
     body: `<p class="warm" style="max-width:64ch">大主题 → 话题 → 立场 → 论点。每次新学一个话题里的 3 个论点，正好是一篇作文 3 个主体段的写作思路。</p>
     ${themes.map(th => `<section class="section"><div class="section-head"><h3>${esc(th)}</h3></div><div class="rows">${T.topics.filter(t => t.theme === th).map(tp => {
       const s = topicStats(tp);
@@ -4062,6 +4158,7 @@ function t3Settings() {
           <select class="t-date" data-t3weak="weakM" aria-label="至少几次">${[1, 2, 3, 4, 5].filter(v => v <= st.weakN).map(v => `<option value="${v}" ${st.weakM === v ? 'selected' : ''}>至少 ${v} 次</option>`).join('')}</select></div>
         ${sw('weakLast', st.weakLast !== false, false, '上次忘记就算薄弱', '最近一次评为忘记的条目，直接算薄弱。连续两次记得后自然离开薄弱。')}
       </section>
+      ${defModeSettings()}
       ${example}
       <p class="note-line">“考前冲刺”（最后 7 天把所有内容平均排一遍）会在下一版加入。</p>
     </div>`,
@@ -4127,6 +4224,7 @@ function t3click(a, el) {
   if (a.startsWith('t3rec') && recClick(a, el)) return true;
   const id = el.dataset.id;
   switch (a) {
+    case 't3defmode': S.t3.set.defMode[el.dataset.k] = el.dataset.m; save(); render(); toast('以后导入的卡按这个默认值'); return true;
     case 't3view': ui.t3view = el.dataset.v; render(); return true;
     case 't3mask': ui.t3mask = el.dataset.v; render(); return true;
     case 't3unmask': el.classList.remove('masked'); el.removeAttribute('data-a'); return true;
@@ -4636,6 +4734,7 @@ function itemSide(it, G) {
     </div>
     <button class="d-pracbtn" type="button" data-a="dprac" data-id="${esc(it.id)}"><span><b>练一遍</b><small>${PRAC_HOW[it.type]} · 不记录</small></span>${svg('chev')}</button>
     ${nx ? `<button class="d-next" type="button" data-a="nextitem" data-id="${esc(nid)}"><span><small>下一条</small><b class="en">${esc(nx.en)}</b></span>${svg('chev')}</button>` : ''}
+    ${!notes && it.setId ? `<div class="d-foot"><span>导入的功能表达</span>·<button type="button" class="danger" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button></div>` : ''}
     ${notes || it.custom ? `<div class="d-foot"><button type="button" data-go="edit:${esc(it.id)}">编辑卡片</button>·<button type="button" class="danger" data-a="delitem" data-id="${esc(it.id)}" data-confirm="确认删除">删除</button></div>` : ''}
   </aside>`;
 }
@@ -4681,11 +4780,374 @@ function detailClick(a, el) {
 
 T3VIEWS.iprac = vItemPrac;
 
+/* ============================================================
+   导入（PRD 第七部分）：主题表达的写法、预览和合并；导入页、设置里的默认学习方式
+   写作笔记和功能表达的解析在 app.js 的 parseNotes / createNoteSet
+   ============================================================ */
+const ROLE_RE = /^(解释|结果|举例|原因|对比|让步|补充|影响)\s*[:：]\s*(.+)$/;
+const ARG_F = { 可替换: 'slots', 换个话题: 'apply' };
+const EXP_F = { 原形: 'base', 引导句: 'lead', 提醒: 'usage', 也可以说: 'alt', 范文里写成: 'para', 搭配: 'col', 拆分: 'parts' };
+const TERM_F = { 范畴: 'cat', 词性: 'pos', 例句: 'ex', 动词搭配: 'verbs', 这样写: 'ok', 不这样写: 'bad' };
+const ALL_LABELS = Object.keys(ARG_F).concat(Object.keys(EXP_F), Object.keys(TERM_F), ['范文', '大主题', '关键概念']);
+const LABEL_RE = new RegExp(`(?:^|\\s)(${ALL_LABELS.sort((a, b) => b.length - a.length).join('|')})\\s*[:：]`, 'g');
+const slashList = v => v.split(/\s*[/／|]\s*/).map(x => x.trim()).filter(Boolean);
+
+// 一行里可以写好几个“标签：内容”（范畴：伦理　词性：n.）
+function lineFields(line) {
+  const hits = [...line.matchAll(LABEL_RE)];
+  if (!hits.length || line.slice(0, hits[0].index).trim()) return null;
+  return hits.map((m, i) => ({ k: m[1], v: line.slice(m.index + m[0].length, i + 1 < hits.length ? hits[i + 1].index : undefined).trim() }));
+}
+
+/* 把文字里的“# 话题：……”块挑出来；其余的行原样留给笔记解析（行号不变） */
+function parseTopics(text) {
+  const lines = String(text || '').replace(/\r/g, '').split('\n');
+  const rest = lines.slice();
+  const blocks = [];
+  let B = null, st = null, A = null, last = null, mode = '', inPara = false;
+  const flushPara = () => { inPara = false; };
+  lines.forEach((raw, idx) => {
+    const line = raw.trim();
+    const h1 = line.match(/^#\s+(.+)$/);
+    if (h1) {
+      const m = h1[1].match(/^话题\s*[:：]\s*(.+)$/);
+      if (m) {
+        B = { name: m[1].trim(), theme: '', concepts: [], stances: [], terms: [], line: idx + 1, unrec: [] };
+        blocks.push(B); st = A = last = null; mode = 'top'; flushPara(); rest[idx] = ''; return;
+      }
+      B = null;
+    }
+    if (!B) return;
+    rest[idx] = '';
+    if (!line) { if (inPara && A && A.para) A.para += ' '; return; }
+    const h2 = line.match(/^##\s+(.+)$/), h3 = line.match(/^###\s+(.+)$/);
+    if (h2) {
+      flushPara(); A = last = null;
+      const t = h2[1].trim();
+      if (/^话题词汇/.test(t)) { mode = 'terms'; return; }
+      const m = t.match(/^立场\s*[:：]\s*(.+)$/);
+      const body = (m ? m[1] : t).trim();
+      const parts = body.split(/\s*[|｜]\s*|　+|\s{2,}/).filter(Boolean);
+      st = { name: parts[0], idea: parts.slice(1).join(' '), args: [] };
+      B.stances.push(st); mode = 'stance'; return;
+    }
+    if (h3) {
+      flushPara();
+      const m = h3[1].trim().match(/^论点\s*\d*\s*[:：·]?\s*(.+)$/);
+      if (!st) { st = { name: '支持', idea: '', args: [] }; B.stances.push(st); }
+      A = { short: (m ? m[1] : h3[1]).trim(), en: '', zh: '', para: '', exps: [], line: idx + 1 };
+      st.args.push(A); last = A; mode = 'arg'; return;
+    }
+    const tm = takeMode(line.replace(/^(?:[-*+•·]|\d+[.)、])\s+/, ''));
+    const body = tm.line;
+    const pm = body.match(/^范文\s*[:：]\s*(.*)$/);
+    if (pm && A) { A.para = pm[1].trim(); inPara = true; return; }
+    const isBullet = /^(?:[-*+•·]|\d+[.)、])\s+/.test(line);
+    if (inPara && A && !isBullet && !lineFields(body)) { A.para = (A.para + ' ' + body).trim(); return; }
+    flushPara();
+    const fields = lineFields(body);
+    if (fields) {
+      for (const { k, v } of fields) {
+        if (k === '大主题') B.theme = v;
+        else if (k === '关键概念') B.concepts = v.split(/[、,，/]\s*/).map(x => x.trim()).filter(Boolean);
+        else if (mode === 'terms' && last && TERM_F[k]) setTermField(last, TERM_F[k], v);
+        else if (last && last.role && EXP_F[k]) setExpField(last, EXP_F[k], v);
+        else if (A && ARG_F[k]) setArgField(A, ARG_F[k], v);
+        else B.unrec.push({ line: idx + 1, text: raw.trim() });
+      }
+      return;
+    }
+    if (mode === 'terms') {
+      const { en, zh } = splitEnZh(body);
+      if (en && /[A-Za-z]/.test(en)) { last = { en, zh, cat: '', pos: '', ex: '', exZh: '', verbs: [], ok: [], bad: [], mode: tm.mode }; B.terms.push(last); }
+      else B.unrec.push({ line: idx + 1, text: raw.trim() });
+      return;
+    }
+    if (A) {
+      const r = body.match(ROLE_RE);
+      if (r) {
+        const { en, zh } = splitEnZh(r[2]);
+        last = { role: r[1], en, zh, col: [], alt: [] };
+        A.exps.push(last); return;
+      }
+      if (!A.en) { const { en, zh } = splitEnZh(body); if (en && /[A-Za-z]/.test(en)) { A.en = en; A.zh = zh; return; } }
+    }
+    B.unrec.push({ line: idx + 1, text: raw.trim() });
+  });
+  blocks.forEach(checkTopic);
+  return { blocks, rest: rest.join('\n') };
+}
+function setArgField(A, k, v) {
+  if (k === 'slots') A.pattern = Object.assign(A.pattern || {}, { slots: slashList(v) });
+  else A.pattern = Object.assign(A.pattern || { slots: [] }, { apply: v });
+}
+function setExpField(E, k, v) {
+  if (k === 'alt') E.alt = E.alt.concat(slashList(v));
+  else if (k === 'col') E.col.push(v);
+  else if (k === 'parts') E.parts = v.split(/\s*[|｜]\s*/).map(p => { const i = p.search(CJK); return i > 0 ? [p.slice(0, i).trim(), p.slice(i).trim()] : [p.trim(), '']; });
+  else E[k] = v;
+}
+function setTermField(t, k, v) {
+  if (k === 'ex') { const m = v.split(/\s*[/／]\s*(?=[^A-Za-z]*[㐀-鿿])/); t.ex = m[0].trim(); t.exZh = (m[1] || '').trim(); }
+  else if (k === 'verbs') { const { en, zh } = splitEnZh(v); t.verbs.push([en, zh]); }
+  else if (k === 'ok' || k === 'bad') t[k] = t[k].concat(slashList(v));
+  else t[k] = v;
+}
+
+/* 检查一个话题：errors 必须改完原文才能导入，warns 只提醒 */
+function checkTopic(B) {
+  B.errors = []; B.warns = [];
+  const old = [...T.topics].find(t => t.name === B.name);
+  B.merge = old ? old.id : null;
+  if (!B.merge && B.stances.length < 2) B.errors.push('新话题至少要两个立场（## 立场：……），选论点时要两边搭配');
+  if (!B.merge && !B.theme) B.warns.push('没写“大主题”，先放在“我导入的话题”下面');
+  const oldArgs = old ? old.args.map(id => T.arg.get(id)) : [];
+  B.stances.forEach(s => s.args.forEach(A => {
+    const where = `论点“${A.short}”`;
+    A.skip = oldArgs.some(o => o.short === A.short || o.en === A.en);
+    if (A.skip) { B.warns.push(`${where}已经有了，这次跳过`); return; }
+    if (!A.en) B.errors.push(`${where}没有论点句（论点下面第一行写英文 + 中文）`);
+    else if (!A.zh) B.warns.push(`${where}的论点句缺中文`);
+    if (!A.exps.length) B.errors.push(`${where}没有展开表达（解释：/ 结果：/ 举例：……）`);
+    if (!A.para) { B.errors.push(`${where}缺范文（复习的范文填空要用）`); return; }
+    const low = A.para.toLowerCase();
+    if (A.en && !low.includes(A.en.toLowerCase())) B.errors.push(`${where}的论点句在范文里找不到`);
+    A.exps.forEach(e => {
+      if (!e.en) B.errors.push(`${where}的“${e.role}”没有英文`);
+      else if (!low.includes((e.para || e.en).toLowerCase())) B.errors.push(`${where}的“${e.en}”在范文里找不到（写法不一样时加一行“范文里写成：……”）`);
+      if (e.en && !e.zh) B.warns.push(`“${e.en}”缺中文`);
+    });
+  }));
+  const oldTerms = old ? old.terms.map(id => T.term.get(id).en.toLowerCase()) : [];
+  B.terms.forEach(t => {
+    t.skip = oldTerms.includes(t.en.toLowerCase());
+    if (t.skip) B.warns.push(`话题词汇“${t.en}”已经有了，这次跳过`);
+    else if (!t.zh) B.warns.push(`话题词汇“${t.en}”缺中文`);
+  });
+  if (B.unrec.length) B.errors.push(`${B.unrec.length} 行没认出来：${B.unrec.slice(0, 3).map(u => `第 ${u.line} 行`).join('、')}${B.unrec.length > 3 ? ' 等' : ''}`);
+  const nArgs = B.stances.reduce((a, s) => a + s.args.filter(x => !x.skip).length, 0);
+  if (!nArgs && !B.terms.filter(t => !t.skip).length) B.errors.push('没有新的论点或话题词汇');
+}
+
+/* 链接词：范文里出现的功能表达，详情页里可以点进去 */
+function autoLinks(para) {
+  const low = para.toLowerCase();
+  return FUNCTION_GROUPS.flatMap(g => g.items.map(x => fixedPart(x[0]))).filter(p => p.length > 3 && low.includes(p.toLowerCase())).slice(0, 4);
+}
+const cleanArg = A => ({ short: A.short, en: A.en, zh: A.zh, para: A.para.replace(/\s+/g, ' ').trim(), pattern: A.pattern && A.pattern.slots ? A.pattern : undefined, links: autoLinks(A.para),
+  exps: A.exps.map(e => { const x = { role: e.role, en: e.en, zh: e.zh }; ['base', 'lead', 'usage', 'parts'].forEach(k => { if (e[k]) x[k] = e[k]; }); if (e.para) x.para = e.para; if (e.col.length) x.col = e.col; if (e.alt.length) x.alt = e.alt; return x; }) });
+const cleanTerm = t => ({ en: t.en, zh: t.zh, cat: t.cat || '其他', pos: t.pos, ex: t.ex, exZh: t.exZh, verbs: t.verbs, ok: t.ok, bad: t.bad });
+
+function applyTopics(blocks) {
+  const imp = S.t3.imp;
+  const modes = [];
+  for (const B of blocks) {
+    const stances = B.stances.map(s => ({ name: s.name, idea: s.idea, args: s.args.filter(a => !a.skip).map(cleanArg) }));
+    const terms = B.terms.filter(t => !t.skip);
+    let tid = B.merge;
+    if (tid) {
+      const ext = imp.ext[tid] || (imp.ext[tid] = { stances: [], terms: [] });
+      stances.forEach(s => { if (!s.args.length) return; const e = ext.stances.find(x => x.name === s.name); if (e) e.args.push(...s.args); else ext.stances.push(s); });
+      ext.terms.push(...terms.map(cleanTerm));
+    } else {
+      tid = 'u' + uid();
+      imp.topics.push({ id: tid, theme: B.theme || '我导入的话题', name: B.name, concepts: B.concepts, stances, terms: terms.map(cleanTerm) });
+    }
+    terms.forEach(t => modes.push([`tt:${tid}:${slug(t.en)}`, t.mode || setDefMode('term')]));
+    B.tid = tid;
+  }
+  t3assemble();
+  modes.forEach(([id, m]) => { if (T.term.has(id) && m === 'memory') TR(id).mode = 'memory'; });
+}
+
+/* ---------- 主题表达导入预览（第 41 节） ---------- */
+function vTopicImport() {
+  const D = S.t3.impDraft;
+  if (!D) return { redirect: { v: 'import' } };
+  const blocks = D.blocks;
+  const errs = blocks.reduce((a, B) => a + B.errors.length, 0);
+  const set = D.setId && noteSet(D.setId), nNotes = set ? S.notes.items.filter(i => i.setId === set.id).length : 0;
+  const body = blocks.map(B => {
+    const args = B.stances.map(s => `<div class="i-stance"><b>${esc(s.name)}</b>${s.idea ? `<small>${esc(s.idea)}</small>` : ''}${s.args.map(A => `<div class="i-arg ${A.skip ? 'skip' : ''}"><span class="i-short">论点 · ${esc(A.short)}${A.skip ? ' · 已有，跳过' : ''}</span><span class="en">${esc(A.en || '（没有论点句）')}</span><small>${esc(A.zh)}</small>
+      ${A.exps.length ? `<div class="i-exps">${A.exps.map(e => `<span><i>${esc(e.role)}</i><span class="en">${esc(e.en)}</span> <small>${esc(e.zh)}</small></span>`).join('')}</div>` : ''}
+      <small class="${A.para ? 'muted' : 'i-bad'}">${A.para ? '范文 ' + A.para.split(/\s+/).length + ' 个词' : '缺范文'}</small></div>`).join('')}</div>`).join('');
+    const terms = B.terms.length ? `<div class="i-stance"><b>话题词汇 · ${B.terms.length} 个</b><div class="chips">${B.terms.map(t => `<span class="chip ${t.skip ? 'muted' : ''}"><span class="en">${esc(t.en)}</span> ${esc(t.zh)}${t.mode === 'memory' ? ' · 记忆' : ''}</span>`).join('')}</div></div>` : '';
+    return `<section class="i-topic">
+      <div class="d-lab"><b>${B.merge ? '补进已有话题' : '新话题'}</b><i></i></div>
+      <div class="i-head"><span class="en">${esc(B.name)}</span><small>${esc(B.theme || (B.merge ? T.topic.get(B.merge).theme : '我导入的话题'))}${B.concepts.length ? ' · ' + B.concepts.map(esc).join('、') : ''}</small></div>
+      ${B.errors.length ? `<div class="i-msg bad"><b>要先改原文</b>${B.errors.map(e => `<span>· ${esc(e)}</span>`).join('')}${B.unrec.length ? `<span class="i-raw">${B.unrec.slice(0, 5).map(u => `第 ${u.line} 行：${esc(u.text)}`).join('<br>')}</span>` : ''}</div>` : ''}
+      ${B.warns.length ? `<div class="i-msg"><b>提醒</b>${B.warns.map(e => `<span>· ${esc(e)}</span>`).join('')}</div>` : ''}
+      ${args}${terms}</section>`;
+  }).join('');
+  return {
+    title: '确认导入话题', crumb: ['导入'],
+    body: `<div class="session wide">
+      <p class="warm">${blocks.length} 个话题${nNotes ? `；另外有 ${nNotes} 张笔记卡，确认后接着整理` : ''}。论点什么时候背，还是在“选论点”时决定。</p>
+      ${body}
+      <div class="sticky-bar"><span class="summary">${errs ? `<b style="color:var(--wrong)">${errs} 处</b>要先改原文` : '没有问题，可以导入'}</span>
+        <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="impcancel">放弃</button><button class="btn btn-outline" type="button" data-a="impedit">回去改原文</button><button class="btn btn-primary" type="button" data-a="impok" ${errs ? 'disabled' : ''}>确认导入</button></div></div>
+    </div>`,
+  };
+}
+
+/* ---------- 导入页：三种内容都能粘贴 ---------- */
+function vImport2() {
+  const D = ui.impText || '';
+  return {
+    title: '导入', crumb: ['表达库'],
+    body: `<form class="form" data-form="import" style="max-width:900px">
+      <div class="privacy">${svg('lock')}<span>文件只在这台设备上读取和整理，不会上传到网络。导入后先看一遍认出来的结果，确认后才进入学习。</span></div>
+      <label class="fld">这次导入的名称<input name="title" value="${esc(ui.impTitle || dayKey() + ' 写作笔记')}"></label>
+      <label class="fld">内容<textarea name="text" id="import-text" style="min-height:300px" placeholder="写作笔记、功能表达、主题表达都可以粘贴在这里，可以写在同一份里">${esc(D)}</textarea></label>
+      <details class="i-help"><summary>怎么写（点开看格式）</summary>
+        <div class="d-dl">
+          <span>写作笔记</span><div>一行一张卡：英文 + 中文。<code># 标题</code> 下面是一组。<code>❌ 错 → ✅ 对</code> 是语法卡，含 <code>...</code> / <code>sb</code> / <code>sth</code> 是句型卡。下一行缩进写“例句：”“搭配：”“场景：”“常见错误：”“可替换：”“规则：”“限制：”。</div>
+          <span>功能表达</span><div>标题写成 <code># 功能：原因与解释</code>，下面按表达卡写；可加“后面接：”“语气：”“区别：”“例句：”。</div>
+          <span>主题表达</span><div><code># 话题：…</code> → <code>## 立场：…</code> → <code>### 论点：短名</code>，下面第一行是论点句，再写“解释：”“结果：”“举例：”和“范文：”。<code>## 话题词汇</code> 下面一行一个词，可加“范畴：”“词性：”“例句：”“动词搭配：”。</div>
+          <span>学习方式</span><div>行末或标题后面写【记忆】【资料】【暂缓】；不写就用<button class="t-link-btn" type="button" data-go="tsettings">设置</button>里的默认值。</div>
+        </div></details>
+      <div class="form-msg" id="form-msg"></div>
+      <div class="btn-row"><button class="btn btn-primary" type="submit">整理</button>
+        <label class="btn btn-outline file-btn">${svg('upload')}导入 .md / .txt 文件<input type="file" id="md-file" accept=".md,.markdown,.txt,text/markdown,text/plain"></label>
+        <span class="note-line">填入示例：</span><button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="notes">写作笔记</button><button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="fn">功能表达</button><button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="topic">话题</button></div>
+    </form>`,
+  };
+}
+function runImport(text, title, source) {
+  const P = parseTopics(text);
+  let setId = null;
+  if (P.rest.trim()) setId = createNoteSet(P.rest, title, { source });
+  if (P.blocks.length) { S.t3.impDraft = { blocks: P.blocks, setId, text, title }; assemble(); save(); replaceRoute({ v: 'timport' }); return true; }
+  if (setId) { assemble(); save(); replaceRoute({ v: 'triage', id: setId }); return true; }
+  return false;
+}
+function importClick(a, el) {
+  if (a === 'impsample') {
+    const ta = document.querySelector('#import-text'), k = el.dataset.k;
+    const add = { notes: SAMPLE_NOTE, fn: SAMPLE_FN, topic: SAMPLE_TOPIC }[k];
+    ta.value = (ta.value.trim() ? ta.value.trim() + '\n\n' : '') + add;
+    return true;
+  }
+  if (a === 'impok') {
+    const D = S.t3.impDraft; if (!D || D.blocks.some(B => B.errors.length)) return true;
+    applyTopics(D.blocks);
+    const first = D.blocks[0].tid, setId = D.setId;
+    S.t3.impDraft = null; save();
+    toast('话题已导入');
+    if (setId && noteSet(setId)) replaceRoute({ v: 'triage', id: setId }); else replaceRoute({ v: 'ttopic', id: first });
+    return true;
+  }
+  if (a === 'impedit' || a === 'impcancel') {
+    const D = S.t3.impDraft;
+    if (D && D.setId) { const id = D.setId; S.notes.items = S.notes.items.filter(x => x.setId !== id); S.notes.groups = S.notes.groups.filter(g => g.setId !== id); S.notes.sets = S.notes.sets.filter(s => s.id !== id); assemble(); }
+    ui.impText = a === 'impedit' && D ? D.text : ''; ui.impTitle = a === 'impedit' && D ? D.title : '';
+    S.t3.impDraft = null; save();
+    replaceRoute({ v: 'import' });
+    return true;
+  }
+  if (a === 'tunrec') {
+    const set = noteSet(el.dataset.id), i = +el.dataset.i, u = set && set.unrec[i];
+    if (!u) return true;
+    if (el.dataset.act === 'card') {
+      const { en, zh } = splitEnZh(u.text.replace(/^(?:[-*+•·]|\d+[.)、])\s+/, ''));
+      const gid = 'ng:' + uid();
+      S.notes.groups.push({ id: gid, setId: set.id, kind: 'expr', name: en || u.text });
+      addNoteItem({ kind: 'expr', en: en || u.text, zh, raw: u.text, line: u.line }, set.id, gid);
+    } else if (el.dataset.act === 'note') {
+      const prev = S.notes.items.filter(x => x.setId === set.id && x.line < u.line).sort((x, y) => y.line - x.line)[0];
+      if (prev) { const s = st(prev.id); s.note = (s.note ? s.note + '\n' : '') + u.text; }
+    }
+    set.unrec.splice(i, 1);
+    assemble(); save(); render();
+    return true;
+  }
+  return false;
+}
+
+/* ---------- 设置：导入时的默认学习方式（第 42 节） ---------- */
+function defModeSettings() {
+  const d = Object.assign({}, DEF_MODE, S.t3.set.defMode || {});
+  const row = (k, t, desc) => `<div class="t-setrow"><span class="txt"><b>${t}</b><small>${desc}</small></span>
+    <div class="seg small" role="group" aria-label="${t}的默认学习方式">${[['memory', '记忆'], ['reference', '资料'], ['paused', '暂缓']].map(([m, l]) => `<button type="button" data-a="t3defmode" data-k="${k}" data-m="${m}" aria-pressed="${d[k] === m}">${l}</button>`).join('')}</div></div>`;
+  return `<section class="t-setgroup"><span class="note-line">导入时的默认学习方式 · 笔记里没写【记忆】【资料】【暂缓】时用；改了不会动已经导入的卡</span>
+    ${row('expr', '表达卡', '写作笔记里的普通表达')}${row('pattern', '句型卡', '带 … 的句型')}${row('grammar', '语法卡', '❌ → ✅ 的语法错误')}${row('fn', '功能表达', '导入的功能表达；App 自带的也一样')}${row('term', '话题词汇', '导入的话题词汇')}
+  </section>`;
+}
+
+T3VIEWS.timport = vTopicImport;
+
+/* ---------- 示例（导入页的“填入示例”和测试台用） ---------- */
+const SAMPLE_FN = `# 功能：原因与解释
+- Owing to the fact that ... 由于……
+  - 后面接：+ 完整句子
+  - 语气：正式
+  - 区别：比 because 正式，句子较长时用
+  - 例句：Owing to the fact that housing is expensive, many young people choose to rent.
+- The root cause of this is ... 根本原因是…… 【记忆】
+  - 后面接：+ 名词 / that 从句
+  - 区别：强调最深层的那个原因`;
+
+const SAMPLE_TOPIC = `# 话题：城市交通与拥堵
+大主题：社会
+关键概念：公共交通、交通拥堵、空气污染、城市规划
+
+## 立场：支持　政府应该优先投资公共交通
+
+### 论点：拥堵
+- Investing in public transport can ease traffic congestion. 投资公共交通可以缓解交通拥堵
+  - 可替换：Investing in / public transport / traffic congestion
+  - 换个话题：Investing in online services can ease pressure on local offices.
+- 解释：take cars off the road 让汽车离开道路
+  - 原形：take … off the road
+  - 引导句：This is because an efficient metro system can …
+  - 提醒：take sth off the road 是固定说法
+- 结果：shorten commuting times 缩短通勤时间
+  - 也可以说：reduce travel time / cut journey times
+- 举例：the London Underground 伦敦地铁
+范文：Investing in public transport can ease traffic congestion. This is because an efficient metro system can take cars off the road during rush hour. As a result, it can shorten commuting times for millions of workers. For example, the London Underground carries about five million passengers every day.
+
+### 论点：污染
+- Better public transport can reduce air pollution in cities. 更好的公共交通可以减少城市空气污染
+- 解释：cut vehicle emissions 减少汽车尾气排放
+  - 提醒：emissions 常用复数
+- 结果：improve public health 改善公众健康
+- 举例：electric buses 电动公交车
+范文：Better public transport can reduce air pollution in cities. When more people take the bus or train, it can cut vehicle emissions significantly. This would improve public health, especially for children and the elderly. Many cities now use electric buses to make this effect even stronger.
+
+## 立场：反对 / 让步　钱应该花在其他更紧急的地方
+
+### 论点：成本
+- Building new metro lines is extremely expensive. 修建新的地铁线路非常昂贵
+- 解释：require huge public investment 需要巨额公共投资
+- 结果：increase the tax burden 加重税负
+- 举例：rural areas 农村地区
+范文：Building new metro lines is extremely expensive. Such projects require huge public investment over many years. In many cases, they increase the tax burden on ordinary families, while people in rural areas gain almost nothing from them.
+
+### 论点：灵活
+- Private cars offer flexibility that public transport cannot match. 私家车的灵活性是公共交通比不上的
+- 解释：travel door to door 门到门出行
+- 结果：save time for families 为家庭节省时间
+- 举例：parents with young children 带小孩的父母
+范文：Private cars offer flexibility that public transport cannot match. They allow people to travel door to door at any time. This can save time for families with busy schedules, particularly parents with young children who make several short trips a day.
+
+## 话题词汇
+- traffic congestion 交通拥堵 【记忆】
+  - 范畴：问题　词性：n. 不可数
+  - 例句：Traffic congestion wastes millions of hours every year. / 交通拥堵每年浪费数百万小时。
+  - 动词搭配：ease traffic congestion 缓解交通拥堵
+  - 这样写：traffic congestion / traffic jams　不这样写：traffic congestions
+- public transport 公共交通
+  - 范畴：交通方式　词性：n. 不可数
+  - 例句：Investing in public transport can ease traffic congestion.
+- vehicle emissions 汽车尾气排放
+  - 范畴：环境　词性：n. 常用复数
+  - 例句：Better public transport can cut vehicle emissions.`;
+
 
 const VIEWS = {
   home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
   library: vLibrary, topics: vTopics, topic: vTopic, funcs: vFuncs, group: vGroup, item: vItem,
-  add: vAdd, edit: vEdit, notes: vNotes, import: vImport, triage: vTriage,
+  add: vAdd, edit: vEdit, notes: vNotes, import: vImport2, triage: vTriage,
   favs: vFavs, search: vSearch, records: vRecords,
   ...T3VIEWS,
 };
@@ -4753,6 +5215,7 @@ document.addEventListener('click', e => {
   const a = el.dataset.a, id = el.dataset.id;
   if (a && a.startsWith('t3') && t3click(a, el)) return;
   if (a && a.startsWith('d') && detailClick(a, el)) return;
+  if (a && (a.startsWith('imp') || a === 'tunrec') && importClick(a, el)) return;
   switch (a) {
     case 'back': back(); break;
     case 'hidehint': S.user.hintClosed = true; save(); render(); break;
@@ -4828,7 +5291,7 @@ document.addEventListener('click', e => {
     }
     case 'tdel': S.notes.items = S.notes.items.filter(x => x.id !== id); delete S.items[id]; pruneNoteGroups(); assemble(); save(); render(); break;
     case 'tconfirm': {
-      const set = noteSet(id); set.confirmed = true;
+      const set = noteSet(id); if ((set.unrec || []).length) break; set.confirmed = true;
       S.notes.items.filter(x => x.setId === id).forEach(x => { if (!(S.items[x.id] && S.items[x.id].mode)) st(x.id).mode = defMode(x); });
       assemble(); save(); toast('已确认，记忆内容进入“等待学习”'); replaceRoute({ v: 'notes' });
       break;
@@ -4850,7 +5313,7 @@ document.addEventListener('click', e => {
     }
     case 'delitem': {
       const it = ITEMS.get(id);
-      if (it.lib === 'notes') { S.notes.items = S.notes.items.filter(x => x.id !== id); pruneNoteGroups(); }
+      if (it.setId) { S.notes.items = S.notes.items.filter(x => x.id !== id); pruneNoteGroups(); }
       else { S.custom.items = S.custom.items.filter(x => x.id !== id); const used = new Set(S.custom.items.map(x => x.gid)); S.custom.groups = S.custom.groups.filter(g => used.has(g.id)); }
       delete S.items[id];
       assemble();
@@ -4920,10 +5383,10 @@ document.addEventListener('submit', e => {
     const text = f.querySelector('[name="text"]').value;
     const title = f.querySelector('[name="title"]').value.trim() || dayKey() + ' 写作笔记';
     if (!text.trim()) { $('#form-msg').textContent = '请先粘贴笔记内容或导入 Markdown 文件。'; return; }
-    const setId = createNoteSet(text, title, { source: importSource || '粘贴的文字' });
+    const ok = runImport(text, title, importSource || '粘贴的文字');
     importSource = '';
-    if (!setId) { $('#form-msg').textContent = '没有识别到英文表达。每行写一条，英文在前、中文在后。'; return; }
-    assemble(); save(); replaceRoute({ v: 'triage', id: setId });
+    ui.impText = ''; ui.impTitle = '';
+    if (!ok) { $('#form-msg').textContent = '没有识别到内容。每行写一条，英文在前、中文在后；主题表达用“# 话题：……”开头。'; return; }
   }
 });
 
@@ -5019,7 +5482,7 @@ assemble();
 t3init();
 t3assemble();
 // 测试台（test.html）用：正式版不设 __TEST__，这里不会执行
-if (window.__TEST__) window.__app = { S: () => S, items: () => ITEMS, assemble, createNoteSet, save, render, go, goRoot, cur, ui, T, AR, IR, TR, t3plan, t3StartRev, dayStart, addDays, dayKey, fmtMD, STAGE_LABEL, RL3, TIER_LABEL, tierOf, ctxAnswer: () => { try { const c = t3ctx(); return c ? c.ans : null; } catch (e) { return null; } } };
+if (window.__TEST__) window.__app = { S: () => S, items: () => ITEMS, assemble, createNoteSet, t3assemble, samples: () => [SAMPLE_NOTE, SAMPLE_FN, SAMPLE_TOPIC], save, render, go, goRoot, cur, ui, T, AR, IR, TR, t3plan, t3StartRev, dayStart, addDays, dayKey, fmtMD, STAGE_LABEL, RL3, TIER_LABEL, tierOf, ctxAnswer: () => { try { const c = t3ctx(); return c ? c.ans : null; } catch (e) { return null; } } };
 const startHash = (location.hash || '').slice(1);
 if (VIEWS[startHash] && ['home', 'today', 'topics', 'funcs', 'notes', 'favs', 'records', 'library', 'tsettings'].includes(startHash)) stack = [{ v: startHash }];
 render(true);
@@ -5225,6 +5688,19 @@ render(true);
       A.save(); A.goRoot({ v: 'notes' }); A.go({ v: 'item', id: expr.id }); close();
       flash('已导入一份示例笔记：表达卡（已收藏、有备注和写错记录）、句型卡、语法卡。功能表达在左边“功能表达”里');
     },
+    importDemo: function () {
+      reset();
+      var S = A.S();
+      S.t3.imp = { topics: [], ext: {} }; S.t3.impDraft = null;
+      S.notes.sets = S.notes.sets.filter(function (x) { return /示例/.test(x.source || ''); });
+      var keep = {}; S.notes.sets.forEach(function (x) { keep[x.id] = 1; });
+      S.notes.items = S.notes.items.filter(function (x) { return keep[x.setId]; }); S.notes.groups = S.notes.groups.filter(function (x) { return keep[x.setId]; });
+      A.t3assemble(); A.assemble();
+      var sm = A.samples();
+      A.ui.impText = sm[0] + '\n这一行没有英文，用来看“没认出来的行”\n\n' + sm[1] + '\n\n' + sm[2]; A.ui.impTitle = '导入测试';
+      A.save(); A.goRoot({ v: 'import' }); close();
+      flash('已清空之前导入的内容，并填好了三种示例（写作笔记、功能表达、话题）。点“整理”开始验收');
+    },
     afterLearn: function () {
       reset();
       var ids = comboArgs(); makeCombo(sel.topic, ids);
@@ -5318,6 +5794,7 @@ render(true);
       '<button class="b" data-tb="sc" data-s="afterLearn">刚学完，等明天复习<small>再点“前进 1 天”</small></button>' +
       '<button class="b" data-tb="sc" data-s="paraPractice">范文默写练习<small>不记录，可换难度</small></button>' +
       '<button class="b p" data-tb="sc" data-s="records">学习记录<small style="color:#E5E9DF">造一批数据，看 4 个分页</small></button>' +
+      '<button class="b p" data-tb="sc" data-s="importDemo">导入<small style="color:#E5E9DF">填好三种示例，验收导入</small></button>' +
       '<button class="b p" data-tb="sc" data-s="notes">笔记卡详情页<small style="color:#E5E9DF">导入示例笔记，看详情页和练一遍</small></button>' +
       '</div></section>' +
 
