@@ -4540,7 +4540,7 @@ function errHTML(t) {
 }
 
 /* ---------- 左边：词典式（设计稿 BA–BD） ---------- */
-const dHead = (kind, sub, enHTML, zh) => `<header class="d-head"><span class="d-kind">${kind}${sub ? '　·　' + esc(sub) : ''}</span><div class="en d-word">${enHTML}</div>${zh ? `<div class="d-zh">${esc(zh)}</div>` : ''}</header>`;
+const dHead = (kind, sub, enHTML, zh) => `<header class="d-head"><span class="d-kind">${kind}</span><div class="en d-word">${enHTML}</div>${zh ? `<div class="d-zh">${esc(zh)}</div>` : ''}</header>`;
 const dSec = (t, body, note = '') => !body ? '' : `<section class="d-sec"><div class="d-lab"><b>${t}</b><i></i>${note ? `<small>${note}</small>` : ''}</div>${body}</section>`;
 const dQuote = (enHTML, zh, src, small) => `<div class="d-quote${small ? ' sm' : ''}">${src || ''}<span class="en">${enHTML}</span>${zh ? `<small>${esc(zh)}</small>` : ''}</div>`;
 const dDl = rows => { const r = rows.filter(x => x[1]); return r.length ? `<div class="d-dl">${r.map(([a, b]) => `<span>${a}</span><div>${b}</div>`).join('')}</div>` : ''; };
@@ -4643,7 +4643,7 @@ function vItemDetail(it) {
   const main = it.lib === 'function' ? fnMain(it, G) : noteMain(it, G);
   const s = S.items[it.id] || {};
   const fav = `<button class="btn ${s.fav ? 'btn-soft d-faved' : 'btn-outline'} btn-sm" type="button" data-a="fav" data-id="${esc(it.id)}" aria-pressed="${!!s.fav}">${s.fav ? '★ 已收藏' : '☆ 收藏'}</button>`;
-  return { title: it.lib === 'function' ? it.en : G.ids.length < 2 ? '独立卡片' : G.name, crumb: groupCrumb(G), actions: fav, body: `<div class="d-detail"><div class="d-main">${main}</div>${itemSide(it, G)}</div>` };
+  return { title: it.lib === 'function' ? G.fn : G.ids.length < 2 ? '独立卡片' : G.name, crumb: it.lib === 'function' ? ['功能表达'] : groupCrumb(G), actions: fav, body: `<div class="d-detail"><div class="d-main">${main}</div>${itemSide(it, G)}</div>` };
 }
 
 /* ---------- 练一遍（AR） ---------- */
