@@ -1070,6 +1070,15 @@ button.d-cmprow:hover, .d-sib:hover { outline: 1.5px solid var(--line); }
 .tcard.warn { border-color: #E3B8AD; }
 .tcard-warn { font-size: 12.5px; color: var(--wrong); margin-bottom: 6px; }
 .i-stance .chip .en { margin-right: 4px; }
+.i-donegrp { display: flex; flex-direction: column; gap: 6px; }
+.i-done { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); background: #FFFFFF; text-align: left; color: var(--ink); }
+.i-done > span { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.i-done small { font-size: 11.5px; color: var(--sage-deep); } .i-done small.zh { color: var(--warm); font-size: 12.5px; }
+.i-done .en { font-family: var(--f-en); font-size: 16px; }
+.i-done svg { width: 16px; height: 16px; flex: none; color: var(--muted); }
+.i-donegrp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 8px; }
+.i-donegrp > .note-line { grid-column: 1 / -1; margin-top: 4px; }
+@media (max-width: 640px) { .i-donegrp { grid-template-columns: minmax(0, 1fr); } }
 </style>
 </head>
 <body>
@@ -2903,7 +2912,7 @@ function vTriage(r) {
         <input data-tf="zh" data-id="${esc(it.id)}" value="${esc(it.zh)}" aria-label="中文">
         ${it.type === 'grammar' ? `<input class="en" data-tf="wrong" data-id="${esc(it.id)}" value="${esc(it.wrong)}" aria-label="错误写法" placeholder="原来的错误写法" style="grid-column:1/-1">` : ''}
       </div>
-      <div class="raw">原始：${esc(it.raw || '')}${it.line ? ` · 第 ${it.line} 行` : ''}</div>
+      <div class="raw" style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span>原始：${esc(it.raw || '')}${it.line ? ` · 第 ${it.line} 行` : ''}</span><button class="t-link-btn" type="button" data-go="item:${esc(it.id)}">看详情页 ›</button></div>
     </div>`;
   };
   const sem = groups.filter(g => g.kind !== 'fn' && itemsOf(g.id).length >= 2);
@@ -5014,6 +5023,7 @@ function vImport2() {
   };
 }
 function runImport(text, title, source) {
+  ui.impDone = null;
   const P = parseTopics(text);
   let setId = null;
   if (P.rest.trim()) setId = createNoteSet(P.rest, title, { source });
@@ -5030,11 +5040,13 @@ function importClick(a, el) {
   }
   if (a === 'impok') {
     const D = S.t3.impDraft; if (!D || D.blocks.some(B => B.errors.length)) return true;
+    const before = new Set([...T.item.keys(), ...T.term.keys()]);
     applyTopics(D.blocks);
-    const first = D.blocks[0].tid, setId = D.setId;
+    const setId = D.setId;
+    ui.impDone = { tids: D.blocks.map(B => B.tid), ids: [...T.item.keys(), ...T.term.keys()].filter(k => !before.has(k)), setId: null };
     S.t3.impDraft = null; save();
     toast('话题已导入');
-    if (setId && noteSet(setId)) replaceRoute({ v: 'triage', id: setId }); else replaceRoute({ v: 'ttopic', id: first });
+    if (setId && noteSet(setId)) replaceRoute({ v: 'triage', id: setId }); else replaceRoute({ v: 'impdone' });
     return true;
   }
   if (a === 'impedit' || a === 'impcancel') {
@@ -5074,7 +5086,33 @@ function defModeSettings() {
   </section>`;
 }
 
+/* ---------- 导入完成：列出这次导入的全部内容，每一条都能点进详情页 ---------- */
+function vImportDone() {
+  const D = ui.impDone;
+  if (!D) return { redirect: { v: 'import' } };
+  const link = (go, en, zh, tag) => `<button class="i-done" type="button" data-go="${go}"><span>${tag ? `<small>${esc(tag)}</small>` : ''}<span class="en">${esc(en)}</span>${zh ? `<small class="zh">${esc(zh)}</small>` : ''}</span>${svg('chev')}</button>`;
+  let html = '';
+  const ids = new Set(D.ids || []);
+  for (const tid of D.tids || []) {
+    const tp = T.topic.get(tid); if (!tp) continue;
+    const args = tp.args.filter(a => ids.has(a + ':s'));
+    const terms = tp.terms.filter(t => ids.has(t));
+    html += `<section class="i-topic"><div class="d-lab"><b>主题表达 · ${esc(tp.name)}</b><i></i><button class="t-link-btn" type="button" data-go="ttopic:${tid}">打开话题 ›</button></div>
+      ${args.map(aid => { const A = T.arg.get(aid); return `<div class="i-donegrp"><span class="note-line">论点 ${A.n} · ${esc(A.short)} · ${esc(A.stance)}</span>${A.items.map(x => { const it = T.item.get(x); return link(it.kind === 'sent' ? 'targ:' + aid : 'texp:' + x, it.en, it.zh, it.role); }).join('')}</div>`; }).join('')}
+      ${terms.length ? `<div class="i-donegrp"><span class="note-line">话题词汇 · ${terms.length} 个</span>${terms.map(t => { const w = T.term.get(t); return link('tterm:' + t, w.en, w.zh, w.cat); }).join('')}</div>` : ''}</section>`;
+  }
+  const set = D.setId && noteSet(D.setId);
+  if (set) {
+    const its = S.notes.items.filter(i => i.setId === set.id);
+    const byType = [['fn', '功能表达'], ['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']];
+    html += `<section class="i-topic"><div class="d-lab"><b>写作笔记 · ${esc(set.title)}</b><i></i><button class="t-link-btn" type="button" data-go="notes">打开写作笔记 ›</button></div>
+      ${byType.map(([k, l]) => { const L = its.filter(i => i.type === k); return L.length ? `<div class="i-donegrp"><span class="note-line">${l} · ${L.length} 张</span>${L.map(i => link('item:' + i.id, i.en, i.type === 'grammar' ? '改正：' + i.wrong : i.zh, modeOf(i.id) === 'memory' ? '记忆' : modeOf(i.id) === 'paused' ? '暂缓' : '资料')).join('')}</div>` : ''; }).join('')}</section>`;
+  }
+  return { title: '导入完成', crumb: ['导入'], body: `<div class="session wide"><p class="warm">下面是这次导入的全部内容，点任意一条看详情页；看完按返回回到这一页。</p>${html || '<p class="note-line">这次没有导入新的内容。</p>'}</div>` };
+}
+
 T3VIEWS.timport = vTopicImport;
+T3VIEWS.impdone = vImportDone;
 
 /* ---------- 示例（导入页的“填入示例”和测试台用） ---------- */
 const SAMPLE_FN = `# 功能：原因与解释
@@ -5293,7 +5331,8 @@ document.addEventListener('click', e => {
     case 'tconfirm': {
       const set = noteSet(id); if ((set.unrec || []).length) break; set.confirmed = true;
       S.notes.items.filter(x => x.setId === id).forEach(x => { if (!(S.items[x.id] && S.items[x.id].mode)) st(x.id).mode = defMode(x); });
-      assemble(); save(); toast('已确认，记忆内容进入“等待学习”'); replaceRoute({ v: 'notes' });
+      assemble(); save(); toast('已确认导入');
+      ui.impDone = Object.assign(ui.impDone || {}, { setId: id }); replaceRoute({ v: 'impdone' });
       break;
     }
     case 'tdiscard': case 'delset': {
