@@ -1103,6 +1103,50 @@ textarea.e-in { resize: vertical; }
 .i-plink:hover .en { text-decoration: underline; text-decoration-color: var(--sage); }
 .i-prev { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 14px; background: var(--sage-soft); }
 .i-prev b { color: var(--sage-deep); }
+
+/* ---------- 三种一起导入（BW）· 导入完成总览（BZ）· 导入历史（CA） ---------- */
+.f-ic { width: 30px; height: 30px; border-radius: 10px; background: var(--sage-soft); color: var(--sage-deep); display: inline-grid; place-items: center; flex: none; }
+.f-ic svg { width: 17px; height: 17px; }
+.f-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+.f-tab { flex: 1; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 0; border-bottom: 3px solid transparent; border-radius: 14px 14px 0 0; background: transparent; text-align: left; color: var(--ink); min-width: 0; }
+.f-tab b { font-size: 15px; white-space: nowrap; } .f-tab small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.f-tab.on { background: var(--sage-soft); border-bottom-color: var(--sage-deep); } .f-tab.on b { color: var(--sage-deep); }
+.f-tab.on .f-ic { background: #FFFFFF; }
+.f-st { margin-left: auto; color: var(--sage-deep); display: inline-flex; } .f-st svg { width: 18px; height: 18px; }
+.f-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--wrong); display: inline-block; }
+.f-hint { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--warm); margin-bottom: 12px; }
+.f-hint svg { width: 16px; height: 16px; color: var(--sage-deep); flex: none; }
+.f-done { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-radius: 18px; background: var(--sage-soft); color: var(--sage-deep); }
+.f-done svg { width: 26px; height: 26px; flex: none; } .f-done span { display: flex; flex-direction: column; } .f-done small { color: var(--warm); font-size: 13px; }
+.f-body .session.wide { padding: 0; }
+@media (max-width: 640px) { .f-tab small { display: none; } .f-tab { padding: 10px 8px; gap: 6px; } }
+.z-sec { display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
+.z-band { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 18px; background: var(--paper-2); border: 1px solid #ECE7DE; }
+.z-num { font-family: var(--f-en); font-size: 28px; font-weight: 500; color: var(--sage-deep); width: 22px; }
+.z-band .f-ic { width: 36px; height: 36px; background: #FFFFFF; } .z-band .f-ic svg { width: 19px; height: 19px; }
+.z-tt { display: flex; flex-direction: column; min-width: 0; flex: 1; } .z-tt b { font-family: var(--f-title); font-size: 20px; color: var(--sage-deep); } .z-tt small { font-size: 12.5px; color: var(--warm); }
+.z-fold { border: 0; background: transparent; font-size: 12.5px; color: var(--sage-deep); padding: 4px 0 4px 8px; white-space: nowrap; }
+.z-rows { display: flex; flex-direction: column; padding: 4px 4px 0; }
+.z-row { display: grid; grid-template-columns: 5px 120px minmax(0, 1fr) 16px; gap: 12px; align-items: center; padding: 9px 4px; border: 0; border-bottom: 1px solid #EFEBE3; background: transparent; text-align: left; color: var(--ink); }
+.z-row > i { width: 5px; height: 20px; border-radius: 3px; background: var(--sage-deep); opacity: .7; }
+.z-row > small { font-size: 12px; color: var(--sage-deep); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.z-row .en { font-family: var(--f-en); font-size: 15.5px; } .z-row span small { font-size: 12.5px; color: var(--muted); }
+.z-row svg { width: 15px; height: 15px; color: var(--muted); }
+.z-row:hover { background: var(--paper-2); }
+@media (max-width: 640px) { .z-row { grid-template-columns: 5px minmax(0, 1fr) 16px; } .z-row > small { display: none; } .z-band { flex-wrap: wrap; } }
+.h-filter { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.h-day { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; margin-bottom: 16px; }
+.h-date { display: flex; flex-direction: column; padding-top: 10px; } .h-date b { font-family: var(--f-title); font-size: 18px; } .h-date small { font-size: 12.5px; color: var(--muted); }
+.h-list { display: flex; flex-direction: column; gap: 8px; border-left: 2px solid var(--sage-soft); padding-left: 14px; }
+.h-entry { display: grid; grid-template-columns: 52px minmax(0, 1fr) 16px; gap: 12px; align-items: center; padding: 12px 16px; border-radius: 16px; border: 1px solid var(--line); background: #FFFFFF; text-align: left; color: var(--ink); }
+.h-entry:hover { border-color: var(--sage); }
+.h-time { font-size: 15px; color: var(--warm); }
+.h-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; } .h-main > b { font-size: 15px; }
+.h-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.h-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px 3px 8px; border-radius: 999px; background: var(--paper-2); border: 1px solid #ECE7DE; font-size: 12.5px; }
+.h-chip svg { width: 13px; height: 13px; color: var(--sage-deep); } .h-chip b { font-weight: 600; color: var(--sage-deep); }
+.h-entry > svg { width: 15px; height: 15px; color: var(--muted); }
+@media (max-width: 640px) { .h-day { grid-template-columns: minmax(0, 1fr); gap: 6px; } .h-date { flex-direction: row; gap: 8px; align-items: baseline; padding: 0; } }
 </style>
 </head>
 <body>
@@ -2072,6 +2116,7 @@ const NAV = [
   ['label', '我的'],
   ['favs', '收藏表达', 'star', 'optional'],
   ['records', '学习记录', 'record', ''],
+  ['imphist', '导入历史', 'upload', 'optional'],
 ];
 function renderSide() {
   const root = stack[0].v;
@@ -5022,7 +5067,7 @@ function previewAssemble(D) {
 }
 function endPreview() { if (ui.impPreview) { ui.impPreview = false; t3assemble(); } }
 // 离开导入预览（去了别的页面）就把预览收掉，存档里没导入的话题不会出现在别处
-const PREVIEW_VIEWS = new Set(['timport', 'targ', 'texp', 'tterm', 'tpara', 'edit']);
+const PREVIEW_VIEWS = new Set(['timport', 'impconfirm', 'targ', 'texp', 'tterm', 'tpara', 'edit']);
 function impPreviewGuard() { if (ui.impPreview && !PREVIEW_VIEWS.has(cur().v)) endPreview(); }
 const previewBanner = () => ui.impPreview ? `<div class="i-msg i-prev"><b>导入前的预览</b><span>这些内容还没有导入。可以点右上角“编辑”直接改，改的就是这次要导入的内容；确认导入后才会保存。</span><button class="btn btn-outline btn-sm" type="button" data-a="impback">回到导入预览</button></div>` : '';
 
@@ -5074,9 +5119,9 @@ function vImport2(r) {
   const SL = { notes: '写作笔记', fn: '功能表达', topic: '话题' };
   return {
     title: K ? K.title : '导入', crumb: ['表达库'],
-    actions: (S.imports || []).length ? `<button class="btn btn-outline btn-sm" type="button" data-go="imphist">导入记录 · ${S.imports.length}</button>` : '',
+    actions: (S.imports || []).length ? `<button class="btn btn-outline btn-sm" type="button" data-nav="imphist">导入历史 · ${S.imports.length}</button>` : '',
     body: `<form class="form" data-form="import" style="max-width:900px">
-      <div class="privacy">${svg('lock')}<span>文件只在这台设备上读取和整理，不会上传到网络。导入前可以先看每一条的详情页、直接编辑；确认后才进入学习。每次导入都会留在“导入记录”里。</span></div>
+      <div class="privacy">${svg('lock')}<span>文件只在这台设备上读取和整理，不会上传到网络。导入前可以先看每一条的详情页、直接编辑；确认后才进入学习。每次导入都会留在左侧的“导入历史”里。</span></div>
       <label class="fld">这次导入的名称<input name="title" value="${esc(ui.impTitle || (K ? K.name() : dayKey() + ' 导入'))}"></label>
       <label class="fld">内容${K ? `<small class="muted" style="font-weight:400">　${K.hint}；其他两种也可以写在同一份里</small>` : ''}<textarea name="text" id="import-text" style="min-height:300px" placeholder="粘贴要导入的内容">${esc(D)}</textarea></label>
       <details class="i-help" ${K ? 'open' : ''}><summary>怎么写（点开看格式）</summary>
@@ -5095,8 +5140,17 @@ function runImport(text, title, source) {
   let setId = null;
   if (P.rest.trim()) setId = createNoteSet(P.rest, title, { source });
   P.blocks.forEach(B => { if (!B.merge) B.newId = 'u' + uid(); });
+  const sp = setId ? splitFnSet(setId) : { fnSet: null, notesSet: null };
+  const parts = (P.blocks.length ? ['topic'] : []).concat(sp.fnSet ? ['fn'] : [], sp.notesSet ? ['notes'] : []);
+  if (parts.length >= 2) {
+    ui.impPreview = false;
+    S.t3.impDraft = P.blocks.length ? { blocks: P.blocks, setId: null, text, title } : null;
+    const rec = addImportRec({ title, setIds: [sp.fnSet, sp.notesSet].filter(Boolean) });
+    S.t3.impFlow = { parts, fnSet: sp.fnSet, notesSet: sp.notesSet, done: {}, tab: parts[0], recId: rec.id, title, text };
+    assemble(); save(); replaceRoute({ v: 'impconfirm' }); return true;
+  }
   if (P.blocks.length) { ui.impPreview = false; S.t3.impDraft = { blocks: P.blocks, setId, text, title }; assemble(); save(); replaceRoute({ v: 'timport' }); return true; }
-  if (setId) { addImportRec({ title, setId }); assemble(); save(); replaceRoute({ v: 'triage', id: setId }); return true; }
+  if (setId) { addImportRec({ title, setIds: [setId] }); assemble(); save(); replaceRoute({ v: 'triage', id: setId }); return true; }
   return false;
 }
 function importClick(a, el) {
@@ -5107,14 +5161,14 @@ function importClick(a, el) {
   }
   if (a === 'impopen') { ui.impText = ''; ui.impTitle = ''; go({ v: 'import', id: el.dataset.k }); return true;
   }
-  if (a === 'impback') { replaceRoute({ v: 'timport' }); return true; }
+  if (a === 'impback') { replaceRoute({ v: S.t3.impFlow ? 'impconfirm' : 'timport' }); return true; }
   if (a === 'impok') {
     const D = S.t3.impDraft; if (!D || D.blocks.some(B => B.errors.length)) return true;
     endPreview();
     const before = new Set([...T.item.keys(), ...T.term.keys()]);
     applyTopics(D.blocks);
     const setId = D.setId;
-    const rec = addImportRec({ title: D.title, tids: D.blocks.map(B => B.tid), ids: [...T.item.keys(), ...T.term.keys()].filter(k => !before.has(k)), setId: setId || null });
+    const rec = addImportRec({ title: D.title, tids: D.blocks.map(B => B.tid), ids: [...T.item.keys(), ...T.term.keys()].filter(k => !before.has(k)), setIds: setId ? [setId] : [] });
     S.t3.impDraft = null; save();
     toast('话题已导入');
     if (setId && noteSet(setId)) replaceRoute({ v: 'triage', id: setId }); else replaceRoute({ v: 'impdone', id: rec.id });
@@ -5161,69 +5215,25 @@ function defModeSettings() {
 /* ---------- 导入记录：每次导入留一条，随时回来看导入了什么 ---------- */
 function addImportRec(o) {
   S.imports = S.imports || [];
-  const rec = Object.assign({ id: 'im' + uid(), at: Date.now(), tids: [], ids: [], setId: null }, o);
+  const rec = Object.assign({ id: 'im' + uid(), at: Date.now(), tids: [], ids: [], setIds: [] }, o);
   S.imports.push(rec);
   return rec;
 }
 function recFinishNotes(setId) {
   S.imports = S.imports || [];
-  let rec = S.imports.find(x => x.setId === setId);
-  if (!rec) { const set = noteSet(setId); rec = addImportRec({ title: set ? set.title : '写作笔记', setId }); }
+  let rec = S.imports.find(x => recSets(x).includes(setId));
+  if (!rec) { const set = noteSet(setId); rec = addImportRec({ title: set ? set.title : '写作笔记', setIds: [setId] }); }
   return rec;
 }
 function recCounts(rec) {
   const ids = new Set(rec.ids || []);
   const args = [...T.arg.keys()].filter(a => ids.has(a + ':s')).length, terms = (rec.ids || []).filter(x => T.term.has(x)).length;
-  const its = rec.setId ? S.notes.items.filter(i => i.setId === rec.setId) : [];
+  const its = recSets(rec).flatMap(id => S.notes.items.filter(i => i.setId === id));
   const n = k => its.filter(i => i.type === k).length;
   return [[args, '个论点'], [terms, '个话题词汇'], [n('fn'), '条功能表达'], [n('expr'), '张表达卡'], [n('pattern'), '张句型卡'], [n('grammar'), '张语法卡']].filter(x => x[0]).map(x => x.join(' ')).join(' · ') || '没有内容（可能已经删除）';
 }
-function vImportHist() {
-  const L = (S.imports || []).slice().reverse();
-  return {
-    title: '导入记录', crumb: ['导入'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="">${svg('upload')}导入</button>`,
-    body: `<div class="session wide"><p class="warm">每次导入都留在这里。点开看那一次导入了哪些内容，每一条都能点进详情页。</p>
-      <div class="rows">${L.map(r => { const d = new Date(r.at); return `<button class="row tap" type="button" data-go="impdone:${r.id}"><div class="body"><span class="title">${esc(r.title)}</span><span class="sub">${recCounts(r)}</span><span class="meta"><span>${d.getMonth() + 1} 月 ${d.getDate()} 日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</span>${r.setId && noteSet(r.setId) && !noteSet(r.setId).confirmed ? statusHTML('待整理') : ''}</span></div>${svg('chev')}</button>`; }).join('') || '<p class="note-line">还没有导入过。</p>'}</div></div>`,
-  };
-}
-function vImportDone(r) {
-  const list = S.imports || [];
-  const rec = list.find(x => x.id === r.id) || list[list.length - 1];
-  if (!rec) return { redirect: { v: 'imphist' } };
-  const link = (go, en, zh, tag) => `<button class="i-done" type="button" data-go="${go}"><span>${tag ? `<small>${esc(tag)}</small>` : ''}<span class="en">${esc(en)}</span>${zh ? `<small class="zh">${esc(zh)}</small>` : ''}</span>${svg('chev')}</button>`;
-  const ML = id => modeOf(id) === 'memory' ? '记忆' : modeOf(id) === 'paused' ? '暂缓' : '资料';
-  let html = '';
-  const set = rec.setId && noteSet(rec.setId);
-  const its = set ? S.notes.items.filter(i => i.setId === set.id) : [];
-  const fns = its.filter(i => i.type === 'fn');
-  if (set && !set.confirmed) html += `<div class="i-msg bad"><b>写作笔记还没确认</b><span>这次导入的笔记卡还在确认页，确认后才进入学习。</span><button class="btn btn-primary btn-sm" type="button" data-go="triage:${set.id}" style="align-self:flex-start">去确认</button></div>`;
-  if (fns.length) {
-    const byG = [...new Set(fns.map(i => i.gid))];
-    html += `<section class="i-topic"><div class="d-lab"><b>功能表达 · ${fns.length} 条</b><i></i><button class="t-link-btn" type="button" data-go="funcs">打开功能表达 ›</button></div>
-      ${byG.map(g => { const G = GROUPS.get(g); return `<div class="i-donegrp"><span class="note-line">${esc(G ? G.fn : '')}${G ? ` · <button class="t-link-btn" type="button" data-go="group:${esc(g)}">看这个功能的全部表达 ›</button>` : ''}</span>${fns.filter(i => i.gid === g).map(i => link('item:' + i.id, i.en, i.zh, ML(i.id))).join('')}</div>`; }).join('')}</section>`;
-  }
-  const notesOnly = its.filter(i => i.type !== 'fn');
-  if (notesOnly.length) {
-    html += `<section class="i-topic"><div class="d-lab"><b>写作笔记 · ${notesOnly.length} 张</b><i></i><button class="t-link-btn" type="button" data-go="notes">打开写作笔记 ›</button></div>
-      ${[['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']].map(([k, l]) => { const L = notesOnly.filter(i => i.type === k); return L.length ? `<div class="i-donegrp"><span class="note-line">${l} · ${L.length} 张</span>${L.map(i => link('item:' + i.id, i.en, i.type === 'grammar' ? '改正：' + i.wrong : i.zh, ML(i.id))).join('')}</div>` : ''; }).join('')}</section>`;
-  }
-  const ids = new Set(rec.ids || []);
-  for (const tid of rec.tids || []) {
-    const tp = T.topic.get(tid); if (!tp) continue;
-    const args = tp.args.filter(a => ids.has(a + ':s'));
-    const terms = tp.terms.filter(t => ids.has(t));
-    html += `<section class="i-topic"><div class="d-lab"><b>主题表达 · ${esc(tp.name)}</b><i></i><button class="t-link-btn" type="button" data-go="ttopic:${tid}">打开话题 ›</button></div>
-      ${args.map(aid => { const A = T.arg.get(aid); return `<div class="i-donegrp"><span class="note-line">论点 ${A.n} · ${esc(A.short)} · ${esc(A.stance)}</span>${A.items.map(x => { const it = T.item.get(x); return link(it.kind === 'sent' ? 'targ:' + aid : 'texp:' + x, it.en, it.zh, it.role); }).join('')}</div>`; }).join('')}
-      ${terms.length ? `<div class="i-donegrp"><span class="note-line">话题词汇 · ${terms.length} 个</span>${terms.map(t => { const w = T.term.get(t); return link('tterm:' + t, w.en, w.zh, w.cat); }).join('')}</div>` : ''}</section>`;
-  }
-  const d = new Date(rec.at);
-  return { title: rec.title, crumb: ['导入记录'], actions: `<button class="btn btn-outline btn-sm" type="button" data-go="imphist">全部导入记录</button>`,
-    body: `<div class="session wide"><p class="warm">${d.getMonth() + 1} 月 ${d.getDate()} 日导入 · ${recCounts(rec)}。点任意一条看详情页；以后在“导入记录”里随时能回到这一页。</p>${html || '<p class="note-line">这次导入的内容已经删除了。</p>'}</div>` };
-}
-
 T3VIEWS.timport = vTopicImport;
-T3VIEWS.impdone = vImportDone;
-T3VIEWS.imphist = vImportHist;
+
 
 /* ---------- 示例（导入页的“填入示例”和测试台用） ---------- */
 const SAMPLE_FN = `# 功能：原因与解释
@@ -5549,6 +5559,210 @@ function editClick(a, el) {
 
 T3VIEWS.edit = vEditItem;
 
+/* ============================================================
+   三种一起导入（设计稿 BW）：一页三个标签，各自确认，或全部直接导入
+   导入完成总览（BZ）：编号大标题 + 紧凑列表；导入历史（CA）：按天的时间线
+   三部分用同一套绿色，靠左侧菜单的同一个图标 + 名称区分
+   ============================================================ */
+const PART = { topic: '主题表达', fn: '功能表达', notes: '写作笔记' };
+const recSets = rec => rec.setIds || (rec.setId ? [rec.setId] : []);
+
+/* 同一份笔记里既有功能表达又有别的卡：拆成两份，分开确认 */
+function splitFnSet(setId) {
+  const set = noteSet(setId); if (!set) return { fnSet: null, notesSet: null };
+  const its = S.notes.items.filter(i => i.setId === setId);
+  const fns = its.filter(i => i.type === 'fn');
+  if (!fns.length) return { fnSet: null, notesSet: setId };
+  if (fns.length === its.length && !(set.unrec || []).length) return { fnSet: setId, notesSet: null };
+  const nid = 'ns:' + uid();
+  S.notes.sets.push(Object.assign({}, set, { id: nid, unrec: [] }));
+  fns.forEach(i => { i.setId = nid; });
+  S.notes.groups.filter(g => g.setId === setId && g.kind === 'fn').forEach(g => { g.setId = nid; });
+  return { fnSet: nid, notesSet: setId };
+}
+function confirmSet(setId) {
+  const set = noteSet(setId); if (!set) return;
+  set.confirmed = true;
+  S.notes.items.filter(x => x.setId === setId).forEach(x => { if (!(S.items[x.id] && S.items[x.id].mode)) st(x.id).mode = defMode(x); });
+}
+function dropSet(setId) {
+  S.notes.items.filter(x => x.setId === setId).forEach(x => { delete S.items[x.id]; });
+  S.notes.items = S.notes.items.filter(x => x.setId !== setId);
+  S.notes.groups = S.notes.groups.filter(g => g.setId !== setId);
+  S.notes.sets = S.notes.sets.filter(s => s.id !== setId);
+}
+
+/* ---------- 标签页确认（BW） ---------- */
+function flowProblem(F, k) {
+  if (k === 'topic') { const D = S.t3.impDraft; return D ? D.blocks.reduce((a, B) => a + B.errors.length, 0) : 0; }
+  if (k === 'notes') { const s = noteSet(F.notesSet); return s ? (s.unrec || []).length : 0; }
+  return 0;
+}
+function flowCount(F, k) {
+  if (k === 'topic') { const D = S.t3.impDraft; if (!D) return ''; const n = D.blocks.reduce((a, B) => a + B.stances.reduce((b, s) => b + s.args.filter(x => !x.skip).length, 0), 0); return `${D.blocks.length} 个话题 · ${n} 个论点`; }
+  const id = k === 'fn' ? F.fnSet : F.notesSet;
+  return `${S.notes.items.filter(i => i.setId === id).length} ${k === 'fn' ? '条' : '张'}`;
+}
+function vImpFlow() {
+  const F = S.t3.impFlow;
+  if (!F) return { redirect: { v: 'imphist' } };
+  const tab = F.tab;
+  const tabs = F.parts.map(k => {
+    const done = F.done[k], bad = !done && flowProblem(F, k);
+    return `<button class="f-tab ${k === tab ? 'on' : ''}" type="button" data-a="impftab" data-k="${k}" aria-pressed="${k === tab}"><span class="f-ic">${svg(k)}</span><b>${PART[k]}</b><small>${done ? '已导入' : flowCount(F, k)}</small><span class="f-st">${done ? svg('check', 2.2) : bad ? '<i class="f-dot"></i>' : ''}</span></button>`;
+  }).join('');
+  let inner = '';
+  if (F.done[tab]) inner = `<div class="f-done">${svg('check', 2.2)}<span><b>${PART[tab]}已经导入</b><small>导入完成后，在总览里能看到每一条，也能点进详情页。</small></span></div>`;
+  else if (tab === 'topic') inner = vTopicImport().body.split('<div class="sticky-bar">')[0] + '</div>';
+  else {
+    const id = tab === 'fn' ? F.fnSet : F.notesSet;
+    inner = `<div class="f-hint">${svg(tab)}<span>${tab === 'fn' ? '确认后并进对应的功能，和 App 自带的表达一起比较。' : '确认后进入“我的写作笔记”。'}每张卡都能编辑、看详情页、改学习方式。</span></div>` + vTriage({ id }).body.split('<div class="sticky-bar">')[0];
+  }
+  const left = F.parts.map(k => `${PART[k]} ${F.done[k] ? '✓' : flowProblem(F, k) ? `有 ${flowProblem(F, k)} 处要处理` : '待确认'}`).join(' · ');
+  const curBad = !F.done[tab] && flowProblem(F, tab);
+  return {
+    title: '确认这次导入', crumb: ['导入', F.title],
+    body: `<div class="f-tabs" role="tablist">${tabs}</div>
+      <div class="f-body">${inner}</div>
+      <div class="sticky-bar"><span class="summary">${left}</span>
+        <div class="btn-row"><button class="btn btn-ghost btn-danger" type="button" data-a="impfcancel" data-confirm="确认放弃">放弃没确认的部分</button><button class="btn btn-outline" type="button" data-a="impfall">全部直接导入</button>${F.done[tab] ? '' : `<button class="btn btn-primary" type="button" data-a="impfok" data-k="${tab}" ${curBad ? 'disabled' : ''}>${curBad ? '先处理上面的问题' : '确认' + PART[tab]}</button>`}</div></div>`,
+  };
+}
+function flowConfirm(F, k) {
+  if (F.done[k] || flowProblem(F, k)) return false;
+  const rec = (S.imports || []).find(x => x.id === F.recId);
+  if (k === 'topic') {
+    const D = S.t3.impDraft;
+    endPreview();
+    const before = new Set([...T.item.keys(), ...T.term.keys()]);
+    applyTopics(D.blocks);
+    if (rec) { rec.tids = D.blocks.map(B => B.tid); rec.ids = [...T.item.keys(), ...T.term.keys()].filter(x => !before.has(x)); }
+    S.t3.impDraft = null;
+  } else confirmSet(k === 'fn' ? F.fnSet : F.notesSet);
+  F.done[k] = true;
+  assemble();
+  return true;
+}
+function flowNext(F) {
+  const left = F.parts.filter(k => !F.done[k]);
+  if (!left.length) { const id = F.recId; S.t3.impFlow = null; endPreview(); save(); replaceRoute({ v: 'impdone', id }); toast('这次导入的内容都已导入'); return; }
+  F.tab = left[0]; save(); render(true);
+}
+function flowClick(a, el) {
+  const F = S.t3.impFlow; if (!F) return false;
+  if (a === 'impftab') { F.tab = el.dataset.k; save(); render(true); return true; }
+  if (a === 'impfok') { if (flowConfirm(F, el.dataset.k)) { toast(PART[el.dataset.k] + '已导入'); flowNext(F); } return true; }
+  if (a === 'impfall') {
+    F.parts.forEach(k => flowConfirm(F, k));
+    const bad = F.parts.filter(k => !F.done[k]);
+    if (bad.length) { F.tab = bad[0]; save(); render(true); toast(`${bad.map(k => PART[k]).join('、')}还有问题，先处理再导入`); }
+    else flowNext(F);
+    return true;
+  }
+  if (a === 'impfcancel') {
+    endPreview();
+    if (!F.done.topic && F.parts.includes('topic')) S.t3.impDraft = null;
+    if (F.fnSet && !F.done.fn) dropSet(F.fnSet);
+    if (F.notesSet && !F.done.notes) dropSet(F.notesSet);
+    const anyDone = F.parts.some(k => F.done[k]);
+    const rec = (S.imports || []).find(x => x.id === F.recId);
+    if (rec) { rec.setIds = recSets(rec).filter(id => noteSet(id)); if (!anyDone) S.imports = S.imports.filter(x => x !== rec); }
+    S.t3.impFlow = null; assemble(); save();
+    if (anyDone && rec) replaceRoute({ v: 'impdone', id: rec.id }); else replaceRoute({ v: 'import' });
+    return true;
+  }
+  return false;
+}
+
+/* ---------- 导入完成总览（BZ） ---------- */
+function vImportDoneZ(r) {
+  const list = S.imports || [];
+  const rec = list.find(x => x.id === r.id) || list[list.length - 1];
+  if (!rec) return { redirect: { v: 'imphist' } };
+  ui.zfold = ui.zfold || {};
+  const row = (go, tag, en, zh) => `<button class="z-row" type="button" data-go="${go}"><i></i><small>${esc(tag)}</small><span><span class="en">${esc(en)}</span>${zh ? ` <small>${esc(zh)}</small>` : ''}</span>${svg('chev')}</button>`;
+  const ML = id => ({ memory: '记忆', paused: '暂缓' })[modeOf(id)] || '资料';
+  const secs = [];
+  const ids = new Set(rec.ids || []);
+  for (const tid of rec.tids || []) {
+    const tp = T.topic.get(tid); if (!tp) continue;
+    const args = tp.args.filter(a => ids.has(a + ':s')), terms = tp.terms.filter(t => ids.has(t));
+    const rows = args.map(aid => { const A = T.arg.get(aid); return A.items.map(x => { const it = T.item.get(x); return row(it.kind === 'sent' ? 'targ:' + aid : 'texp:' + x, it.kind === 'sent' ? `论点 ${A.n} · ${A.short}` : '　' + it.role, it.en, it.kind === 'sent' ? '' : it.zh); }).join(''); }).join('')
+      + terms.map(t => { const w = T.term.get(t); return row('tterm:' + t, '话题词汇 · ' + (termMem(t) ? '记忆' : '资料'), w.en, w.zh); }).join('');
+    secs.push(['topic', 'topic:' + tid, `${tp.name} · ${args.length} 个论点${terms.length ? ' · ' + terms.length + ' 个话题词汇' : ''}`, `<button class="t-link-btn" type="button" data-go="ttopic:${tid}">打开话题 ›</button>`, rows]);
+  }
+  const its = recSets(rec).flatMap(id => S.notes.items.filter(i => i.setId === id));
+  const fns = its.filter(i => i.type === 'fn');
+  if (fns.length) {
+    const gs = [...new Set(fns.map(i => i.gid))].map(g => GROUPS.get(g)).filter(Boolean);
+    secs.push(['fn', 'fn', `${gs.map(G => G.fn).join('、')} · ${fns.length} 条`, `<button class="t-link-btn" type="button" data-nav="funcs">打开功能表达 ›</button>`, fns.map(i => row('item:' + i.id, ML(i.id), i.en, i.zh)).join('')]);
+  }
+  const nts = its.filter(i => i.type !== 'fn');
+  if (nts.length) {
+    const n = k => nts.filter(i => i.type === k).length;
+    secs.push(['notes', 'notes', [['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']].filter(([k]) => n(k)).map(([k, l]) => `${l} ${n(k)}`).join(' · '), `<button class="t-link-btn" type="button" data-nav="notes">打开写作笔记 ›</button>`,
+      nts.map(i => row('item:' + i.id, `${TYPE_LABEL[i.type]} · ${ML(i.id)}`, i.en, i.type === 'grammar' ? '改正：' + i.wrong : i.zh)).join('')]);
+  }
+  const pend = recSets(rec).map(noteSet).filter(s => s && !s.confirmed);
+  const flowOpen = S.t3.impFlow && S.t3.impFlow.recId === rec.id;
+  const warn = pend.length || flowOpen ? `<div class="i-msg bad"><b>还有没确认的部分</b><span>没确认的卡还不会进入学习。</span><button class="btn btn-primary btn-sm" type="button" ${flowOpen ? 'data-go="impconfirm"' : `data-go="triage:${pend[0].id}"`} style="align-self:flex-start">去确认</button></div>` : '';
+  const body = secs.map(([k, key, sub, link, rows], i) => {
+    const fold = ui.zfold[rec.id + key];
+    return `<section class="z-sec"><div class="z-band"><b class="z-num">${i + 1}</b><span class="f-ic">${svg(k)}</span><span class="z-tt"><b>${PART[k]}</b><small>${esc(sub)}</small></span>${link}<button class="z-fold" type="button" data-a="impzfold" data-k="${esc(rec.id + key)}">${fold ? '展开 ▾' : '收起 ▴'}</button></div>${fold ? '' : `<div class="z-rows">${rows}</div>`}</section>`;
+  }).join('');
+  const d = new Date(rec.at);
+  return {
+    title: rec.title, crumb: ['导入历史'], actions: `<button class="btn btn-outline btn-sm" type="button" data-nav="imphist">全部导入历史</button>`,
+    body: `<div class="session wide"><p class="warm">${d.getMonth() + 1} 月 ${d.getDate()} 日 ${hhmm(d)} 导入 · ${recCounts(rec)}。点任意一条看详情页；以后在左侧“导入历史”里随时能回到这一页。</p>${warn}${body || '<p class="note-line">这次导入的内容已经删除了。</p>'}</div>`,
+  };
+}
+const hhmm = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+/* ---------- 导入历史（CA）：按天的时间线 ---------- */
+function recParts(rec) {
+  const out = [];
+  const ids = new Set(rec.ids || []);
+  const tids = (rec.tids || []).filter(t => T.topic.has(t));
+  if (tids.length) { const args = [...T.arg.keys()].filter(a => ids.has(a + ':s')).length, terms = (rec.ids || []).filter(x => T.term.has(x)).length; out.push(['topic', tids.map(t => T.topic.get(t).name).join('、') + ` · ${args} 个论点${terms ? ` · ${terms} 个词汇` : ''}`]); }
+  const its = recSets(rec).flatMap(id => S.notes.items.filter(i => i.setId === id));
+  const f = its.filter(i => i.type === 'fn').length, n = its.length - f;
+  if (f) out.push(['fn', f + ' 条']);
+  if (n) out.push(['notes', n + ' 张']);
+  return out;
+}
+function vImportHistCA() {
+  const filt = ui.histFilter || 'all';
+  const all = (S.imports || []).slice().sort((a, b) => b.at - a.at);
+  const L = all.filter(r => filt === 'all' || recParts(r).some(p => p[0] === filt));
+  const days = [];
+  L.forEach(r => { const k = dayKey(r.at); const d = days.find(x => x.k === k); if (d) d.list.push(r); else days.push({ k, t: r.at, list: [r] }); });
+  const today = dayStart();
+  const dayLabel = t => { const d = new Date(t), diff = Math.round((today - dayStart(t)) / 864e5); return [`${d.getMonth() + 1} 月 ${d.getDate()} 日`, '周' + '日一二三四五六'[d.getDay()] + (diff === 0 ? ' · 今天' : diff === 1 ? ' · 昨天' : '')]; };
+  const chip = ([k, t]) => `<span class="h-chip">${svg(k)}<b>${PART[k]}</b>${esc(t)}</span>`;
+  const entry = r => {
+    const pend = recSets(r).some(id => noteSet(id) && !noteSet(id).confirmed) || (S.t3.impFlow && S.t3.impFlow.recId === r.id);
+    const parts = recParts(r);
+    return `<button class="h-entry" type="button" data-go="impdone:${r.id}"><span class="h-time en">${hhmm(new Date(r.at))}</span><span class="h-main"><b>${esc(r.title)}${pend ? ' <span class="status s-triage">待整理</span>' : ''}</b><span class="h-chips">${parts.map(chip).join('') || '<small class="muted">内容已经删除</small>'}</span></span>${svg('chev')}</button>`;
+  };
+  return {
+    title: '导入历史', crumb: ['我的'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="">${svg('upload')}导入</button>`,
+    body: `<div class="session wide">
+      <p class="warm">按日期排，最近的在最上面；点一条回到那一次的导入总览，每一条都能点进详情页。</p>
+      <div class="h-filter"><div class="seg small" role="group" aria-label="只看某一种">${[['all', '全部'], ['topic', '主题表达'], ['fn', '功能表达'], ['notes', '写作笔记']].map(([k, l]) => `<button type="button" data-a="imphfilter" data-k="${k}" aria-pressed="${filt === k}">${l}</button>`).join('')}</div><span class="note-line">共 ${all.length} 次导入</span></div>
+      ${days.map(d => { const [a, b] = dayLabel(d.t); return `<section class="h-day"><div class="h-date"><b>${a}</b><small>${b}</small></div><div class="h-list">${d.list.map(entry).join('')}</div></section>`; }).join('') || `<div class="empty"><h3>${all.length ? '没有这一种的导入' : '还没有导入过'}</h3><p>写作笔记、功能表达、主题表达都可以导入，导入后会记在这里。</p></div>`}
+    </div>`,
+  };
+}
+function histClick(a, el) {
+  if (a === 'imphfilter') { ui.histFilter = el.dataset.k; render(); return true; }
+  if (a === 'impzfold') { ui.zfold = ui.zfold || {}; ui.zfold[el.dataset.k] = !ui.zfold[el.dataset.k]; render(); return true; }
+  return false;
+}
+
+T3VIEWS.impconfirm = vImpFlow;
+T3VIEWS.impdone = vImportDoneZ;
+T3VIEWS.imphist = vImportHistCA;
+
 
 const VIEWS = {
   home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
@@ -5621,7 +5835,7 @@ document.addEventListener('click', e => {
   const a = el.dataset.a, id = el.dataset.id;
   if (a && a.startsWith('t3') && t3click(a, el)) return;
   if (a && a.startsWith('d') && detailClick(a, el)) return;
-  if (a && (a.startsWith('imp') || a === 'tunrec') && importClick(a, el)) return;
+  if (a && (a.startsWith('imp') || a === 'tunrec') && (importClick(a, el) || flowClick(a, el) || histClick(a, el))) return;
   if (a && a.startsWith('iedit') && editClick(a, el)) return;
   switch (a) {
     case 'back': back(); break;
@@ -5705,7 +5919,7 @@ document.addEventListener('click', e => {
       break;
     }
     case 'tdiscard': case 'delset': {
-      if (a === 'tdiscard') S.imports = (S.imports || []).filter(x => !(x.setId === id && !(x.tids || []).length));
+      if (a === 'tdiscard') { (S.imports || []).forEach(x => { x.setIds = recSets(x).filter(s => s !== id); }); S.imports = (S.imports || []).filter(x => recSets(x).length || (x.tids || []).length); }
       const gone = new Set(S.notes.items.filter(x => x.setId === id).map(x => x.id));
       S.notes.items = S.notes.items.filter(x => x.setId !== id);
       S.notes.groups = S.notes.groups.filter(g => g.setId !== id);
@@ -5894,7 +6108,7 @@ t3assemble();
 // 测试台（test.html）用：正式版不设 __TEST__，这里不会执行
 if (window.__TEST__) window.__app = { S: () => S, items: () => ITEMS, assemble, createNoteSet, t3assemble, samples: () => [SAMPLE_NOTE, SAMPLE_FN, SAMPLE_TOPIC], save, render, go, goRoot, cur, ui, T, AR, IR, TR, t3plan, t3StartRev, dayStart, addDays, dayKey, fmtMD, STAGE_LABEL, RL3, TIER_LABEL, tierOf, ctxAnswer: () => { try { const c = t3ctx(); return c ? c.ans : null; } catch (e) { return null; } } };
 const startHash = (location.hash || '').slice(1);
-if (VIEWS[startHash] && ['home', 'today', 'topics', 'funcs', 'notes', 'favs', 'records', 'library', 'tsettings'].includes(startHash)) stack = [{ v: startHash }];
+if (VIEWS[startHash] && ['home', 'today', 'topics', 'funcs', 'notes', 'favs', 'records', 'library', 'tsettings', 'imphist'].includes(startHash)) stack = [{ v: startHash }];
 render(true);
 })();
 </script>
