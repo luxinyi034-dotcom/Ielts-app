@@ -1468,6 +1468,43 @@ input.tg-name:focus { outline: none; border-bottom-style: solid; border-bottom-c
 .sp-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .sp-legend i { width: 10px; height: 10px; border-radius: 3px; }
 .sp-rules { border-radius: 14px; background: var(--paper-2); padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--ink); }
+
+/* ============================================================
+   v9 从空白开始：起步卡、导入格式说明、模板
+   ============================================================ */
+.g-start { display: flex; flex-direction: column; gap: 14px; padding: 26px 26px 22px; margin-bottom: 22px; }
+.g-start h3 { font-family: var(--f-title); font-size: 22px; color: var(--ink); }
+.g-start-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.g-start-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.g-start-card > svg { width: 22px; height: 22px; color: var(--sage-deep); }
+.g-start-card b { font-size: 16px; color: var(--ink); }
+.g-start-card small { color: var(--warm); font-size: 13px; min-height: 2.6em; }
+.g-improw { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; }
+.g-improw .btn svg, .g-tpl .btn svg, .g-start .btn svg { width: 15px; height: 15px; }
+.g-wrap { max-width: 860px; display: flex; flex-direction: column; gap: 18px; }
+.g-tpl { background: var(--sage-soft, var(--paper-2)); border-radius: var(--r-lg); padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.g-tpl b { color: var(--ink); }
+.g-doc { color: var(--ink); font-size: 15px; line-height: 1.75; }
+.g-doc p { margin: 8px 0; color: var(--warm); }
+.g-doc .g-h2 { font-family: var(--f-title); font-size: 20px; margin: 28px 0 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.g-doc .g-h3 { font-size: 16px; font-weight: 600; margin: 18px 0 6px; }
+.g-doc .g-list { margin: 6px 0 10px; padding-left: 1.4em; color: var(--warm); }
+.g-doc .g-list li { margin: 3px 0; }
+.g-doc .g-list ul { padding-left: 1.2em; margin: 2px 0; }
+.g-doc b { color: var(--ink); font-weight: 600; }
+.g-doc code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; background: var(--paper-2); border-radius: 6px; padding: 1px 5px; color: var(--ink); white-space: pre-wrap; }
+.g-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.6; background: var(--paper-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 8px 0 12px; white-space: pre-wrap; word-break: break-word; color: var(--ink); }
+.g-tablewrap { overflow-x: auto; margin: 8px 0 12px; }
+.g-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.g-table th, .g-table td { border-bottom: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+.g-table th { background: var(--paper-2); font-weight: 600; color: var(--ink); white-space: nowrap; }
+.g-table td { color: var(--warm); }
+.g-table td:first-child { color: var(--ink); white-space: nowrap; }
+@media (max-width: 720px) {
+  .g-start-grid { grid-template-columns: 1fr; }
+  .g-start-card small { min-height: 0; }
+  .g-table td:first-child { white-space: normal; }
+}
 </style>
 </head>
 <body>
@@ -1495,75 +1532,10 @@ input.tg-name:focus { outline: none; border-bottom-style: solid; border-bottom-c
 // v9：v4 的旧版主题表达组已移除
 const TOPIC_GROUPS = [];
 
-const FUNCTION_GROUPS = [
-  { id: 'fn-opinion', fn: '表达观点', scene: '在开头段或结论段表明自己的立场。', items: [
-    ['I firmly believe that ...', '我坚信……', 'I firmly believe that + 完整句子', '立场鲜明；适合同意/反对类题目', '比 In my view 更坚定，全文只宜出现一次', 'I firmly believe that schools should teach practical life skills.', '不写 I firmly believe in that ...'],
-    ['In my view, ...', '在我看来', 'In my view, + 完整句子', '中性，正式程度适中', '语气比 I firmly believe 温和，可在结论段重申立场', 'In my view, the benefits of tourism outweigh its drawbacks.', '不写 In my point of view。'],
-    ['It seems to me that ...', '在我看来似乎……', 'It seems to me that + 完整句子', '较委婉，带推测', '适合有保留的观点，不适合需要鲜明立场的开头', 'It seems to me that public libraries are still essential.', '不与 I think 叠用。'],
-    ['I partly agree with this view.', '我部分同意这一观点。', '独立成句，后文分两方面展开', '中立，表示部分同意', '只适合真正讨论两方面的文章', 'I partly agree with this view, as both sides have merit.', '不写 I partly agree this view（缺 with）。'],
-  ] },
-  { id: 'fn-main', fn: '引出主要观点', scene: '在主体段首句引出分论点。', items: [
-    ['The main reason why ... is that ...', '……的主要原因是……', 'The main reason why + 主谓 + is that + 完整句子', '正式，直接点明原因', '比 One reason is ... 更强调“最主要”', 'The main reason why people move to cities is that they offer better jobs.', '不写 The main reason is because ...'],
-    ['One major advantage of ... is that ...', '……的一个主要优点是……', 'One major advantage of + 名词/动名词 + is that + 句子', '中性，适合利弊题', '用于优势段；劣势段换成 disadvantage / drawback', 'One major advantage of online shopping is that it saves time.', 'advantage of doing，不写 advantage to do。'],
-    ['Firstly, it is worth considering ...', '首先，值得考虑……', 'it is worth considering + 名词/动名词', '引导式，略正式', '适合先摆出考虑因素再展开', 'Firstly, it is worth considering the financial cost of space exploration.', 'worth 后接 doing 或名词，不接 to do。'],
-  ] },
-  { id: 'fn-add', fn: '补充信息', scene: '在同一方向上补充新的理由或信息。', items: [
-    ['In addition, ...', '此外', 'In addition, + 完整句子；In addition to + 名词/动名词', '中性，最常用', '注意 In addition to 后接名词或动名词', 'In addition, cycling reduces air pollution.', 'In addition to reduce → In addition to reducing。'],
-    ['Moreover, ...', '而且', 'Moreover, + 完整句子', '正式，递进', '强调新信息比前文更有分量', 'Moreover, the scheme would create local jobs.', '不写 and moreover。'],
-    ['Not only ... but also ...', '不仅……而且……', 'Not only + 倒装 ..., but ... also ...', '强调，书面', '放在句首时必须倒装', 'Not only does exercise improve health, but it also reduces stress.', 'Not only exercise improves ...（句首未倒装）。'],
-    ['Another factor to consider is ...', '另一个需要考虑的因素是……', 'Another factor to consider is + 名词 / that 从句', '中性，用于段落间过渡', '适合引出新的分论点，而不是补充细节', 'Another factor to consider is the cost of housing.', '不写 Another factor need to consider。'],
-  ] },
-  { id: 'fn-contrast', fn: '转折与对比', scene: '提出相反信息，或对比两个对象。', items: [
-    ['However, ...', '然而', 'However, + 完整句子（前句以句号结束）', '中性', '连接两个句子，不能像 but 一样连接两个分句', 'Cars are convenient. However, they cause pollution.', '逗号拼接：..., however they ...'],
-    ['On the other hand, ...', '另一方面', 'On the other hand, + 完整句子', '中性，对照另一面', '与前文的另一面对照，不表示纠正前文', 'On the other hand, public transport is cheaper.', '不写 On the other side。'],
-    ['By contrast, ...', '相比之下', 'By contrast, + 完整句子', '正式', '强调两个对象的差异，而不是观点转折', 'Rural areas are quiet. By contrast, cities are crowded and noisy.', '不写 By contrary。'],
-    ['whereas', '而（对比）', '分句 + , whereas + 分句', '正式，同一句内对比', '是连词，连接两个分句', 'Some students prefer group work, whereas others learn better alone.', '不能单独成句。'],
-  ] },
-  { id: 'fn-concession', fn: '让步', scene: '先承认对方观点的合理之处，再提出自己的看法。', items: [
-    ['Although ..., ...', '虽然……，但是……', 'Although + 从句, 主句', '中性', '不能与 but 同时使用', 'Although technology saves time, it can isolate people.', 'Although ..., but ...'],
-    ['Admittedly, ...', '诚然', 'Admittedly, + 完整句子（常后接 However）', '正式，先承认后反驳', '用于“让步—反驳”结构的前半部分', 'Admittedly, zoos help protect endangered species.', '让步后忘记转回自己的观点。'],
-    ['Despite ..., ...', '尽管', 'Despite + 名词/动名词, 主句', '正式', '后接名词或动名词，不接完整句子', 'Despite the high cost, many families choose private schools.', 'Despite it is expensive → Despite being expensive。'],
-    ['While it is true that ..., ...', '虽然……确实如此，但……', 'While it is true that + 句子, 主句', '正式，常用于反驳段开头', '比 Although 更强调“承认事实”', 'While it is true that fast food is convenient, it is often unhealthy.', '主句缺失，只写了 While 从句。'],
-  ] },
-  { id: 'fn-cause', fn: '原因与解释', scene: '解释某个现象或观点成立的原因。', items: [
-    ['This is because ...', '这是因为……', 'This is because + 完整句子', '中性，解释上一句', '后接完整句子；接名词要用 because of', 'Many young people rent homes. This is because property prices are high.', 'This is because the high prices（缺谓语）。'],
-    ['due to ...', '由于', 'due to + 名词/名词短语', '正式', '后接名词，不接完整句子', 'Many flights were cancelled due to bad weather.', 'due to the weather is bad。'],
-    ['... can be attributed to ...', '……可以归因于……', '结果 + can be attributed to + 名词/动名词', '正式，学术', '主语是结果，to 后是原因', 'The rise in obesity can be attributed to poor diet.', '把原因和结果的位置写反。'],
-    ['A key factor behind ... is ...', '……背后的关键因素是……', 'A key factor behind + 名词 + is + 名词 / that 从句', '中性偏正式', '强调多个原因中最关键的一个', 'A key factor behind urban migration is the search for work.', 'factor of → factor behind / in。'],
-  ] },
-  { id: 'fn-result', fn: '结果与影响', scene: '说明某个原因或做法带来的结果。', items: [
-    ['This can lead to ...', '这可能导致……', 'This can lead to + 名词/动名词', '中性，强调可能产生的结果', '后接名词或动名词，不接完整句子', 'This can lead to higher levels of stress.', 'lead to increase → lead to an increase。'],
-    ['This may result in ...', '这可能造成……', 'This may result in + 名词/动名词', '更正式，强调可能性', '与 lead to 接近但更书面', 'This may result in a shortage of skilled workers.', 'result in（导致）与 result from（源于）方向相反。'],
-    ['As a result, ...', '因此', 'As a result, + 完整句子', '中性', '连接已经成立的结果', 'Housing became unaffordable. As a result, many young people left the city.', '把 As a result 当作 lead to 使用，后接名词。'],
-    ['Consequently, ...', '因此', 'Consequently, + 完整句子', '更正式', '与 As a result 功能相同，语域更正式', 'Consequently, the government raised taxes.', '同一段反复使用。'],
-  ] },
-  { id: 'fn-example', fn: '举例与证据', scene: '用例子或证据支撑论点。', items: [
-    ['For example, ...', '例如', 'For example, + 完整句子', '中性', '后接完整句子；列举名词用 such as', 'For example, many companies now allow staff to work from home.', 'For example, cars, buses.（只列名词）'],
-    ['such as ...', '例如（列举）', '名词 + such as + 名词', '中性', '在句中列举名词，不接完整句子', 'Outdoor activities such as hiking and cycling are popular.', 'such as 后接完整句子。'],
-    ['A case in point is ...', '一个恰当的例子是……', 'A case in point is + 名词', '正式', '适合引出一个典型例子', 'A case in point is the rapid growth of electric car sales.', '不写 A case in point is that ...（多数情况下接名词更自然）'],
-    ['Research suggests that ...', '研究表明……', 'Research suggests that + 句子', '学术', '雅思中不要编造具体研究名称和数字', 'Research suggests that regular exercise improves concentration.', 'Researches suggest（research 不可数）。'],
-  ] },
-  { id: 'fn-emphasis', fn: '强调与限定', scene: '突出重点，或给观点加上合理的范围。', items: [
-    ['It is particularly important to ...', '尤其重要的是……', 'It is particularly important to + 动词原形', '中性，强调', '突出一个最重要的做法', 'It is particularly important to protect children online.', 'It is particularly important that to ...'],
-    ['to some extent', '在某种程度上', '句首或句中插入', '限定，降低绝对性', '用于避免过度概括', 'To some extent, social media has improved communication.', 'in some extent。'],
-    ['in most cases', '在大多数情况下', '句首或句末', '限定', '代替 always / never 式的绝对表达', 'In most cases, prevention is cheaper than treatment.', 'in most case（缺复数）。'],
-    ['Indeed, ...', '确实', 'Indeed, + 完整句子', '正式，强调', '补充一条更强的证据', 'Indeed, some cities have banned cars from their centres entirely.', '用 Indeed 引出相反信息。'],
-  ] },
-  { id: 'fn-sequence', fn: '顺序与展开', scene: '按顺序列出要点，或解释上一句的含义。', items: [
-    ['To begin with, ...', '首先', 'To begin with, + 完整句子', '中性', '用于列举第一点', 'To begin with, the policy is expensive.', 'To begin with, firstly ...（重复）'],
-    ['Secondly, ...', '其次', 'Secondly, + 完整句子', '中性', '与 Firstly / To begin with 配合', 'Secondly, it may not reduce traffic.', '不写 Second time。'],
-    ['Finally, ...', '最后', 'Finally, + 完整句子', '中性', '列举的最后一点，不等于结论', 'Finally, the policy would be difficult to enforce.', '用 At last 表示列举最后一点（At last 是“终于”）。'],
-    ['This means that ...', '这意味着……', 'This means that + 完整句子', '中性，展开解释', '解释上一句的具体含义或后果', 'This means that students have less time for hobbies.', 'This is mean that ...'],
-  ] },
-  { id: 'fn-conclusion', fn: '总结与结论', scene: '在结尾段重申立场，不引入新论点。', items: [
-    ['In conclusion, ...', '总之', 'In conclusion, + 重申观点', '正式', '结尾段开头最常用，不引入新论点', 'In conclusion, the advantages of remote work outweigh the disadvantages.', 'In a conclusion / As a conclusion。'],
-    ['To sum up, ...', '总而言之', 'To sum up, + 完整句子', '略口语', '也可用于结尾段', 'To sum up, both approaches have their merits.', 'To summary。'],
-    ['Overall, ...', '总体而言', 'Overall, + 完整句子', '中性', '也常用于小作文概述段', 'Overall, I believe that governments should fund the arts.', 'In overall。'],
-    ['On balance, ...', '权衡之下', 'On balance, + 完整句子', '正式', '适合讨论双方观点后给出判断', 'On balance, the benefits of tourism outweigh its costs.', 'In balance。'],
-  ] },
-];
+// v9 正式版：没有预设内容，全部由自己导入；测试台用 demo.js 里的演示内容
+const FUNCTION_GROUPS = (window.__DEMO && window.__DEMO.fn) || [];
 
-/* 示例写作笔记（首次打开时作为“示例”笔记组载入，可删除）
+/* 示例写作笔记：导入页“填入示例”用；测试台首次打开时作为“示例”笔记组载入
    每条下面缩进的“标签：内容”会整理进卡片的对应字段 */
 const SAMPLE_NOTE = `# 强调深远影响
 - have a profound impact on 对……产生深远影响
@@ -1626,217 +1598,10 @@ const SAMPLE_NOTE = `# 强调深远影响
    每个论点：短名、论点句、中文、范文段落；展开表达的 para 是它在范文里的写法（不写则和 en 相同）
    ============================================================ */
 
-const TOPICS3 = [
-  {
-    id: 'med', theme: '科技', name: '医疗科技与监管',
-    concepts: ['监管审批', '临床试验', '患者安全', '数据隐私', '医疗创新'],
-    stances: [
-      {
-        name: '支持', idea: '新技术未经检验就使用，会威胁患者的安全和隐私',
-        args: [
-          {
-            short: '安全', en: 'Without proper oversight, new treatments may put patients at risk.', zh: '缺乏监管，新疗法可能让患者面临风险',
-            pattern: { slots: ['oversight', 'new treatments', 'patients'], apply: 'Without proper supervision, online learners may put their studies at risk.' },
-            para: 'Without proper oversight, new treatments may put patients at risk. This is because new drugs need to undergo rigorous clinical trials before they gain regulatory approval, so that doctors fully understand the risks. Strict testing helps prevent dangerous side effects from reaching the public. For example, untested medical devices could cause serious injuries if they were sold without independent checks. Therefore, careful regulation is essential to keep patients safe.',
-            links: ['This is because', 'For example,', 'Therefore,'],
-            exps: [
-              { role: '解释', en: 'undergo rigorous clinical trials', zh: '经过严格的临床试验', base: 'undergo … clinical trials', lead: 'This is because new drugs need to …',
-                parts: [['undergo', '动词'], ['rigorous', '形容词'], ['clinical trials', '名词 · 常用复数']], col: ['undergo + trials 动宾搭配', 'rigorous / strict testing 也常用'],
-                usage: 'need to 后面用动词原形；undergo 的过去式是 underwent。', alt: ['go through thorough testing', 'be tested extensively'] },
-              { role: '结果', en: 'prevent dangerous side effects', zh: '防止危险的副作用', base: 'prevent … side effects', lead: 'Strict testing helps …',
-                parts: [['prevent', '动词'], ['dangerous', '形容词'], ['side effects', '名词 · 常用复数']], col: ['prevent + side effects 动宾搭配', 'serious / harmful side effects 也常用'],
-                usage: 'help 后面直接跟动词原形；还可以写成 prevent sth from doing sth。', alt: ['reduce the risk of harmful side effects', 'protect patients from adverse reactions'] },
-              { role: '举例', en: 'untested medical devices', zh: '未经测试的医疗器械', base: 'untested medical device', lead: 'For example, …',
-                parts: [['untested', '形容词'], ['medical devices', '名词 · 可数']], col: ['untested / unapproved + 产品'],
-                usage: '这里作主语，用复数，后面的动词也用复数。', alt: ['unapproved medical equipment'] },
-            ],
-          },
-          {
-            short: '隐私', en: 'Regulation is needed to protect sensitive patient data.', zh: '需要监管来保护敏感的患者数据',
-            pattern: { slots: ['Regulation', 'protect', 'sensitive patient data'], apply: 'Clear rules are needed to protect children online.' },
-            para: 'Regulation is needed to protect sensitive patient data. Many digital health services collect large amounts of personal health information, often without users realising how it will be used. If this information is poorly protected, it can lead to serious data breaches that damage public trust. A case in point is health-tracking apps, some of which have shared users\' records with advertisers. Personal data should never be shared without patients\' informed consent, so clear rules are necessary.',
-            links: ['A case in point is', 'If'],
-            exps: [
-              { role: '解释', en: 'collect large amounts of personal health information', zh: '收集大量个人健康信息', base: 'collect … personal health information', lead: 'Many digital health services …',
-                parts: [['collect', '动词'], ['large amounts of', '修饰不可数名词'], ['personal health information', '名词 · 不可数']], col: ['large amounts of + 不可数名词', 'a large number of + 可数名词'],
-                usage: 'information 不可数，不加 s，前面用 large amounts of 而不是 many。', alt: ['gather vast quantities of health data'] },
-              { role: '结果', en: 'lead to serious data breaches', zh: '导致严重的数据泄露', base: 'lead to … data breach', lead: 'If this information is poorly protected, it can …',
-                parts: [['lead to', '动词短语'], ['serious', '形容词'], ['data breaches', '名词 · 可数']], col: ['lead to + 名词', 'a data breach / data breaches'],
-                usage: 'lead to 后面接名词，不接动词原形。', alt: ['result in large-scale data leaks'] },
-              { role: '举例', en: 'health-tracking apps', zh: '健康追踪应用', base: 'health-tracking app', lead: 'A case in point is …',
-                parts: [['health-tracking', '复合形容词，带连字符'], ['apps', '名词 · 可数']], col: ['fitness / health-tracking apps'],
-                usage: 'health-tracking 中间有连字符。', alt: ['fitness apps', 'wearable devices'] },
-            ],
-          },
-        ],
-      },
-      {
-        name: '反对 / 让步', idea: '监管太严会拖慢创新，反而耽误需要治疗的人',
-        args: [
-          {
-            short: '创新', en: 'Excessive regulation may slow down medical innovation.', zh: '过度监管可能拖慢医疗创新',
-            pattern: { slots: ['Excessive regulation', 'slow down', 'medical innovation'], apply: 'Heavy taxes may slow down economic growth.' },
-            para: 'Excessive regulation may slow down medical innovation. Lengthy approval processes can take more than ten years, which discourages companies from investing in new research. As a result, strict rules may delay access to life-saving treatments. This is especially harmful for patients with rare diseases, who often have no other options. Therefore, regulators should balance safety with speed.',
-            links: ['As a result,', 'Therefore,'],
-            exps: [
-              { role: '解释', en: 'lengthy approval processes', zh: '漫长的审批流程', base: 'lengthy approval process', lead: '（句首）… can take more than ten years',
-                parts: [['lengthy', '形容词'], ['approval processes', '名词 · 可数']], col: ['lengthy / time-consuming + process'],
-                usage: '作主语时用复数 processes，后面的动词用 can take。', alt: ['time-consuming approval procedures'] },
-              { role: '结果', en: 'delay access to life-saving treatments', zh: '推迟患者用上救命疗法', base: 'delay access to …', lead: 'As a result, strict rules may …',
-                parts: [['delay', '动词'], ['access to', '名词 + 介词'], ['life-saving treatments', '名词 · 可数']], col: ['access to + 名词', 'life-saving drugs / treatments'],
-                usage: 'access 后面用介词 to。', alt: ['keep patients waiting for effective drugs'] },
-              { role: '举例', en: 'patients with rare diseases', zh: '罕见病患者', base: 'patient with a rare disease', lead: 'This is especially harmful for …',
-                parts: [['patients', '名词 · 可数'], ['with rare diseases', '介词短语作定语']], col: ['patients with + 疾病'],
-                usage: '用 with 连接病人和疾病，不说 rare disease patients。', alt: ['people with life-threatening conditions'] },
-            ],
-          },
-          {
-            short: '成本', en: 'Strict rules may push up the cost of healthcare.', zh: '严格的规定可能推高医疗成本',
-            pattern: { slots: ['Strict rules', 'push up', 'the cost of healthcare'], apply: 'Higher fuel taxes may push up the cost of living.' },
-            para: 'Strict rules may push up the cost of healthcare. Drug companies must follow expensive compliance procedures at every stage of development. In many cases, they pass the costs on to patients and health systems. For instance, the price of new medicines has risen sharply in recent years. Consequently, some families cannot afford the care they need.',
-            links: ['For instance,', 'Consequently,'],
-            exps: [
-              { role: '解释', en: 'expensive compliance procedures', zh: '昂贵的合规程序', base: 'expensive compliance procedure', lead: 'Drug companies must follow …',
-                parts: [['expensive', '形容词'], ['compliance procedures', '名词 · 可数']], col: ['follow / comply with + procedures'],
-                usage: 'follow procedures 是固定搭配。', alt: ['costly safety checks'] },
-              { role: '结果', en: 'pass the costs on to patients', zh: '把成本转嫁给患者', base: 'pass … on to …', lead: 'In many cases, they …',
-                parts: [['pass … on to', '动词短语'], ['the costs', '名词'], ['patients', '名词']], col: ['pass sth on to sb'],
-                usage: '宾语放在 pass 和 on 中间。', alt: ['make patients pay more'] },
-              { role: '举例', en: 'the price of new medicines', zh: '新药的价格', base: 'the price of …', lead: 'For instance, …',
-                parts: [['the price of', '名词短语'], ['new medicines', '名词 · 可数']], col: ['the price of + 名词', 'prices rise / fall'],
-                usage: '作主语时谓语用单数：the price has risen。', alt: ['the cost of new drugs'] },
-            ],
-          },
-        ],
-      },
-    ],
-    terms: [
-      { en: 'regulatory approval', zh: '监管审批', cat: '审批与监管', pos: '名词 · 不可数',
-        ex: 'A new drug cannot be sold until it receives regulatory approval.', exZh: '新药在获得监管审批之前不能上市。',
-        verbs: [['gain / receive regulatory approval', '获得监管审批'], ['seek regulatory approval', '申请审批']], ok: ['receive regulatory approval'], bad: ['a regulatory approval'] },
-      { en: 'clinical trials', zh: '临床试验', cat: '审批与监管', pos: '名词 · 可数，常用复数',
-        ex: 'New drugs must pass several stages of clinical trials before approval.', exZh: '新药在获批前必须通过几个阶段的临床试验。',
-        verbs: [['conduct / carry out clinical trials', '开展临床试验'], ['take part in clinical trials', '参加临床试验']], ok: ['a clinical trial', 'clinical trials'], bad: ['clinic trials'] },
-      { en: 'informed consent', zh: '知情同意', cat: '患者权利', pos: '名词 · 不可数',
-        ex: 'All participants must give their informed consent before the study begins.', exZh: '所有参与者必须在研究开始前给出知情同意。',
-        verbs: [['give informed consent', '给予知情同意'], ['obtain informed consent from sb', '获得某人的知情同意'], ['without patients\' informed consent', '未经患者知情同意']],
-        ok: ['give their informed consent', 'without informed consent'], bad: ['an informed consent', 'informed consents'] },
-      { en: 'medical devices', zh: '医疗器械', cat: '医疗技术', pos: '名词 · 可数',
-        ex: 'Some medical devices are approved without enough testing.', exZh: '有些医疗器械没有经过足够的测试就获批了。',
-        verbs: [['develop medical devices', '研发医疗器械'], ['approve medical devices', '批准医疗器械']], ok: ['a medical device'], bad: ['medical equipments'] },
-      { en: 'robotic-assisted surgery', zh: '机器人辅助手术', cat: '医疗技术', pos: '名词 · 不可数',
-        ex: 'Robotic-assisted surgery allows doctors to operate with greater precision.', exZh: '机器人辅助手术让医生能更精确地进行手术。',
-        verbs: [['perform robotic-assisted surgery', '进行机器人辅助手术']], ok: [], bad: [] },
-      { en: 'pharmaceutical companies', zh: '制药公司', cat: '相关机构', pos: '名词 · 可数',
-        ex: 'Pharmaceutical companies spend billions on research every year.', exZh: '制药公司每年在研究上花费数十亿。',
-        verbs: [['pharmaceutical companies invest in …', '制药公司投资于……']], ok: ['a pharmaceutical company'], bad: [] },
-    ],
-  },
-  {
-    id: 'online', theme: '教育', name: '线上学习的利与弊',
-    concepts: ['灵活安排', '学习资源', '自律', '社交互动'],
-    stances: [
-      {
-        name: '好处', idea: '线上学习不受时间地点限制，资源也更丰富',
-        args: [
-          {
-            short: '灵活', en: 'Online learning allows students to study at their own pace.', zh: '线上学习让学生可以按自己的节奏学习',
-            pattern: { slots: ['Online learning', 'students', 'study at their own pace'], apply: 'Remote work allows employees to work at their own pace.' },
-            para: 'Online learning allows students to study at their own pace. Because lessons are available at any time, learners can fit their studies around work and family duties. This flexibility also helps reduce the cost of commuting and accommodation. For example, working adults can earn a degree without giving up their jobs. Therefore, online courses make education accessible to more people.',
-            links: ['Because', 'For example,', 'Therefore,'],
-            exps: [
-              { role: '解释', en: 'fit their studies around work', zh: '把学习安排在工作之余', base: 'fit … around …', lead: 'Because lessons are available at any time, learners can …',
-                parts: [['fit', '动词'], ['their studies', '名词'], ['around work', '介词短语']], col: ['fit sth around sth'],
-                usage: '宾语放在 fit 和 around 中间。', alt: ['combine study with a full-time job'] },
-              { role: '结果', en: 'reduce the cost of commuting', zh: '减少通勤成本', base: 'reduce the cost of …', lead: 'This flexibility also helps …',
-                parts: [['reduce', '动词'], ['the cost of', '名词短语'], ['commuting', '动名词']], col: ['reduce / cut the cost of + 名词或动名词'],
-                usage: 'of 后面用动名词 commuting。', alt: ['save money on transport'] },
-              { role: '举例', en: 'working adults', zh: '在职成年人', base: 'working adult', lead: 'For example, …',
-                parts: [['working', '形容词'], ['adults', '名词 · 可数']], col: ['working adults / working parents'],
-                usage: '作主语时用复数。', alt: ['full-time employees'] },
-            ],
-          },
-          {
-            short: '资源', en: 'The internet gives learners access to a wide range of resources.', zh: '网络让学习者接触到丰富的学习资源',
-            pattern: { slots: ['The internet', 'learners', 'a wide range of resources'], apply: 'Public libraries give residents access to a wide range of books.' },
-            para: 'The internet gives learners access to a wide range of resources. Students in small towns can now take courses from top universities that were once out of reach. As a result, they can broaden their knowledge far beyond the local curriculum. For instance, open online courses on platforms such as Coursera attract millions of learners each year.',
-            links: ['As a result,', 'For instance,'],
-            exps: [
-              { role: '解释', en: 'courses from top universities', zh: '顶尖大学的课程', base: 'course from a top university', lead: 'Students in small towns can now take …',
-                parts: [['courses', '名词 · 可数'], ['from top universities', '介词短语']], col: ['take courses from …'],
-                usage: 'take a course 表示“上一门课”。', alt: ['lectures by leading experts'] },
-              { role: '结果', en: 'broaden their knowledge', zh: '拓宽知识面', base: 'broaden … knowledge', lead: 'As a result, they can …',
-                parts: [['broaden', '动词'], ['their knowledge', '名词 · 不可数']], col: ['broaden one\'s knowledge / horizons'],
-                usage: 'knowledge 不可数，不加 s。', alt: ['widen their horizons'] },
-              { role: '举例', en: 'open online courses', zh: '公开在线课程', base: 'open online course', lead: 'For instance, …',
-                parts: [['open', '形容词'], ['online courses', '名词 · 可数']], col: ['massive open online courses (MOOCs)'],
-                usage: '作主语时用复数。', alt: ['free video lectures'] },
-            ],
-          },
-        ],
-      },
-      {
-        name: '坏处', idea: '没有老师和同学在身边，很多人难以坚持，也缺少交流',
-        args: [
-          {
-            short: '自律', en: 'Online learning requires a high level of self-discipline.', zh: '线上学习需要很强的自律能力',
-            pattern: { slots: ['Online learning', 'a high level of self-discipline'], apply: 'Working from home requires a high level of time management.' },
-            para: 'Online learning requires a high level of self-discipline. Without face-to-face supervision, students must manage their own time and stay motivated. Many of them fall behind with their coursework because no one checks their progress. For example, teenagers studying at home are easily distracted by social media. Consequently, dropout rates for online courses are often high.',
-            links: ['For example,', 'Consequently,', 'because'],
-            exps: [
-              { role: '解释', en: 'without face-to-face supervision', zh: '没有人当面监督', base: 'without … supervision', lead: '（句首）…, students must manage their own time',
-                parts: [['without', '介词'], ['face-to-face', '复合形容词，带连字符'], ['supervision', '名词 · 不可数']], col: ['face-to-face teaching / contact'],
-                usage: 'supervision 不可数，不加冠词。', alt: ['with no teacher to check on them'] },
-              { role: '结果', en: 'fall behind with their coursework', zh: '跟不上课程进度', base: 'fall behind with …', lead: 'Many of them …',
-                parts: [['fall behind with', '动词短语'], ['their coursework', '名词 · 不可数']], col: ['fall behind with work / payments'],
-                usage: 'fall 的过去式是 fell；with 不能省。', alt: ['struggle to keep up with lessons'] },
-              { role: '举例', en: 'be easily distracted by social media', zh: '容易被社交媒体分心', base: 'be distracted by …', para: 'are easily distracted by social media', lead: 'For example, teenagers studying at home …',
-                parts: [['be distracted by', '被动结构'], ['easily', '副词'], ['social media', '名词 · 不可数']], col: ['be distracted by + 名词'],
-                usage: 'be 要随主语变化：teenagers are distracted。', alt: ['spend hours on their phones'] },
-            ],
-          },
-          {
-            short: '交流', en: 'Online courses offer fewer opportunities for social interaction.', zh: '线上课程缺少社交互动的机会',
-            pattern: { slots: ['Online courses', 'fewer opportunities', 'social interaction'], apply: 'Big cities offer more opportunities for career development.' },
-            para: 'Online courses offer fewer opportunities for social interaction. The lack of face-to-face contact makes it harder for students to build friendships with classmates. Some learners therefore feel isolated and lonely, which can affect their motivation. For instance, group discussions in class help students develop teamwork skills that are difficult to practise online.',
-            links: ['therefore', 'For instance,'],
-            exps: [
-              { role: '解释', en: 'lack of face-to-face contact', zh: '缺少面对面接触', base: 'lack of …', lead: 'The … makes it harder for students to build friendships',
-                parts: [['lack of', '名词 + 介词'], ['face-to-face contact', '名词 · 不可数']], col: ['a lack of + 名词', 'lack 作动词时不加 of'],
-                usage: 'lack 作名词要加 of；作动词时直接跟宾语：students lack contact。', alt: ['limited personal contact'] },
-              { role: '结果', en: 'feel isolated and lonely', zh: '感到孤立和孤独', base: 'feel isolated …', lead: 'Some learners therefore …',
-                parts: [['feel', '系动词'], ['isolated and lonely', '形容词']], col: ['feel + 形容词'],
-                usage: 'feel 后面接形容词，不接副词。', alt: ['feel cut off from others'] },
-              { role: '举例', en: 'group discussions in class', zh: '课堂上的小组讨论', base: 'group discussion in class', lead: 'For instance, …',
-                parts: [['group discussions', '名词 · 可数'], ['in class', '介词短语']], col: ['hold / take part in group discussions'],
-                usage: 'in class 不加冠词。', alt: ['team projects in the classroom'] },
-            ],
-          },
-        ],
-      },
-    ],
-    terms: [
-      { en: 'distance learning', zh: '远程教育', cat: '学习方式', pos: '名词 · 不可数',
-        ex: 'Distance learning became common during the pandemic.', exZh: '疫情期间远程教育变得很普遍。',
-        verbs: [['offer distance learning', '提供远程教育'], ['switch to distance learning', '改为远程教育']], ok: [], bad: ['a distance learning'] },
-      { en: 'self-discipline', zh: '自律', cat: '个人能力', pos: '名词 · 不可数',
-        ex: 'Studying alone at home requires strong self-discipline.', exZh: '独自在家学习需要很强的自律。',
-        verbs: [['require self-discipline', '需要自律'], ['develop self-discipline', '培养自律']], ok: ['strong self-discipline'], bad: ['self-disciplines'] },
-      { en: 'dropout rates', zh: '辍学率', cat: '学习结果', pos: '名词 · 可数',
-        ex: 'Online courses often have higher dropout rates than classroom courses.', exZh: '线上课程的辍学率往往比线下课程高。',
-        verbs: [['reduce dropout rates', '降低辍学率'], ['dropout rates rise', '辍学率上升']], ok: ['a high dropout rate'], bad: [] },
-      { en: 'digital literacy', zh: '数字素养', cat: '个人能力', pos: '名词 · 不可数',
-        ex: 'Students need basic digital literacy to use online platforms.', exZh: '学生需要基本的数字素养才能使用在线平台。',
-        verbs: [['improve digital literacy', '提高数字素养']], ok: [], bad: [] },
-      { en: 'interactive platforms', zh: '互动平台', cat: '学习工具', pos: '名词 · 可数',
-        ex: 'Interactive platforms let students ask questions in real time.', exZh: '互动平台让学生可以实时提问。',
-        verbs: [['use interactive platforms', '使用互动平台']], ok: ['an interactive platform'], bad: [] },
-      { en: 'time management', zh: '时间管理', cat: '个人能力', pos: '名词 · 不可数',
-        ex: 'Good time management is essential for online learners.', exZh: '良好的时间管理对线上学习者来说必不可少。',
-        verbs: [['improve time management', '改进时间管理'], ['time management skills', '时间管理能力']], ok: [], bad: [] },
-    ],
-  },
-];
+const TOPICS3 = (window.__DEMO && window.__DEMO.topics) || [];
+
+const IMPORT_GUIDE = "# 导入规范（v9）\n\nv9 不带任何预设内容，表达库里的东西都由你自己导入。一共三种内容：**写作笔记**（表达卡、句型卡、语法卡）、**功能表达**、**主题表达**（话题，含话题词汇）。这份说明写清楚每一种要写什么、怎么写，照着写就能被准确认出来。\n\n## 一、怎么导入\n\n1. 用任何文字编辑器写（备忘录、Typora、Obsidian、记事本、Word 另存为纯文本都可以），保存成 **.md** 或 **.txt** 文件，编码用 **UTF-8**（大多数编辑器默认就是）。\n2. 在 App 里打开“主题表达”“功能表达”或“我的写作笔记”页右上角的“导入”，选“导入 .md / .txt 文件”；也可以直接把文字粘贴到输入框里。\n3. 点“整理”，先进**确认页**：每一条认成了什么、有没有问题都会列出来，可以直接改。确认后才进入学习。\n\n建议**每种内容一个文件**：`写作笔记.md`、`功能表达.md`、`主题表达.md`（可以按话题分成多个文件）。三种也可以写在同一个文件里，App 会分开认，确认页按三个标签分别确认。\n\n导入页、本页最上面可以下载三份**模板**（template-topics.md、template-functions.md、template-notes.md），模板本身就能直接导入成功，照着改最省事。\n\n## 二、通用写法（三种都一样）\n\n- **一行一条**：英文在前，中文在后，中间空一格。例：`have a profound impact on 对……产生深远影响`\n- **行首的 `- ` 或 `1.` 可写可不写**，缩进也可有可无，只是为了自己看着清楚。\n- **补充内容写在这一条的下一行**，格式 `标签：内容`。中文冒号“：”、英文冒号“:”都可以。写作笔记和功能表达里，同一个标签写两行会合在一起。\n- **标题用 `#`**，`#` 后面要空一格。全角的“＃”也能认。\n- **英文部分不要用中文标点**。App 从第一个中文字符或中文标点（，：；（）开始算中文，英文里夹了中文标点会被切开。英文里的括号、逗号请用半角。\n- **学习方式**：行末写【记忆】【资料】【暂缓】就按写的来；写在 `#` 标题后面，整组都按它；都不写就用“复习设置 → 导入时的默认学习方式”。\n  - 记忆：进新学和复习；资料：只查阅；暂缓：先放着。\n- **说明文字**：用 `\u003c!--` 和 `-->` 包起来的内容导入时会忽略（模板最上面的说明就是这样写的）。单独一行的 `---` 分隔线、加粗用的 `**` 也会忽略。\n- **重复导入不会重复**：同一类型、英文一样的卡，第二次导入会跳过，确认页会告诉你跳过了哪些。所以可以一直往同一个文件里加内容，每次整份重新导入。\n\n## 三、写作笔记\n\n### 三种卡怎么认\n\n| 卡片 | 怎么写 | App 怎么认 |\n|---|---|---|\n| 表达卡 | `英文 中文` | 普通的一行 |\n| 句型卡 | `句型 中文` | 英文里有 `...`、`…`、`sb`、`sth`、`___` 或 `[ ]` |\n| 语法卡 | `❌ 错误写法 → ✅ 正确写法 中文说明` | 有 ❌ / → / ✅；也可以写 `错误：… 正确：…` |\n\n认错了类型可以在确认页改（每行最前面的“表达 / 句型 / 语法”）。\n\n### 分组\n\n- `# 标题` 下面的卡是一组，组名就是标题，新学和复习都按组来。\n- 同一个标题下**至少 2 张同类卡**才成一组；只有 1 张的放进“独立卡片”。\n- 一个标题下混了几种卡，会按类型分成几组（同一个组名）。\n\n### 每种卡能写的标签\n\n| 卡片 | 必填 | 选填标签 |\n|---|---|---|\n| 表达卡 | 英文 + 中文 | 例句、搭配、场景、常见错误 |\n| 句型卡 | 句型 + 中文 | 例句、可替换、场景、常见错误 |\n| 语法卡 | 错误 → 正确 | 规则、例句、限制（中文说明写在正确写法后面） |\n\n```\n# 强调深远影响\n- have a profound impact on 对……产生深远影响\n  - 例句：Social media has had a profound impact on the way young people communicate.\n  - 搭配：have a profound / significant / lasting impact on sth\n  - 场景：强调影响深远且持久，适合主体段的结果句\n  - 常见错误：不写 have a profound impact to\n- play a pivotal role in 在……中起关键作用\n\n# 引出原因的句型\n- One reason for this is that ... 其中一个原因是……\n  - 可替换：this 可换成具体现象\n- This is largely due to the fact that ... 这在很大程度上是因为……\n\n# 我的语法错误\n- ❌ The number of cars are increasing. → ✅ The number of cars is increasing. 主语是 the number，谓语用单数\n  - 规则：the number of + 复数名词作主语时，谓语用单数\n  - 限制：a number of + 复数名词，谓语用复数\n```\n\n## 四、功能表达\n\n- 每个写作功能一个标题，**必须写成 `# 功能：功能名`**（例如 `# 功能：表达观点`）。没有“功能：”的标题会被当成写作笔记。\n- 标题下面一行一条：英文 + 中文。\n- 同名的功能再导入会并到一起，在功能表达页一起做近义比较。\n- 功能表达默认是“资料”；要背的条目在行末写【记忆】，整组都背就写在标题后面。\n\n| 必填 | 选填标签 |\n|---|---|\n| 英文 + 中文 | 后面接（句法结构）、语气、区别（进近义比较表）、例句、常见错误 |\n\n```\n# 功能：表达观点\n- I firmly believe that ... 我坚信……【记忆】\n  - 后面接：+ 完整句子\n  - 语气：立场鲜明，比较正式\n  - 区别：比 In my view 更坚定，全文只用一次\n  - 例句：I firmly believe that schools should teach practical life skills.\n  - 常见错误：不写 I firmly believe in that ...\n- From my perspective, ... 在我看来……\n```\n\n## 五、主题表达（话题）\n\n### 结构\n\n```\n# 话题：话题名\n大主题：工作\n关键概念：远程办公、通勤、工作效率\n\n## 立场：支持 | 这一边的核心想法\n### 论点：短名\n- 论点句英文 论点句中文\n- 解释：展开表达英文 中文\n- 结果：展开表达英文 中文\n- 举例：展开表达英文 中文\n范文：整段范文……\n\n### 论点：短名\n……\n\n## 立场：反对 | 另一边的核心想法\n### 论点：短名\n……\n\n## 话题词汇\n- 词汇英文 中文\n```\n\n- `# 话题：` 只能用**一个 #**；`## 立场：`、`### 论点：` 分别用两个、三个 #。\n- 立场名和核心想法之间用 `|` 隔开（也可以用全角空格或两个空格）。\n- 论点下面**第一行**是论点句；之后每条展开表达用这几个开头：**解释：结果：举例：原因：对比：让步：补充：影响：**\n- **范文**写在每个论点的最后，以 `范文：` 开头。可以写在同一行，也可以换行接着写；范文后面直到下一个 `###` 或 `##` 之前，不是 `- ` 开头的行都算范文。\n\n### 必须写的（少了不能导入）\n\n1. 新话题**至少 2 个立场**（选论点时要两边搭配）。\n2. 每个论点有**论点句**、**至少一条展开表达**、**范文**。\n3. 论点句和每条展开表达都要**原样出现在范文里**（不分大小写）。展开表达在范文里写法不一样（改了时态、单复数）时，在它下面加一行 `范文里写成：范文里的写法`。\n\n确认页会按行号告诉你哪里不满足，改完原文再导入。\n\n### 选填标签\n\n| 写在哪一行下面 | 标签 | 写法 |\n|---|---|---|\n| 话题（# 话题 下面） | 大主题 | 话题列表按大主题分组；不写放在“我导入的话题” |\n| | 关键概念 | 用顿号“、”隔开 |\n| 论点句 | 可替换 | 论点句里能换的位置，用 `/` 隔开 |\n| | 换个话题 | 把这个句式套到别的话题的一句 |\n| 展开表达 | 原形 | 词典里的原形，如 `spend time doing sth` |\n| | 引导句 | 范文里引出它的半句，如 `This is because they …` |\n| | 提醒 | 用法提醒 |\n| | 也可以说 | 同义替换，用 `/` 隔开 |\n| | 范文里写成 | 范文里的实际写法 |\n| | 搭配 | 常用搭配，可以写多行 |\n| | 拆分 | `词 词性 \\| 词 词性`，如 `spend 动词 \\| less time 名词短语` |\n| 话题词汇 | 范畴 | 如 伦理、问题、交通方式 |\n| | 词性 | 如 n. 不可数 |\n| | 例句 | `英文例句 / 中文翻译` |\n| | 动词搭配 | `英文 中文`，可以写多行 |\n| | 这样写 / 不这样写 | 用 `/` 隔开 |\n\n### 学习方式\n\n- 论点什么时候背，在 App 里“选论点”时决定，不用在文件里写。\n- 【记忆】【资料】【暂缓】只对话题词汇有用，不写就是“资料”（可在复习设置里改默认）。\n\n### 补充已有的话题\n\n同名话题再导入一次会**补进去**：新的论点接在后面；已有的论点（短名或论点句一样）和话题词汇跳过；学习进度不变。补充时不要求两个立场。\n\n## 六、导入以后\n\n- **确认页**：每条都能改文字、类型、分组、学习方式，也能删除；能先“看详情页”看导入后的样子，用“编辑”改每一块。没认出来的行在最上面，每行选“当成表达卡 / 当备注 / 不要”，都处理完才能确认。\n- **导入历史**（左侧“我的”下面）：每次导入留一条，点开能看到这次导入了什么。\n- **备份**：数据只存在这台设备的浏览器里。建议把 App 添加到主屏幕使用，并时常在“复习设置 → 数据”里导出备份。原始的 .md 文件也请自己留好。\n\n## 七、没认出来怎么办\n\n| 现象 | 原因 | 改法 |\n|---|---|---|\n| 一行变成“没认出来” | 这一行没有英文，或者标签名不在上面的表里 | 改成 `英文 中文`，或用表里的标签名 |\n| 中文跑到了英文里 / 英文被截断 | 英文部分用了中文标点 | 英文里的标点改成半角 |\n| 表达被认成句型卡 | 英文里有 `...` / `sb` / `sth` | 确认页把类型改回“表达” |\n| 功能表达被当成笔记 | 标题少了“功能：” | 标题写成 `# 功能：功能名` |\n| 论点句 / 展开表达“在范文里找不到” | 范文里的写法和这一行不完全一样 | 改成一样，或加 `范文里写成：` |\n| “新话题至少要两个立场” | 只写了一个 `## 立场：` | 补另一边的立场和论点 |\n| 补充标签挂错了地方 | 标签必须写在它所属那一行的**正下方** | 把标签行挪到对应的卡 / 表达下面 |\n\n## 附：全部标签速查\n\n| 用在 | 标签（括号里是也能认的别名） |\n|---|---|\n| 表达卡 / 句型卡 / 语法卡 | 例句（例子、示例、示例句、正确例句、example）、搭配（常用搭配）、场景（使用场景、适用场景、用法、使用提醒）、常见错误（易错、易错点、个人错误）、可替换（可替换位置、替换）、规则（语法规则）、限制（使用限制） |\n| 功能表达 | 后面接（句法、句法结构）、语气（语气和边界）、区别（近义区别）、例句、常见错误 |\n| 话题 | 大主题、关键概念 |\n| 论点句 | 可替换、换个话题 |\n| 展开表达开头 | 解释、结果、举例、原因、对比、让步、补充、影响 |\n| 展开表达下面 | 原形、引导句、提醒、也可以说、范文里写成、搭配、拆分 |\n| 话题词汇 | 范畴、词性、例句、动词搭配、这样写、不这样写 |\n| 学习方式 | 【记忆】【资料】【暂缓】（方括号 [记忆] 也可以） |\n";
+const IMPORT_TPL = {"topic": "\u003c!--\n主题表达导入模板（v9）\n层级：# 话题 → ## 立场 → ### 论点 → 论点句、展开表达、范文；最后 ## 话题词汇。\n\n必须写的（少了不能导入，确认页会告诉你哪一行）：\n- 新话题至少 2 个立场（选论点时要两边搭配）。\n- 每个论点：论点下面第一行是论点句（英文 + 中文）；至少一条展开表达；一段范文。\n- 论点句、每条展开表达都要原样出现在范文里（不分大小写）。\n  展开表达在范文里写法不一样时（比如改了时态、复数），在它下面加一行“范文里写成：……”。\n\n展开表达用这几个开头：解释： 结果： 举例： 原因： 对比： 让步： 补充： 影响：\n\n选填标签（写在对应那一行的下面）：\n- 话题下面：大主题： 关键概念：（用顿号隔开）\n- 论点句下面：可替换：（论点句里能换的位置，用 / 隔开）  换个话题：（套到别的话题的一句）\n- 展开表达下面：原形： 引导句： 提醒： 也可以说：（用 / 隔开） 范文里写成： 搭配： 拆分：（词 词性 | 词 词性）\n- 话题词汇下面：范畴： 词性： 例句：（英文 / 中文） 动词搭配：（英文 中文） 这样写： 不这样写：（用 / 隔开）\n\n学习方式：论点什么时候背，在 App 里“选论点”时决定；【记忆】【资料】【暂缓】只对话题词汇有用，不写就是“资料”。\n同名话题再导入一次会补进去：新的论点接在后面，已有的论点、词汇跳过，学习进度不变。\n这种说明段落（注释）导入时会自动忽略。把下面的示例换成你自己的内容。\n-->\n\n# 话题：远程办公\n大主题：工作\n关键概念：远程办公、通勤、工作效率、团队合作\n\n## 立场：支持 | 远程办公对员工和城市都有好处\n\n### 论点：通勤\n- Working from home saves employees hours of commuting every week. 在家办公每周为员工节省好几个小时的通勤时间\n  - 可替换：Working from home / employees / commuting\n  - 换个话题：Online shopping saves consumers hours of travelling every month.\n- 解释：spend less time stuck in traffic 堵在路上的时间更少\n  - 原形：spend time doing sth\n  - 引导句：This is because they …\n  - 提醒：spend time 后面接 doing，不接 to do\n  - 也可以说：avoid the daily rush hour / skip the long journey to work\n  - 搭配：spend time / money / energy doing sth\n  - 拆分：spend 动词 | less time 名词短语 | stuck in traffic 被困在车流里\n- 结果：achieve a better work-life balance 实现更好的工作与生活平衡\n- 举例：parents with young children 带小孩的父母\n范文：Working from home saves employees hours of commuting every week. This is because they spend less time stuck in traffic and more time on meaningful tasks. As a result, many of them achieve a better work-life balance. For example, parents with young children can take their children to school and still start work on time.\n\n### 论点：效率\n- Many employees are more productive in a quiet home environment. 很多员工在安静的家里效率更高\n- 解释：fewer interruptions from colleagues 来自同事的打扰更少\n- 结果：complete tasks efficiently 高效地完成任务\n  - 范文里写成：complete tasks more efficiently\n范文：Many employees are more productive in a quiet home environment. They face fewer interruptions from colleagues, so they can focus on difficult work for longer. Consequently, they often complete tasks more efficiently than they would in a busy office.\n\n## 立场：反对 | 远程办公会削弱团队合作和员工的归属感\n\n### 论点：沟通\n- Remote work can weaken communication within a team. 远程办公会削弱团队内部的沟通\n- 解释：lack face-to-face contact 缺少面对面的交流\n- 结果：lead to misunderstandings 导致误解\n- 举例：new employees 新员工\n范文：Remote work can weaken communication within a team. When colleagues lack face-to-face contact, small problems are not discussed in time. This can easily lead to misunderstandings and delays. For example, new employees may find it hard to ask questions and learn from experienced staff.\n\n### 论点：孤独\n- Working alone at home can make people feel isolated. 一个人在家工作会让人感到孤立\n- 解释：miss out on social interaction 错过与人交往的机会\n- 结果：harm their mental health 损害心理健康\n范文：Working alone at home can make people feel isolated. Without an office, they miss out on social interaction with their colleagues. Over time, this may harm their mental health and reduce their motivation.\n\n## 话题词汇\n- remote work 远程办公【记忆】\n  - 范畴：工作方式\n  - 词性：n. 不可数\n  - 例句：Remote work has become common since 2020. / 2020 年以来远程办公变得很普遍。\n  - 动词搭配：switch to remote work 改为远程办公\n  - 这样写：remote work / working from home\n  - 不这样写：remote works\n- work-life balance 工作与生活的平衡\n  - 范畴：生活质量\n  - 词性：n.\n  - 例句：Flexible hours help employees achieve a better work-life balance.\n- productivity 生产效率\n  - 范畴：工作表现\n  - 词性：n. 不可数\n", "fn": "\u003c!--\n功能表达导入模板（v9）\n- 每个写作功能一个标题，必须写成“# 功能：功能名”，例如 # 功能：表达观点。\n  同名的功能再导入会并到一起，在功能表达页里一起做近义比较。\n- 标题下面一行一条：英文在前，中文在后，中间空一格。\n- 补充内容写在下一行“标签：内容”：\n    后面接：句法结构（+ 完整句子 / + 名词）\n    语气：正式程度、立场强弱\n    区别：和同功能其他表达有什么不同（会出现在近义比较表里）\n    例句：一句完整的例句\n    常见错误：容易写错的地方\n- 功能表达默认是“资料”（只查阅，不进新学和复习）；要背的条目在行末写【记忆】，整组都背就写在标题后面。\n- 这种说明段落（注释）导入时会自动忽略。把下面的示例换成你自己的内容。\n-->\n\n# 功能：表达观点\n- I firmly believe that ... 我坚信……【记忆】\n  - 后面接：+ 完整句子\n  - 语气：立场鲜明，比较正式\n  - 区别：比 In my view 更坚定，全文只用一次\n  - 例句：I firmly believe that schools should teach practical life skills.\n  - 常见错误：不写 I firmly believe in that ...\n- From my perspective, ... 在我看来……\n  - 后面接：+ 完整句子\n  - 语气：中性，稍微客观一些\n  - 区别：比 I think 正式，适合开头段\n  - 例句：From my perspective, the benefits of online learning outweigh its drawbacks.\n\n# 功能：原因与解释\n- Owing to the fact that ... 由于……\n  - 后面接：+ 完整句子\n  - 语气：正式\n  - 区别：比 because 正式，句子较长时用\n  - 例句：Owing to the fact that housing is expensive, many young people choose to rent.\n- The root cause of this is ... 根本原因是……\n  - 后面接：+ 名词 / that 从句\n  - 区别：强调最深层的那个原因\n  - 例句：The root cause of this is a lack of affordable housing.\n", "notes": "\u003c!--\n写作笔记导入模板（v9）\n- 一行一张卡：英文在前，中文在后，中间空一格。行首的“- ”可写可不写。\n- 卡的类型自动认：\n    表达卡：普通英文 + 中文\n    句型卡：英文里有 ... 或 … 或 sb / sth（例：One reason for this is that ...）\n    语法卡：❌ 错误写法 → ✅ 正确写法 中文说明\n- 补充内容写在卡的下一行，格式“标签：内容”（前面缩进两格，中英文冒号都可以）。\n- “# 标题”下面的卡是一组；同一个标题下至少 2 张同类卡才成一组，只有 1 张的会单独放。\n- 学习方式：行末写【记忆】【资料】【暂缓】；写在标题后面整组都按它；不写按“复习设置”里的默认值。\n- 这种说明段落（注释）导入时会自动忽略，可以删掉，也可以留着。\n- 把下面的示例换成你自己的内容。\n-->\n\n# 强调深远影响\n- have a profound impact on 对……产生深远影响\n  - 例句：Social media has had a profound impact on the way young people communicate.\n  - 搭配：have a profound / significant / lasting impact on sth\n  - 场景：强调影响深远且持久，比 affect 更正式，适合主体段的结果句\n  - 常见错误：impact 后用 on，不写 have a profound impact to\n- play a pivotal role in 在……中起关键作用\n  - 例句：Teachers play a pivotal role in shaping students' values.\n  - 搭配：play a key / crucial / pivotal role in doing sth\n  - 场景：强调“关键作用”，in 后面接名词或动名词\n\n\u003c!-- 句型卡：英文里有 ... 就是句型卡。可以多写一个“可替换：”，说明哪些位置能换 -->\n# 引出原因的句型\n- One reason for this is that ... 其中一个原因是……\n  - 可替换：this 可换成具体现象；that 后面接完整的原因句\n  - 例句：One reason for this is that housing in big cities is expensive.\n  - 场景：主体段列举多个原因时，引出其中一个\n  - 常见错误：不写 One reason is because ...\n- This is largely due to the fact that ... 这在很大程度上是因为……\n  - 可替换：largely 可换成 partly / mainly\n  - 例句：This is largely due to the fact that more people now work from home.\n\n\u003c!-- 语法卡：❌ 错 → ✅ 对，后面跟中文说明。补充用“规则：”“例句：”“限制：” -->\n# 我的语法错误\n- ❌ The number of cars are increasing. → ✅ The number of cars is increasing. 主语是 the number，谓语用单数\n  - 规则：the number of + 复数名词作主语时，真正的主语是 number，谓语用单数\n  - 例句：The number of international students has doubled since 2010.\n  - 限制：a number of（许多）+ 复数名词，谓语用复数\n- ❌ have a great influence to → ✅ have a great influence on 介词用 on\n  - 规则：influence 作名词表示“对……的影响”时，介词用 on\n\n\u003c!-- 整组设成“资料”：标签写在标题后面 -->\n# 零散积累【资料】\n- a double-edged sword 一把双刃剑\n  - 例句：Technology is a double-edged sword.\n- strike a balance between A and B 在 A 和 B 之间取得平衡【记忆】\n"};
 
 (function () {
 'use strict';
@@ -1897,9 +1662,10 @@ function toast(msg) {
 /* ============================================================
    本地存储
    ============================================================ */
-const KEY = 'ielts-writing-app.v2';
+// v9 正式版从空白开始，用自己的存储键（v8 的数据留在 ielts-writing-app.v2，不受影响）
+const KEY = 'ielts-writing-v9';
 function defaults() {
-  return { v: 2, user: { name: 'Emily' }, items: {}, custom: { groups: [], items: [] }, notes: { sets: [], groups: [], items: [] }, imports: [], newSession: null, reviewSession: null, log: {}, seeded: false };
+  return { v: 2, user: { name: '' }, items: {}, custom: { groups: [], items: [] }, notes: { sets: [], groups: [], items: [] }, imports: [], newSession: null, reviewSession: null, log: {}, seeded: false };
 }
 function load() {
   try {
@@ -1950,6 +1716,10 @@ function assemble() {
 }
 
 function noteSet(id) { return S.notes.sets.find(s => s.id === id); }
+// 只有功能表达的那次导入算在功能表达里，不出现在“我的写作笔记”
+// 有内容的写作功能（自带的 + 导入时新建的）
+const fnGroupCount = () => [...GROUPS.values()].filter(G => G.lib === 'function' && !G.independent && G.ids.length).length;
+const isNoteSet = set => { const its = S.notes.items.filter(i => i.setId === set.id); return !its.length || its.some(i => i.type !== 'fn'); };
 function defMode(it) { if (!it) return 'reference'; if (it.defMode) return it.defMode; if (it.type === 'fn') return setDefMode('fn'); return it.type === 'core' ? 'memory' : 'reference'; }
 function st(id) { return S.items[id] || (S.items[id] = { hist: [], wrong: 0 }); }
 function modeOf(id) { const s = S.items[id]; return (s && s.mode) || defMode(ITEMS.get(id)); }
@@ -2159,8 +1929,16 @@ function fieldLine(line) {
   const f = NOTE_FIELDS.find(([, re]) => re.test(m[1].trim()));
   return f ? { key: f[0], val: m[2].trim() } : null;
 }
+/* 导入前先清理（行号不变）：去掉 BOM、<!-- 注释 -->、分隔线 ---、加粗的 **；全角 ＃ 当作 # */
+function cleanImportText(text) {
+  return String(text || '').replace(/^\uFEFF/, '').replace(/\r/g, '')
+    .replace(/<!--[\s\S]*?(?:-->|$)/g, m => m.replace(/[^\n]/g, ''))
+    .replace(/^([ \t]*)(＃+)/gm, (m, sp, h) => sp + '#'.repeat(h.length))
+    .replace(/^[ \t]*([-*_])(?:[ \t]*\1){2,}[ \t]*$/gm, '')
+    .replace(/\*\*/g, '');
+}
 function parseNotes(text) {
-  const lines = String(text || '').replace(/\r/g, '').split('\n');
+  const lines = cleanImportText(text).split('\n');
   const secs = []; let cur = { heading: '', cards: [] }; secs.push(cur);
   const unrec = [];
   const wrongMark = /^(?:❌|✗|✘|×|错误\s*[:：]|wrong\s*[:：])\s*/i;
@@ -2223,8 +2001,22 @@ function createNoteSet(text, title, opts = {}) {
   const secs = opts.secs || parseNotes(text);
   const setId = 'ns:' + uid();
   let count = 0;
+  // 已经有的卡（同一类型、同样的英文）跳过：同一份笔记补了内容再导入一次，不会重复
+  const norm = x => String(x || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  // 测试台预先放进去的示例笔记不算（测试台验收导入时还要再导入一次示例）
+  const demo = new Set(S.notes.sets.filter(x => x.source === '示例笔记，可删除').map(x => x.id));
+  const have = new Set(S.notes.items.filter(i => !demo.has(i.setId)).map(i => i.type + '|' + norm(i.en)));
+  if (typeof ITEMS !== 'undefined') for (const it of ITEMS.values()) if (it.type === 'fn') have.add('fn|' + norm(it.en));
+  const skipped = [];
+  for (const sec of secs) sec.cards = sec.cards.filter(c => {
+    const k = c.kind + '|' + norm(c.en);
+    if (have.has(k)) { skipped.push({ line: c.line, en: c.en }); return false; }
+    have.add(k); return true;
+  });
+  createNoteSet.skipped = skipped.length;
   for (const sec of secs) {
     if (sec.fn) {
+      if (!sec.cards.length) continue;
       const gid = fnGroupFor(sec.heading, setId);
       sec.cards.forEach(c => addNoteItem(c, setId, gid, sec.mode));
       count += sec.cards.length;
@@ -2245,7 +2037,7 @@ function createNoteSet(text, title, opts = {}) {
   }
   const unrec = (secs.unrec || []).slice();
   if (!count && !unrec.length) return null;
-  S.notes.sets.push({ id: setId, title, created: Date.now(), confirmed: !!opts.confirmed, source: opts.source || '粘贴的文字', unrec });
+  S.notes.sets.push({ id: setId, title, created: Date.now(), confirmed: !!opts.confirmed, source: opts.source || '粘贴的文字', unrec, skipped });
   return setId;
 }
 function pruneNoteGroups() {
@@ -2459,15 +2251,15 @@ function vHome() {
       <h3 style="font-family:var(--f-title);font-size:22px">${esc(sdByGroup(ids).map(u => sdGName(u.G)).join('、'))}</h3>
       <p class="warm">今天 ${ids.length} 条 · 主题表达的论点都学过了</p>
       <div class="btn-row"><button class="btn btn-primary" type="button" data-nav="today">去今日学习</button></div>`
-      : `<p class="warm">主题表达的论点都学过了。可以导入新话题，或者在功能表达、写作笔记里把内容设为“记忆”。</p>
+      : `<p class="warm">${T.topics.length ? '主题表达的论点都学过了。可以导入新话题，或者在功能表达、写作笔记里把内容设为“记忆”。' : '还没有主题表达。导入一个话题后，这里会推荐今天学哪 3 个论点。'}</p>
         <div class="btn-row"><button class="btn btn-outline" type="button" data-a="impopen" data-k="topic">导入话题</button></div>`;
   }
 
   const topicGroups = [...GROUPS.values()].filter(G => G.lib === 'topic');
   const topics = new Set(topicGroups.map(G => G.topic));
   const fnItems = [...ITEMS.values()].filter(i => i.lib === 'function').length;
-  const sets = S.notes.sets;
-  const noteCards = S.notes.items.length;
+  const sets = S.notes.sets.filter(isNoteSet);
+  const noteCards = S.notes.items.filter(i => i.type !== 'fn').length;
   const pending = sets.filter(s => !s.confirmed).length;
 
   // 打卡与记录：本周打卡 + 接下来几天的复习
@@ -2487,10 +2279,11 @@ function vHome() {
   const tile = (nav, name, sub, meta) => `<button class="zone-tile" type="button" data-nav="${nav}"><span class="name">${name}</span><span class="sub">${sub}</span><span class="meta">${meta}</span></button>`;
 
   return {
-    title: `${greet}，${S.user.name}`,
+    title: S.user.name ? `${greet}，${S.user.name}` : greet,
     crumb: [fmtMD(Date.now()) + ' · 星期' + WD[new Date().getDay()]],
     body: `${installHint()}
-      <section class="zone zone-learn">
+      ${libEmpty() ? emptyLibHTML() : ''}
+      <section class="zone zone-learn" ${libEmpty() ? 'hidden' : ''}>
         <div class="zone-head"><h2>今天的学习</h2><span class="hint">${examTs() && diffDays(examTs()) >= 0 ? `距离考试 <b>${diffDays(examTs())}</b> 天 · ` : ''}复习节点：次日 · 3 天 · 7 天 · 14 天 · 30 天${S.t3.set.extend ? ' · 60 天' : ''}</span></div>
         <div class="grid">
           <section class="panel zone-card span-7"><span class="pill pill-review">今日复习</span>${review}</section>
@@ -2501,7 +2294,7 @@ function vHome() {
         <div class="zone-head"><h2>表达库</h2><span class="hint">查阅、收藏，把需要的内容加入记忆</span></div>
         <div class="zone-tiles">
           ${tile('topics', '主题表达', '话题 → 立场 → 论点 → 展开表达', `${T.topics.length} 个话题`)}
-          ${tile('funcs', '功能表达', '比较语气、句法和使用边界', `${FUNCTION_GROUPS.length} 个写作功能 · ${fnItems} 条`)}
+          ${tile('funcs', '功能表达', '比较语气、句法和使用边界', `${fnGroupCount()} 个写作功能 · ${fnItems} 条`)}
           ${tile('notes', '我的写作笔记', latest ? '最近：' + esc(latest.title) : '表达组 · 句型组 · 语法组', `${sets.length} 个笔记组 · ${noteCards} 张卡片${pending ? ` · ${pending} 个待整理` : ''}`)}
         </div>
       </section>
@@ -2850,8 +2643,8 @@ function vLibrary() {
     title: '表达库', crumb: [],
     body: `<div class="tiles">
       <button class="tile c1" type="button" data-nav="topics"><h3>主题表达</h3><span class="sub">围绕 Task 2 场景建立段落论点和相关表达</span><span class="meta">${T.topics.length} 个话题</span></button>
-      <button class="tile c2" type="button" data-nav="funcs"><h3>功能表达</h3><span class="sub">比较观点、因果、让步等写作作用的不同表达</span><span class="meta">${FUNCTION_GROUPS.length} 个写作功能</span></button>
-      <button class="tile c3" type="button" data-nav="notes"><h3>我的写作笔记</h3><span class="sub">个人错误、句型、语法提醒和临时积累</span><span class="meta">${S.notes.sets.length} 个笔记组</span></button>
+      <button class="tile c2" type="button" data-nav="funcs"><h3>功能表达</h3><span class="sub">比较观点、因果、让步等写作作用的不同表达</span><span class="meta">${fnGroupCount()} 个写作功能</span></button>
+      <button class="tile c3" type="button" data-nav="notes"><h3>我的写作笔记</h3><span class="sub">个人错误、句型、语法提醒和临时积累</span><span class="meta">${S.notes.sets.filter(isNoteSet).length} 个笔记组</span></button>
       <button class="tile" type="button" data-nav="favs"><h3>收藏表达</h3><span class="sub">三类内容里收藏的条目</span></button>
     </div>`,
   };
@@ -2889,10 +2682,11 @@ function vFuncs() {
   return {
     title: '功能表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="fn">${svg('upload')}导入功能表达</button>`,
     body: `<p class="warm" style="max-width:64ch">功能表达是可迁移的写作表达，不是万能模板。默认作为资料查阅；需要主动写出的条目，切换为“记忆”后才进入新学和复习。</p>
+    ${fns.length ? '' : emptyLibHTML('fn')}
     <div class="rows">${fns.map((G, i) => {
       const s = gstats(G);
       const extra = [...GROUPS.values()].filter(x => x.lib === 'function' && x.independent && x.parent === G.id);
-      return `<button class="row tap bar-left" style="--c:${colors[i % 3]}" type="button" data-go="group:${esc(G.id)}"><div class="body"><span class="title">${esc(G.fn)}${G.kind === 'fn' ? ' <span class="tag">导入</span>' : ''}</span><span class="sub">${esc(G.scene || '导入时新建的功能')}</span><span class="meta"><span>${s.total} 条表达</span><span>记忆 ${s.mem}</span>${s.due ? statusHTML('待复习') : ''}</span></div>${svg('chev')}</button>` +
+      return `<button class="row tap bar-left" style="--c:${colors[i % 3]}" type="button" data-go="group:${esc(G.id)}"><div class="body"><span class="title">${esc(G.fn)}${G.kind === 'fn' && FUNCTION_GROUPS.length ? ' <span class="tag">导入</span>' : ''}</span>${G.scene ? `<span class="sub">${esc(G.scene)}</span>` : ''}<span class="meta"><span>${s.total} 条表达</span><span>记忆 ${s.mem}</span>${s.due ? statusHTML('待复习') : ''}</span></div>${svg('chev')}</button>` +
         extra.map(X => `<button class="row tap" style="margin-left:28px" type="button" data-go="group:${esc(X.id)}"><div class="body"><span class="title en">${esc(X.name)} <span class="tag">独立项</span></span><span class="meta">${esc(G.fn)} · ${statusHTML(gstats(X).status)}</span></div>${svg('chev')}</button>`).join('');
     }).join('')}</div>`,
   };
@@ -3085,12 +2879,12 @@ function vEdit(r) {
 /* ---------- 我的写作笔记 ---------- */
 function vNotes() {
   const f = ui.notesFilter;
-  const sets = S.notes.sets.slice().sort((a, b) => b.created - a.created);
+  const sets = S.notes.sets.filter(isNoteSet).sort((a, b) => b.created - a.created);
   const filters = [['all', '全部'], ['expr', '表达卡'], ['pattern', '句型卡'], ['grammar', '语法卡']];
   const body = sets.map(set => {
-    const groups = S.notes.groups.filter(g => g.setId === set.id && (f === 'all' || g.kind === f)).map(g => GROUPS.get(g.id)).filter(Boolean);
+    const groups = S.notes.groups.filter(g => g.setId === set.id && g.kind !== 'fn' && (f === 'all' || g.kind === f)).map(g => GROUPS.get(g.id)).filter(Boolean);
     const sem = groups.filter(G => G.ids.length >= 2), solo = groups.filter(G => G.ids.length < 2);
-    const total = S.notes.items.filter(i => i.setId === set.id).length;
+    const total = S.notes.items.filter(i => i.setId === set.id && i.type !== 'fn').length;
     return `<section class="section panel">
       <div class="section-head"><div><h3>${esc(set.title)}</h3><span class="hint">${fmtMD(set.created)} · ${esc(set.source || '')} · ${total} 张卡片</span></div>
         <div class="btn-row">${set.confirmed ? '' : `${statusHTML('待整理')}<button class="btn btn-primary btn-sm" type="button" data-go="triage:${esc(set.id)}">继续整理</button>`}<button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="delset" data-id="${esc(set.id)}" data-confirm="确认删除笔记组">删除</button></div></div>
@@ -3174,6 +2968,7 @@ function vTriage(r) {
   return {
     title: set.confirmed ? '整理笔记' : '确认整理结果', crumb: [onlyFn ? '功能表达' : '我的写作笔记', set.title],
     body: `<p class="note-line t-intro">一行一张卡，${onlyFn ? '' : '类型、'}英文、中文点了直接改；学习方式按笔记里写的【记忆】【资料】【暂缓】，没写的按设置里的默认值。原始行、${onlyFn ? '' : '移到别的组、'}编辑、看详情页、删除在行末“⋯”里。</p>
+      ${(set.skipped || []).length ? `<div class="i-msg"><b>跳过了 ${set.skipped.length} 条已经有的</b><span>${set.skipped.slice(0, 6).map(x => `第 ${x.line} 行 ${esc(x.en)}`).join('；')}${set.skipped.length > 6 ? ' 等' : ''}。同样的英文已经导入过，这次不再重复。</span></div>` : ''}
       <div class="t-table">${unrecHTML}${fnHTML}
       ${sem.map(g => block(KIND_LABEL[g.kind], `<input class="tg-name" data-gname="${esc(g.id)}" value="${esc(g.name)}" aria-label="语义组名称">`, '组名可以直接改', itemsOf(g.id))).join('')}
       ${solo.length ? block('独立', '<b class="tg-name">独立卡片</b>', '没有相近内容', solo.map(g => itemsOf(g.id)[0])) : ''}</div>
@@ -3231,7 +3026,7 @@ function vRecords() {
   }
   const fmax = Math.max(1, ...fc.map(x => x[1]));
   return {
-    title: `${S.user.name} 的学习记录`, crumb: [],
+    title: S.user.name ? `${S.user.name} 的学习记录` : '学习记录', crumb: [],
     body: `<div class="grid">
       <section class="panel blush span-7">
         <div class="panel-head"><div class="eyebrow">学习打卡<small>${y} 年 ${m + 1} 月 · 本月打卡 ${checkedMonth} 天</small></div>
@@ -3498,6 +3293,7 @@ function t3Topics() {
   return {
     title: '主题表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="topic">${svg('upload')}导入话题</button>`,
     body: `<p class="warm" style="max-width:64ch">大主题 → 话题 → 立场 → 论点。每次新学一个话题里的 3 个论点，正好是一篇作文 3 个主体段的写作思路。</p>
+    ${themes.length ? '' : emptyLibHTML('topic')}
     ${themes.map(th => `<section class="section"><div class="section-head"><h3>${esc(th)}</h3></div><div class="rows">${T.topics.filter(t => t.theme === th).map(tp => {
       const s = topicStats(tp);
       return `<button class="row tap" type="button" data-go="ttopic:${tp.id}"><div class="body"><span class="title">${esc(tp.name)}</span><span class="sub">${tp.concepts.map(esc).join(' · ')}</span><span class="meta"><span>${tp.args.length} 个论点 · ${tp.terms.length} 个话题词汇</span>${statusHTML(topicStatus(s))}${s.last ? `<span>上次学习 ${agoDay(s.last)}</span>` : ''}${s.next < Infinity ? `<span>下次复习 ${relDay(s.next)}</span>` : ''}</span></div>${svg('chev')}</button>`;
@@ -4414,6 +4210,7 @@ function t3Settings() {
       ${defModeSettings()}
       ${example}
       ${spSettingsHTML()}
+      ${dataSettingsHTML()}
       <a class="t-setrow s-setlink" href="../test/" style="text-decoration:none;color:inherit"><span class="txt"><b>测试台</b><small>验收新功能用：模拟日期、一键造场景。数据和正式版分开，平时用不到</small></span><span class="muted">打开 ›</span></a>
     </div>`,
   };
@@ -5057,7 +4854,7 @@ function lineFields(line) {
 
 /* 把文字里的“# 话题：……”块挑出来；其余的行原样留给笔记解析（行号不变） */
 function parseTopics(text) {
-  const lines = String(text || '').replace(/\r/g, '').split('\n');
+  const lines = cleanImportText(text).split('\n');
   const rest = lines.slice();
   const blocks = [];
   let B = null, st = null, A = null, last = null, mode = '', inPara = false;
@@ -5182,7 +4979,9 @@ function checkTopic(B) {
   });
   if (B.unrec.length) B.errors.push(`${B.unrec.length} 行没认出来：${B.unrec.slice(0, 3).map(u => `第 ${u.line} 行`).join('、')}${B.unrec.length > 3 ? ' 等' : ''}`);
   const nArgs = B.stances.reduce((a, s) => a + s.args.filter(x => !x.skip).length, 0);
-  if (!nArgs && !B.terms.filter(t => !t.skip).length) B.errors.push('没有新的论点或话题词汇');
+  // 整个话题都导入过（同一份文件补了别的内容再导入）：不算错，这次跳过它
+  B.nothing = !nArgs && !B.terms.filter(t => !t.skip).length;
+  if (B.nothing && !B.merge) B.errors.push('没有论点或话题词汇');
 }
 
 /* 链接词：范文里出现的功能表达，详情页里可以点进去 */
@@ -5297,7 +5096,7 @@ function vImport2(r) {
       <div class="privacy">${svg('lock')}<span>文件只在这台设备上读取和整理，不会上传到网络。导入前可以先看每一条的详情页、直接编辑；确认后才进入学习。每次导入都会留在左侧的“导入历史”里。</span></div>
       <label class="fld">这次导入的名称<input name="title" value="${esc(ui.impTitle || (K ? K.name() : dayKey() + ' 导入'))}"></label>
       <label class="fld">内容${K ? `<small class="muted" style="font-weight:400">　${K.hint}；其他两种也可以写在同一份里</small>` : ''}<textarea name="text" id="import-text" style="min-height:300px" placeholder="粘贴要导入的内容">${esc(D)}</textarea></label>
-      <details class="i-help" ${K ? 'open' : ''}><summary>怎么写（点开看格式）</summary>
+      <details class="i-help" ${K ? 'open' : ''}><summary>怎么写（点开看格式；完整说明见下面的“导入格式说明”）</summary>
         <div class="d-dl">${order.map(k => help[k]).join('')}
           <span>学习方式</span><div>行末或标题后面写【记忆】【资料】【暂缓】；不写就用<button class="t-link-btn" type="button" data-go="tsettings">设置</button>里的默认值。</div>
         </div></details>
@@ -5305,11 +5104,17 @@ function vImport2(r) {
       <div class="btn-row"><button class="btn btn-primary" type="submit">整理</button>
         <label class="btn btn-outline file-btn">${svg('upload')}导入 .md / .txt 文件<input type="file" id="md-file" accept=".md,.markdown,.txt,text/markdown,text/plain"></label>
         <span class="note-line">填入示例（会替换上面的内容）：</span>${order.map(k => `<button class="btn btn-ghost btn-sm" type="button" data-a="impsample" data-k="${k}">${SL[k]}</button>`).join('')}</div>
+      <div class="g-improw"><span class="note-line">下载模板：</span>${order.map(k => `<button class="btn btn-outline btn-sm" type="button" data-a="tpldl" data-k="${k}">${svg(TPL_KIND.find(x => x[0] === k)[2])}${TPL_KIND.find(x => x[0] === k)[1]}</button>`).join('')}<button class="t-link-btn" type="button" data-go="impguide">完整的导入格式说明 ›</button></div>
     </form>`,
   };
 }
 function runImport(text, title, source) {
+  createNoteSet.skipped = 0;
   const P = parseTopics(text);
+  const same = P.blocks.filter(B => B.nothing && B.merge && !B.unrec.length);
+  runImport.sameTopics = same.length;
+  P.blocks = P.blocks.filter(B => !same.includes(B));
+  if (same.length && (P.blocks.length || P.rest.trim())) toast(`话题“${same.map(B => B.name).join('、')}”都导入过了，这次跳过`);
   let setId = null;
   if (P.rest.trim()) setId = createNoteSet(P.rest, title, { source });
   P.blocks.forEach(B => { if (!B.merge) B.newId = 'u' + uid(); });
@@ -5381,7 +5186,7 @@ function defModeSettings() {
   const row = (k, t, desc) => `<div class="t-setrow"><span class="txt"><b>${t}</b><small>${desc}</small></span>
     <div class="seg small" role="group" aria-label="${t}的默认学习方式">${[['memory', '记忆'], ['reference', '资料'], ['paused', '暂缓']].map(([m, l]) => `<button type="button" data-a="t3defmode" data-k="${k}" data-m="${m}" aria-pressed="${d[k] === m}">${l}</button>`).join('')}</div></div>`;
   return `<section class="t-setgroup"><span class="note-line">导入时的默认学习方式 · 笔记里没写【记忆】【资料】【暂缓】时用；改了不会动已经导入的卡</span>
-    ${row('expr', '表达卡', '写作笔记里的普通表达')}${row('pattern', '句型卡', '带 … 的句型')}${row('grammar', '语法卡', '❌ → ✅ 的语法错误')}${row('fn', '功能表达', '导入的功能表达；App 自带的也一样')}${row('term', '话题词汇', '导入的话题词汇')}
+    ${row('expr', '表达卡', '写作笔记里的普通表达')}${row('pattern', '句型卡', '带 … 的句型')}${row('grammar', '语法卡', '❌ → ✅ 的语法错误')}${row('fn', '功能表达', '导入的功能表达')}${row('term', '话题词汇', '导入的话题词汇')}
   </section>`;
 }
 
@@ -6012,7 +5817,9 @@ function sdRecommend() {
 }
 function sdList() {
   const D = sd();
-  if (!D.today.list) { const r = sdRecommend(); Object.assign(D.today, { list: r.ids, cat: r.cat, custom: false }); save(); }
+  // 今天还是空的（比如今天才第一次导入）就重新推荐；排好了就不再变
+  const empty = D.today.list && !D.today.list.length && !D.today.custom && !D.today.done && !D.learn;
+  if (!D.today.list || empty) { const r = sdRecommend(); if (!D.today.list || r.ids.length) { Object.assign(D.today, { list: r.ids, cat: r.cat, custom: false }); save(); } }
   D.today.list = D.today.list.filter(id => ITEMS.has(id));
   return D.today.list;
 }
@@ -6063,6 +5870,7 @@ function sdProg(ses, doneAll) {
 
 /* ---------- 今日学习：时间线（复习 → 主菜 → 配菜） ---------- */
 function vTodaySide() {
+  if (libEmpty()) return { title: '今日学习', crumb: [fmtMD(Date.now())], body: emptyLibHTML() };
   const D = sd(), ids = sdList();
   const P = t3plan(), pend = t3Pend(), sdue = sdDue();
   const oldQ = dueQueue(), oldN = oldQ.reduce((a, g) => a + g.ids.length, 0);
@@ -6729,6 +6537,135 @@ function spClick(a, el) {
   return true;
 }
 
+/* ============================================================
+   v9 从空白开始：导入格式说明、模板下载、空状态、数据（备份 / 恢复 / 清空）
+   IMPORT_GUIDE、IMPORT_TPL 由 build.py 从 docs/导入规范.md 和 templates/*.md 生成
+   ============================================================ */
+// 下载的文件名用英文：有的浏览器会把中文文件名换成 download
+const TPL_KIND = [['topic', '主题表达', 'topic', 'template-topics.md'], ['fn', '功能表达', 'fn', 'template-functions.md'], ['notes', '写作笔记', 'notes', 'template-notes.md']];
+const libEmpty = () => !T.topics.length && !ITEMS.size;
+
+/* ---------- 一个够用的 Markdown 渲染：标题、段落、列表（两层）、表格、代码块、行内代码、加粗 ---------- */
+function mdInline(s) {
+  const codes = [];
+  s = s.replace(/`([^`]+)`/g, (m, c) => { codes.push(c.replace(/\\\|/g, '|')); return `\u0000${codes.length - 1}\u0000`; });
+  s = esc(s).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  return s.replace(/\u0000(\d+)\u0000/g, (m, i) => `<code>${esc(codes[+i])}</code>`);
+}
+function mdHTML(src) {
+  const lines = src.replace(/\r/g, '').split('\n');
+  let out = '', i = 0;
+  // 表格里写成 \| 的竖线不算分隔（不用后行断言，旧版 Safari 也能跑）
+  const cells = l => l.trim().replace(/\\\|/g, '\u0001').replace(/^\||\|$/g, '').split('|').map(c => c.trim().replace(/\u0001/g, '\\|'));
+  while (i < lines.length) {
+    const l = lines[i];
+    if (!l.trim()) { i++; continue; }
+    if (/^```/.test(l)) {
+      const buf = []; i++;
+      while (i < lines.length && !/^```/.test(lines[i])) buf.push(lines[i++]);
+      i++; out += `<pre class="g-code">${esc(buf.join('\n'))}</pre>`; continue;
+    }
+    const h = l.match(/^(#{1,4})\s+(.+)$/);
+    if (h) { const n = Math.min(4, h[1].length + 1); out += `<h${n} class="g-h${h[1].length}">${mdInline(h[2])}</h${n}>`; i++; continue; }
+    if (/^\|/.test(l)) {
+      const rows = [];
+      while (i < lines.length && /^\|/.test(lines[i])) rows.push(lines[i++]);
+      const head = cells(rows[0]), body = rows.slice(2).map(cells);
+      out += `<div class="g-tablewrap"><table class="g-table"><thead><tr>${head.map(c => `<th>${mdInline(c)}</th>`).join('')}</tr></thead><tbody>${body.map(r => `<tr>${r.map(c => `<td>${mdInline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      continue;
+    }
+    const li = /^(\s*)(?:[-*]|\d+\.)\s+(.+)$/;
+    if (li.test(l)) {
+      const ordered = /^\s*\d+\./.test(l), tag = ordered ? 'ol' : 'ul';
+      let html = '', open = false, sub = '';
+      while (i < lines.length && (li.test(lines[i]) || (/^\s+\S/.test(lines[i]) && open))) {
+        const m = lines[i].match(li);
+        if (m && !m[1]) { if (open) html += (sub ? `<ul>${sub}</ul>` : '') + '</li>'; html += `<li>${mdInline(m[2])}`; open = true; sub = ''; }
+        else if (m) sub += `<li>${mdInline(m[2])}</li>`;
+        else html += ' ' + mdInline(lines[i].trim());
+        i++;
+      }
+      if (open) html += (sub ? `<ul>${sub}</ul>` : '') + '</li>';
+      out += `<${tag} class="g-list">${html}</${tag}>`; continue;
+    }
+    const buf = [];
+    while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|```|\||\s*(?:[-*]|\d+\.)\s)/.test(lines[i])) buf.push(lines[i++].trim());
+    out += `<p>${mdInline(buf.join(' '))}</p>`;
+  }
+  return out;
+}
+
+/* ---------- 模板下载 ---------- */
+function saveFile(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type: type || 'text/plain;charset=utf-8' }));
+  const a = document.createElement('a');
+  // 不放进页面：点击不会冒泡到 App 的点击处理，文件名才能保留
+  a.href = url; a.download = name; a.rel = 'noopener'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+const tplButtons = (cls = 'btn btn-outline btn-sm') => TPL_KIND.map(([k, n, ic]) => `<button class="${cls}" type="button" data-a="tpldl" data-k="${k}">${svg(ic)}${n}模板</button>`).join('');
+
+/* ---------- 导入格式说明 ---------- */
+function vImpGuide() {
+  return {
+    title: '导入格式说明', crumb: ['导入'],
+    body: `<div class="g-wrap">
+      <div class="g-tpl"><b>下载模板（.md）</b><span class="note-line">模板本身就能直接导入，照着改最省事；也可以填进导入框看看效果</span>
+        <div class="btn-row">${tplButtons()}</div>
+        <div class="btn-row">${TPL_KIND.map(([k, n]) => `<button class="t-link-btn" type="button" data-a="tplfill" data-k="${k}">把${n}模板填进导入框 ›</button>`).join('')}</div></div>
+      <article class="g-doc">${mdHTML(IMPORT_GUIDE.replace(/^# .+\n/, ''))}</article>
+    </div>`,
+  };
+}
+T3VIEWS.impguide = vImpGuide;
+
+/* ---------- 空状态：表达库还没有内容 ---------- */
+function emptyLibHTML(kind) {
+  const K = { topic: ['还没有主题表达', '按“# 话题 → ## 立场 → ### 论点”写好话题、论点句、展开表达和范文，导入后就能选论点开始新学。'],
+    fn: ['还没有功能表达', '标题写成“# 功能：功能名”，下面一行一条英文 + 中文，导入后按功能做近义比较。'] }[kind];
+  if (K) return `<div class="empty"><h3>${K[0]}</h3><p>${K[1]}</p><div class="btn-row"><button class="btn btn-soft" type="button" data-a="impopen" data-k="${kind}">${svg('upload')}导入${kind === 'topic' ? '话题' : '功能表达'}</button><button class="btn btn-outline" type="button" data-a="tpldl" data-k="${kind}">下载模板</button><button class="t-link-btn" type="button" data-go="impguide">导入格式说明 ›</button></div></div>`;
+  return `<section class="panel g-start">
+    <h3>从导入开始，搭建你自己的表达库</h3>
+    <p class="warm">App 里现在是空的。三种内容都靠导入：写好 .md / .txt 文件（或直接粘贴文字），确认后就能新学和复习。</p>
+    <div class="g-start-grid">${TPL_KIND.map(([k, n, ic]) => `<div class="g-start-card">${svg(ic)}<b>${n}</b><small>${{ topic: '话题 → 立场 → 论点 → 展开表达 + 范文', fn: '按写作功能比较近义表达', notes: '表达卡、句型卡、语法卡' }[k]}</small>
+      <span class="btn-row"><button class="btn btn-primary btn-sm" type="button" data-a="impopen" data-k="${k}">导入</button><button class="btn btn-outline btn-sm" type="button" data-a="tpldl" data-k="${k}">下载模板</button></span></div>`).join('')}</div>
+    <div class="btn-row"><button class="btn btn-ghost" type="button" data-go="impguide">看导入格式说明 ›</button><span class="note-line">有备份文件？在“复习设置 → 数据”里恢复</span></div>
+  </section>`;
+}
+
+/* ---------- 设置：数据 ---------- */
+function dataSettingsHTML() {
+  const n = (S.notes.items || []).length + T.topics.length;
+  return `<section class="t-setgroup"><span class="note-line">数据 · 只存在这台设备上，建议添加到主屏幕使用并时常导出备份</span>
+    <div class="t-setrow"><span class="txt"><b>导出备份</b><small>把全部内容和学习进度存成一个 .json 文件；换设备或清空后可以恢复</small></span><button class="btn btn-outline btn-sm" type="button" data-a="datexport">导出</button></div>
+    <div class="t-setrow"><span class="txt"><b>从备份恢复</b><small>用导出的 .json 文件替换现在的全部数据</small></span><label class="btn btn-outline btn-sm file-btn">选择文件<input type="file" id="backup-file" accept=".json,application/json"></label></div>
+    <button class="t-setrow s-setlink" type="button" data-go="impguide"><span class="txt"><b>导入格式说明</b><small>三种内容各写什么、怎么写；可以下载模板</small></span><span class="muted">查看 ›</span></button>
+    <div class="t-setrow"><span class="txt"><b>清空全部数据</b><small>删除所有导入的内容、学习进度、打卡和设置，回到刚打开的样子${n ? '；清空前建议先导出备份' : ''}</small></span><button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="datclear" data-confirm="再点一次，确认清空">清空</button></div>
+  </section>`;
+}
+
+function guideClick(a, el) {
+  if (a === 'tpldl') { const K = TPL_KIND.find(x => x[0] === el.dataset.k); saveFile(K[3], IMPORT_TPL[K[0]]); toast(`已下载${K[1]}模板（${K[3]}）`); return true; }
+  if (a === 'tplfill') { ui.impText = IMPORT_TPL[el.dataset.k]; ui.impTitle = ''; go({ v: 'import', id: el.dataset.k }); return true; }
+  if (a === 'datexport') { saveFile(`ielts-writing-backup-${dayKey()}.json`, JSON.stringify(S), 'application/json'); toast('已导出备份'); return true; }
+  if (a === 'datclear') { try { localStorage.removeItem(KEY); } catch (e) {} location.hash = ''; location.reload(); return true; }
+  return false;
+}
+function guideChange(t) {
+  if (t.id !== 'backup-file' || !t.files || !t.files[0]) return false;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let r = null;
+    try { r = JSON.parse(String(reader.result || '')); } catch (e) {}
+    if (!r || r.v !== 2 || !r.notes || !r.t3) { toast('这个文件不是本 App 导出的备份'); t.value = ''; return; }
+    if (!confirm('用这个备份替换现在的全部数据？现在的内容和进度会被覆盖。')) { t.value = ''; return; }
+    try { localStorage.setItem(KEY, JSON.stringify(r)); } catch (e) { toast('恢复失败：存储空间不够'); return; }
+    location.hash = ''; location.reload();
+  };
+  reader.readAsText(t.files[0]);
+  return true;
+}
+
 
 const VIEWS = {
   home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
@@ -6805,6 +6742,7 @@ document.addEventListener('click', e => {
   if (a && a.startsWith('iedit') && editClick(a, el)) return;
   if (a && a.startsWith('sd') && sideClick(a, el)) return;
   if (a && a.startsWith('sp') && spClick(a, el)) return;
+  if (a && (a.startsWith('tpl') || a.startsWith('dat')) && guideClick(a, el)) return;
   switch (a) {
     case 'back': back(); break;
     case 'hidehint': S.user.hintClosed = true; save(); render(); break;
@@ -6985,7 +6923,7 @@ document.addEventListener('submit', e => {
     const ok = runImport(text, title, importSource || '粘贴的文字');
     importSource = '';
     ui.impText = ''; ui.impTitle = '';
-    if (!ok) { $('#form-msg').textContent = '没有识别到内容。每行写一条，英文在前、中文在后；主题表达用“# 话题：……”开头。'; return; }
+    if (!ok) { const dup = [runImport.sameTopics ? `${runImport.sameTopics} 个话题` : '', createNoteSet.skipped ? `${createNoteSet.skipped} 条笔记 / 功能表达` : ''].filter(Boolean).join('、'); $('#form-msg').innerHTML = dup ? `这些内容（${dup}）都已经导入过了，没有新内容。` : '没有识别到内容。每行写一条，英文在前、中文在后；主题表达用“# 话题：……”开头。<button class="t-link-btn" type="button" data-go="impguide">看导入格式说明 ›</button>'; return; }
   }
 });
 
@@ -6993,6 +6931,7 @@ let importSource = '';
 document.addEventListener('change', e => {
   const t = e.target;
   if (t3change(t)) return;
+  if (guideChange(t)) return;
   if (t.id === 'md-file' && t.files && t.files[0]) {
     const file = t.files[0];
     const reader = new FileReader();
@@ -7086,7 +7025,7 @@ function fillSampleDetails() {
   if (changed) save();
 }
 if (!S.seeded) {
-  createNoteSet(SAMPLE_NOTE, '示例 · 2026-10-06 写作笔记', { confirmed: true, source: '示例笔记，可删除' });
+  if (window.__DEMO) createNoteSet(SAMPLE_NOTE, '示例 · 2026-10-06 写作笔记', { confirmed: true, source: '示例笔记，可删除' });
   S.seeded = true;
   save();
 }
