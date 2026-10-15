@@ -1461,153 +1461,9 @@ input.tg-name:focus { outline: none; border-bottom-style: solid; border-bottom-c
    功能表达：写作功能 → 功能组 → 近义表达比较
    ============================================================ */
 
-const TOPIC_GROUPS = [
-  {
-    id: 'edu-critical', topic: '教育', sub: '教育与思维发展', name: '培养批判性思维',
-    scene: '论证学校教育应超越应试，培养学生独立思考和判断能力。',
-    directions: ['课程设计：增加讨论与项目式学习', '考试改革：减少单一分数评价', '教师角色：从讲授者转为引导者'],
-    paragraph: 'Schools should place greater emphasis on developing critical thinking. Under standardised testing, many students rely heavily on rote learning, which may secure high scores but rarely teaches them to evaluate information from multiple sources. Discussion-based lessons, by contrast, encourage students to question assumptions, and this habit is likely to prepare young people for an uncertain job market.',
-    related: ['edu-online', 'crime-prevent'],
-    items: [
-      ['core', 'Schools should place greater emphasis on developing critical thinking.', '学校应更加重视培养批判性思维。', { usage: '可直接作为主体段中心句，后接原因或具体做法。', err: 'place emphasis on，不写 place emphasis in。' }],
-      ['core', 'An exam-oriented system tends to reward memorisation rather than understanding.', '应试教育体制往往奖励死记硬背，而非真正的理解。', { usage: '适合作为让步或反驳段的论点。', err: 'rather than 前后结构保持一致：reward A rather than B。' }],
-      ['know', 'encourage students to question assumptions', '鼓励学生质疑既有假设', { ex: 'Discussion-based lessons encourage students to question assumptions instead of accepting answers passively.', col: 'encourage sb to do sth' }],
-      ['know', 'improve students\' decision-making skills', '提高学生的决策能力', { ex: 'Analysing real cases can improve students\' decision-making skills.', col: 'improve / develop / sharpen skills' }],
-      ['know', 'evaluate information from multiple sources', '从多种来源评估信息', { ex: 'In the digital age, young people must learn to evaluate information from multiple sources.' }],
-      ['know', 'prepare young people for an uncertain job market', '让年轻人为不确定的就业市场做好准备', { ex: 'Flexible thinking helps prepare young people for an uncertain job market.', col: 'prepare sb for sth' }],
-      ['term', 'rote learning', '死记硬背式学习', { ex: 'Many students rely heavily on rote learning before exams.', col: 'rely heavily on rote learning' }],
-      ['term', 'evidence-based learning', '以证据为基础的学习', { ex: 'Evidence-based learning teaches students to support every claim with data.' }],
-      ['term', 'standardised testing', '标准化考试', { ex: 'Critics argue that standardised testing narrows the curriculum.', col: 'rely on / move away from standardised testing' }],
-    ],
-  },
-  {
-    id: 'edu-online', topic: '教育', sub: '线上教育', name: '线上学习的利与弊',
-    scene: '讨论网络课程能否取代传统课堂，或分析远程学习的优缺点。',
-    directions: ['教育公平：偏远地区与低收入家庭', '学习效果：自律与反馈', '折中方案：混合式学习'],
-    paragraph: 'Online learning has made education more accessible than ever before. Digital platforms remove geographical barriers, and recorded lectures allow students to learn at their own pace. However, learners who study alone often lack immediate feedback from teachers, and distance learning can require a high level of self-discipline. For this reason, many institutions now adopt blended learning.',
-    related: ['edu-critical', 'tech-ai'],
-    items: [
-      ['core', 'Online learning has made education more accessible than ever before.', '线上学习让教育比以往任何时候都更容易获得。', { usage: '适合优势段开头；accessible 强调“获得机会”。' }],
-      ['core', 'Online courses cannot fully replace face-to-face interaction in the classroom.', '线上课程无法完全取代课堂上的面对面互动。', { usage: '适合劣势段或折中观点的中心句。', err: 'face-to-face 作定语时要加连字符。' }],
-      ['know', 'remove geographical barriers', '消除地域障碍', { ex: 'Online platforms remove geographical barriers for students in remote areas.' }],
-      ['know', 'learn at their own pace', '按自己的节奏学习', { ex: 'Recorded lectures allow learners to learn at their own pace.', col: 'at one\'s own pace' }],
-      ['know', 'lack immediate feedback from teachers', '缺乏老师的即时反馈', { ex: 'Students who study alone often lack immediate feedback from teachers.', err: 'lack 作动词时直接接宾语，不写 lack of。' }],
-      ['know', 'require a high level of self-discipline', '需要很强的自律能力', { ex: 'Distance learning can require a high level of self-discipline.' }],
-      ['term', 'distance learning', '远程教育', { ex: 'More adults now enrol in distance learning programmes.', col: 'enrol in a distance learning programme' }],
-      ['term', 'the digital divide', '数字鸿沟', { ex: 'Without affordable internet access, online education may widen the digital divide.', col: 'widen / bridge the digital divide' }],
-      ['term', 'blended learning', '混合式学习', { ex: 'Many universities now adopt blended learning, combining online and classroom teaching.' }],
-    ],
-  },
-  {
-    id: 'tech-medical', topic: '科技', sub: '医疗科技与监管', name: '监管必要性',
-    scene: '论证新兴医疗技术需要审批、数据保护和伦理监管。',
-    directions: ['安全：临床试验与审批', '隐私：医疗数据保护', '公平：昂贵技术的可及性'],
-    paragraph: 'Medical technology should be carefully regulated. Although robotic-assisted surgery can improve surgical precision, new devices and drugs must undergo rigorous clinical trials before they gain regulatory approval. Regulation is also needed to protect sensitive patient data and to ensure that patients give informed consent.',
-    related: ['tech-ai', 'health-diet'],
-    items: [
-      ['core', 'Medical technology should be carefully regulated.', '医疗科技应受到严格监管。', { usage: '简洁的立场句，后接安全、隐私、公平三个展开方向。' }],
-      ['core', 'Without proper oversight, new treatments may put patients at risk.', '缺乏适当监管，新疗法可能使患者面临风险。', { usage: '适合作为原因句或段首论点。', err: 'put sb at risk，不写 put sb in risk。' }],
-      ['know', 'improve surgical precision', '提高手术精准度', { ex: 'Robotic systems can improve surgical precision in complex operations.' }],
-      ['know', 'undergo rigorous clinical trials', '经过严格的临床试验', { ex: 'New drugs must undergo rigorous clinical trials before approval.' }],
-      ['know', 'protect sensitive patient data', '保护敏感的患者数据', { ex: 'Hospitals have a duty to protect sensitive patient data.' }],
-      ['know', 'widen the gap in access to healthcare', '加大医疗服务获取上的差距', { ex: 'Expensive treatments may widen the gap in access to healthcare.', col: 'access to sth' }],
-      ['term', 'robotic-assisted surgery', '机器人辅助手术', { ex: 'Robotic-assisted surgery shortens recovery time for many patients.' }],
-      ['term', 'regulatory approval', '监管审批', { ex: 'The device has not yet gained regulatory approval.', col: 'gain / obtain regulatory approval' }],
-      ['term', 'informed consent', '知情同意', { ex: 'Patients must give informed consent before any experimental treatment.', col: 'give / obtain informed consent' }],
-    ],
-  },
-  {
-    id: 'tech-ai', topic: '科技', sub: '人工智能与就业', name: '自动化对工作的影响',
-    scene: '讨论机器和人工智能取代工作岗位，以及社会应如何应对。',
-    directions: ['冲击：制造业与客服岗位', '机遇：新兴行业', '应对：再培训与终身学习'],
-    paragraph: 'Automation is likely to replace many routine jobs, because machines can perform repetitive tasks more efficiently than humans. Job displacement is therefore a real concern. However, artificial intelligence will also create new job opportunities, provided that workers acquire new skills through retraining.',
-    related: ['edu-online', 'tech-medical'],
-    items: [
-      ['core', 'Automation is likely to replace many routine jobs.', '自动化很可能取代许多重复性工作。', { usage: '用 is likely to 避免绝对化。' }],
-      ['core', 'Governments should help workers adapt to technological change.', '政府应帮助劳动者适应技术变革。', { usage: '适合解决方案段的中心句。', err: 'adapt to + 名词，不写 adapt technological change。' }],
-      ['know', 'perform repetitive tasks more efficiently', '更高效地完成重复性任务', { ex: 'Machines can perform repetitive tasks more efficiently than humans.' }],
-      ['know', 'create new job opportunities', '创造新的就业机会', { ex: 'The technology sector continues to create new job opportunities.' }],
-      ['know', 'acquire new skills through retraining', '通过再培训掌握新技能', { ex: 'Displaced workers need to acquire new skills through retraining.' }],
-      ['term', 'artificial intelligence', '人工智能', { ex: 'Artificial intelligence is already used to screen job applications.' }],
-      ['term', 'lifelong learning', '终身学习', { ex: 'Lifelong learning is essential in a rapidly changing economy.' }],
-      ['term', 'job displacement', '工作岗位被取代', { ex: 'Job displacement is most common in manufacturing.' }],
-    ],
-  },
-  {
-    id: 'env-climate', topic: '环境', sub: '气候变化应对', name: '政府与个人的责任',
-    scene: '讨论应对气候变化主要靠政府还是个人。',
-    directions: ['政府：税收与基础设施', '个人：日常消费选择', '结论：两者需要配合'],
-    paragraph: 'Tackling climate change requires action from both governments and individuals. Governments are in a better position to bring about large-scale change: they can impose heavy taxes on polluting industries, invest in public transport and help the economy reduce reliance on fossil fuels. At the same time, individuals can make environmentally friendly choices that shrink their carbon footprint.',
-    related: ['city-traffic'],
-    items: [
-      ['core', 'Tackling climate change requires action from both governments and individuals.', '应对气候变化需要政府和个人共同行动。', { usage: '适合讨论双方观点题的立场句。' }],
-      ['core', 'Governments are in a better position to bring about large-scale change.', '政府更有能力推动大规模的改变。', { usage: 'be in a better position to do 比 can do 更具论证感。' }],
-      ['know', 'reduce reliance on fossil fuels', '减少对化石燃料的依赖', { ex: 'Countries must reduce reliance on fossil fuels within the next decade.', col: 'reliance on sth' }],
-      ['know', 'impose heavy taxes on polluting industries', '对污染行业征收重税', { ex: 'Some argue that governments should impose heavy taxes on polluting industries.', col: 'impose a tax on sth' }],
-      ['know', 'invest in public transport', '投资公共交通', { ex: 'Cities that invest in public transport see fewer cars on the road.' }],
-      ['know', 'make environmentally friendly choices', '做出环保的选择', { ex: 'Individuals can make environmentally friendly choices in daily life.' }],
-      ['term', 'carbon emissions', '碳排放', { ex: 'Air travel is a major source of carbon emissions.', col: 'cut / reduce carbon emissions' }],
-      ['term', 'renewable energy', '可再生能源', { ex: 'Subsidies have made renewable energy more affordable.' }],
-      ['term', 'carbon footprint', '碳足迹', { ex: 'Eating less meat can reduce a person\'s carbon footprint.' }],
-    ],
-  },
-  {
-    id: 'crime-prevent', topic: '犯罪', sub: '犯罪预防', name: '降低犯罪',
-    scene: '比较惩罚与预防、改造在减少犯罪中的作用。',
-    directions: ['预防：社区与教育', '惩罚：威慑的局限', '改造：减少再次犯罪'],
-    paragraph: 'Prevention is more effective than punishment in reducing crime. Longer prison sentences do not necessarily deter potential offenders, whereas education and employment programmes tackle the root causes of crime. Similarly, rehabilitation programmes help ex-offenders reintegrate into society and reduce the risk of reoffending.',
-    related: ['edu-critical'],
-    items: [
-      ['core', 'Prevention is more effective than punishment in reducing crime.', '在减少犯罪方面，预防比惩罚更有效。', { usage: '适合作为全文立场或主体段中心句。' }],
-      ['core', 'Longer prison sentences do not necessarily deter crime.', '更长的刑期并不一定能遏制犯罪。', { usage: 'not necessarily 让观点更有分寸。' }],
-      ['know', 'reduce crime rates', '降低犯罪率', { ex: 'Better street lighting has helped reduce crime rates in some cities.', usage: '最中性、最常用的说法。' }],
-      ['know', 'deter potential offenders', '震慑潜在的犯罪者', { ex: 'Visible police patrols may deter potential offenders.', usage: '强调“威慑”，对象是还没有犯罪的人。' }],
-      ['know', 'tackle the root causes of crime', '从根源上解决犯罪问题', { ex: 'Education and employment programmes tackle the root causes of crime.', usage: '强调长期、根本性的解决。' }],
-      ['know', 'help ex-offenders reintegrate into society', '帮助刑满释放人员重新融入社会', { ex: 'Vocational training can help ex-offenders reintegrate into society.' }],
-      ['term', 'rehabilitation programmes', '改造项目', { ex: 'Rehabilitation programmes lower the chance of reoffending.' }],
-      ['term', 'reoffending', '再次犯罪', { ex: 'Education in prison reduces the risk of reoffending.', col: 'reduce the risk of reoffending' }],
-      ['term', 'juvenile delinquency', '青少年犯罪', { ex: 'Poverty is closely linked to juvenile delinquency.' }],
-    ],
-  },
-  {
-    id: 'city-traffic', topic: '城市化', sub: '城市交通', name: '缓解交通拥堵',
-    scene: '讨论修路、公共交通和收费等缓解城市拥堵的办法。',
-    directions: ['公共交通：地铁与公交', '经济手段：拥堵费与停车费', '城市规划：控制无序扩张'],
-    paragraph: 'Expanding public transport is the most effective way to ease traffic congestion. Building more roads only encourages more people to drive, while a reliable metro system can shorten commuting time and discourage private car use. Fewer vehicles during rush hour would also improve air quality in urban areas.',
-    related: ['env-climate'],
-    items: [
-      ['core', 'Expanding public transport is the most effective way to ease traffic congestion.', '扩大公共交通是缓解交通拥堵最有效的方式。', { usage: '动名词短语作主语，结构稳定。' }],
-      ['core', 'Building more roads only encourages more people to drive.', '修更多的路只会鼓励更多人开车。', { usage: '适合反驳“多修路”的观点。' }],
-      ['know', 'ease traffic congestion', '缓解交通拥堵', { ex: 'Congestion charges have helped ease traffic congestion in London.' }],
-      ['know', 'discourage private car use', '抑制私家车使用', { ex: 'High parking fees discourage private car use in city centres.' }],
-      ['know', 'shorten commuting time', '缩短通勤时间', { ex: 'A reliable metro system can shorten commuting time significantly.' }],
-      ['know', 'improve air quality in urban areas', '改善城市空气质量', { ex: 'Fewer cars would improve air quality in urban areas.' }],
-      ['term', 'congestion charge', '拥堵费', { ex: 'Drivers must pay a congestion charge to enter the city centre.' }],
-      ['term', 'urban sprawl', '城市无序扩张', { ex: 'Urban sprawl forces people to depend on cars.' }],
-      ['term', 'rush hour', '高峰时段', { ex: 'Trains are overcrowded during rush hour.' }],
-    ],
-  },
-  {
-    id: 'health-diet', topic: '健康', sub: '公共健康', name: '肥胖与饮食',
-    scene: '讨论肥胖问题应由政府还是个人负责，以及可行的干预手段。',
-    directions: ['政府：税收与广告限制', '个人：饮食与运动习惯', '影响：医疗体系负担'],
-    paragraph: 'The government should take greater responsibility for public health. Many people lead a sedentary lifestyle and eat large amounts of processed food, which increases the risk of chronic diseases and can place a heavy burden on the healthcare system. Measures such as a sugar tax or rules that restrict the advertising of junk food can therefore be justified.',
-    related: ['tech-medical'],
-    items: [
-      ['core', 'The government should take greater responsibility for public health.', '政府应对公共健康承担更大责任。', { usage: 'take responsibility for sth。' }],
-      ['core', 'Individuals are ultimately responsible for their own diet.', '个人最终要对自己的饮食负责。', { usage: '适合对立观点段。' }],
-      ['know', 'raise public awareness of healthy eating', '提高公众对健康饮食的认识', { ex: 'Campaigns can raise public awareness of healthy eating.', col: 'raise awareness of sth' }],
-      ['know', 'restrict the advertising of junk food', '限制垃圾食品广告', { ex: 'Several countries restrict the advertising of junk food to children.' }],
-      ['know', 'lead a sedentary lifestyle', '过着久坐少动的生活', { ex: 'Office workers often lead a sedentary lifestyle.' }],
-      ['know', 'place a heavy burden on the healthcare system', '给医疗体系带来沉重负担', { ex: 'Obesity-related diseases place a heavy burden on the healthcare system.' }],
-      ['term', 'sugar tax', '糖税', { ex: 'The sugar tax led manufacturers to cut sugar in soft drinks.' }],
-      ['term', 'processed food', '加工食品', { ex: 'Processed food is often high in salt and fat.' }],
-      ['term', 'chronic diseases', '慢性疾病', { ex: 'Poor diet increases the risk of chronic diseases.' }],
-    ],
-  },
-];
+// v9：v4 的旧版主题表达组已移除
+const TOPIC_GROUPS = [];
 
-/* 功能表达：[英文, 中文, 句法, 语气与边界, 近义区别, 示例, 常见错误] */
 const FUNCTION_GROUPS = [
   { id: 'fn-opinion', fn: '表达观点', scene: '在开头段或结论段表明自己的立场。', items: [
     ['I firmly believe that ...', '我坚信……', 'I firmly believe that + 完整句子', '立场鲜明；适合同意/反对类题目', '比 In my view 更坚定，全文只宜出现一次', 'I firmly believe that schools should teach practical life skills.', '不写 I firmly believe in that ...'],
@@ -2039,15 +1895,7 @@ const LADDER = [1, 3, 7, 14, 30];
 let ITEMS = new Map(), GROUPS = new Map();
 function assemble() {
   ITEMS = new Map(); GROUPS = new Map();
-  for (const g of TOPIC_GROUPS) {
-    const G = { id: g.id, lib: 'topic', topic: g.topic, sub: g.sub, name: g.name, scene: g.scene, directions: g.directions, paragraph: g.paragraph, related: g.related, ids: [] };
-    GROUPS.set(G.id, G);
-    for (const [type, en, zh, x] of g.items) {
-      const id = 't:' + g.id + ':' + slug(en);
-      ITEMS.set(id, { id, lib: 'topic', type, gid: g.id, en, zh, ex: x.ex || '', col: x.col || '', usage: x.usage || '', err: x.err || '', src: '系统预设 · ' + g.topic + ' / ' + g.sub, builtin: true });
-      G.ids.push(id);
-    }
-  }
+  // v9：v4 的旧版主题表达组已经移除，主题表达只用新结构（t3.js）
   for (const g of FUNCTION_GROUPS) {
     const G = { id: g.id, lib: 'function', fn: g.fn, name: g.fn, scene: g.scene, ids: [] };
     GROUPS.set(G.id, G);
@@ -2514,7 +2362,7 @@ function installHint() {
     <button class="btn btn-outline btn-sm" type="button" data-a="hidehint">知道了</button></section>`;
 }
 function vHome() {
-  const q = dueQueue(), P = t3plan(), dueN = q.reduce((a, g) => a + g.ids.length, 0) + P.n;
+  const q = dueQueue(), P = t3plan(), sdN = sdDue().length, dueN = q.reduce((a, g) => a + g.ids.length, 0) + P.n + sdN;
   const l = todayLog();
   const h = new Date().getHours();
   const greet = h < 5 ? '夜深了' : h < 11 ? '早上好' : h < 13 ? '中午好' : h < 18 ? '下午好' : '晚上好';
@@ -2533,10 +2381,10 @@ function vHome() {
     if (P.mk.length) lines.push(['补练', '上次忘记的单条', P.mk.length + ' 条', 'today']);
     P.groups.forEach(g => lines.push([T.topic.get(g.topic).name, '主题表达 · ' + g.ids.map(id => '论点 ' + T.arg.get(id).n).join('、'), g.ids.length + ' 个论点', 'ttopic:' + g.topic]));
     if (P.terms.length) lines.push(['话题词汇', '每个词单独安排', P.terms.length + ' 个', 'today']);
-    q.forEach(g => { const G = GROUPS.get(g.gid); lines.push([G.name, groupCrumb(G)[0], g.ids.length + ' 条', 'group:' + G.id]); });
+    if (sdN) lines.push(['配菜', '功能表达和我的笔记，按组复习', sdN + ' 条', 'splan']);
     review = `<div class="big-num">${dueN}<small>条待复习</small></div>
       <div class="rows">${lines.slice(0, 4).map(([a, b, c, r]) => `<button class="row due-row tap" type="button" data-go="${esc(r)}"><span class="title">${esc(a)}</span><span class="meta">${esc(b)}</span><span class="num" style="margin-left:auto">${c}</span></button>`).join('')}</div>
-      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3startall">开始今日复习</button><span class="note-line">补练 → 论点 → 话题词汇，按到期时间和错误记录排序</span></div>`;
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3startall">开始今日复习</button><span class="note-line">补练 → 论点 → 话题词汇 → 配菜，按到期时间和错误记录排序</span></div>`;
   } else if (pend.length) {
     review = `<div class="big-num">0<small>条待复习</small></div><p class="warm">有 ${pend.length} 个论点评为忘记，确认是否从头开始后就能打卡。</p>
       <div class="btn-row"><button class="btn btn-primary" type="button" data-go="trevdone">去确认</button></div>`;
@@ -2575,18 +2423,13 @@ function vHome() {
       <p class="note-line">还有 ${s3.fresh} 个论点没学 · 一次学 3 个，组成一篇作文的写作思路</p>
       <div class="btn-row"><button class="btn btn-primary" type="button" data-go="tpick:${rec3.id}">开始今日新学</button><button class="btn btn-outline" type="button" data-go="ttopic:${rec3.id}">查看话题</button></div>`;
   } else {
-    const rec = [...GROUPS.values()].find(G => G.lib === 'topic' && gstats(G).fresh > 0);
-    if (rec) {
-      const s = gstats(rec);
-      nw = `<div class="note-line">${esc(groupCrumb(rec).join(' / '))}</div>
-        <h3 style="font-family:var(--f-title);font-size:22px">${esc(rec.name)}</h3>
-        <p class="warm">${esc(rec.scene)}</p>
-        <p class="note-line">${s.fresh} 条记忆 · ${s.ref} 条资料（资料不计入学习量）</p>
-        <div class="btn-row"><button class="btn btn-primary" type="button" data-go="today:${esc(rec.id)}">开始今日新学</button><button class="btn btn-outline" type="button" data-go="group:${esc(rec.id)}">查看表达组</button></div>`;
-    } else {
-      nw = `<p class="warm">主题表达里的核心论点都已学过。可以在功能表达或写作笔记里把内容加入记忆。</p>
-        <div class="btn-row"><button class="btn btn-outline" type="button" data-nav="today">选择表达组</button></div>`;
-    }
+    const ids = sdList();
+    nw = ids.length ? `<div class="note-line">配菜 · 功能表达和我的笔记</div>
+      <h3 style="font-family:var(--f-title);font-size:22px">${esc(sdByGroup(ids).map(u => sdGName(u.G)).join('、'))}</h3>
+      <p class="warm">今天 ${ids.length} 条 · 主题表达的论点都学过了</p>
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-nav="today">去今日学习</button></div>`
+      : `<p class="warm">主题表达的论点都学过了。可以导入新话题，或者在功能表达、写作笔记里把内容设为“记忆”。</p>
+        <div class="btn-row"><button class="btn btn-outline" type="button" data-a="impopen" data-k="topic">导入话题</button></div>`;
   }
 
   const topicGroups = [...GROUPS.values()].filter(G => G.lib === 'topic');
@@ -2626,7 +2469,7 @@ function vHome() {
       <section class="zone zone-lib">
         <div class="zone-head"><h2>表达库</h2><span class="hint">查阅、收藏，把需要的内容加入记忆</span></div>
         <div class="zone-tiles">
-          ${tile('topics', '主题表达', '话题 → 立场 → 论点 → 展开表达', `${T.topics.length} 个话题 · 另有 ${topicGroups.length} 个旧版表达组`)}
+          ${tile('topics', '主题表达', '话题 → 立场 → 论点 → 展开表达', `${T.topics.length} 个话题`)}
           ${tile('funcs', '功能表达', '比较语气、句法和使用边界', `${FUNCTION_GROUPS.length} 个写作功能 · ${fnItems} 条`)}
           ${tile('notes', '我的写作笔记', latest ? '最近：' + esc(latest.title) : '表达组 · 句型组 · 语法组', `${sets.length} 个笔记组 · ${noteCards} 张卡片${pending ? ` · ${pending} 个待整理` : ''}`)}
         </div>
@@ -2975,7 +2818,7 @@ function vLibrary() {
   return {
     title: '表达库', crumb: [],
     body: `<div class="tiles">
-      <button class="tile c1" type="button" data-nav="topics"><h3>主题表达</h3><span class="sub">围绕 Task 2 场景建立段落论点和相关表达</span><span class="meta">${topicGroups.length} 个表达组</span></button>
+      <button class="tile c1" type="button" data-nav="topics"><h3>主题表达</h3><span class="sub">围绕 Task 2 场景建立段落论点和相关表达</span><span class="meta">${T.topics.length} 个话题</span></button>
       <button class="tile c2" type="button" data-nav="funcs"><h3>功能表达</h3><span class="sub">比较观点、因果、让步等写作作用的不同表达</span><span class="meta">${FUNCTION_GROUPS.length} 个写作功能</span></button>
       <button class="tile c3" type="button" data-nav="notes"><h3>我的写作笔记</h3><span class="sub">个人错误、句型、语法提醒和临时积累</span><span class="meta">${S.notes.sets.length} 个笔记组</span></button>
       <button class="tile" type="button" data-nav="favs"><h3>收藏表达</h3><span class="sub">三类内容里收藏的条目</span></button>
@@ -3026,9 +2869,8 @@ function vFuncs() {
 
 function groupActions(G, s) {
   const btns = [];
-  if (s.due) btns.push(`<button class="btn btn-primary" type="button" data-a="reviewgroup" data-id="${esc(G.id)}">复习本组（${s.due} 条到期）</button>`);
-  if (s.fresh) btns.push(`<button class="btn ${s.due ? 'btn-outline' : 'btn-primary'}" type="button" data-go="today:${esc(G.id)}">开始本组新学</button>`);
-  if (S.newSession && S.newSession.gid === G.id) btns.unshift(`<button class="btn btn-primary" type="button" data-a="resumenew">继续本组新学</button>`);
+  if (s.due) btns.push(`<button class="btn btn-primary" type="button" data-go="${sd().rev ? 'srev' : 'splan'}">去复习（${s.due} 条到期）</button>`);
+  if (s.fresh) btns.push(`<button class="btn ${s.due ? 'btn-outline' : 'btn-primary'}" type="button" data-a="sdlgroup" data-id="${esc(G.id)}">学这一组（${s.fresh} 条）</button>`);
   btns.push(`<button class="btn btn-outline" type="button" data-go="quick:${esc(G.id)}">快速复习</button>`);
   btns.push(`<button class="btn btn-soft" type="button" data-go="add:${esc(G.id)}">${svg('plus', 2)}${G.lib === 'notes' ? '添加卡片' : '添加表达'}</button>`);
   return `<div class="btn-row">${btns.join('')}</div>`;
@@ -3622,16 +3464,13 @@ function stanceCols(tp, ids, cardOpts) {
    ============================================================ */
 function t3Topics() {
   const themes = [...new Set(T.topics.map(t => t.theme))];
-  const oldThemes = [...new Set(TOPIC_GROUPS.map(g => g.topic))];
   return {
     title: '主题表达', crumb: ['表达库'], actions: `<button class="btn btn-soft" type="button" data-a="impopen" data-k="topic">${svg('upload')}导入话题</button>`,
     body: `<p class="warm" style="max-width:64ch">大主题 → 话题 → 立场 → 论点。每次新学一个话题里的 3 个论点，正好是一篇作文 3 个主体段的写作思路。</p>
     ${themes.map(th => `<section class="section"><div class="section-head"><h3>${esc(th)}</h3></div><div class="rows">${T.topics.filter(t => t.theme === th).map(tp => {
       const s = topicStats(tp);
       return `<button class="row tap" type="button" data-go="ttopic:${tp.id}"><div class="body"><span class="title">${esc(tp.name)}</span><span class="sub">${tp.concepts.map(esc).join(' · ')}</span><span class="meta"><span>${tp.args.length} 个论点 · ${tp.terms.length} 个话题词汇</span>${statusHTML(topicStatus(s))}${s.last ? `<span>上次学习 ${agoDay(s.last)}</span>` : ''}${s.next < Infinity ? `<span>下次复习 ${relDay(s.next)}</span>` : ''}</span></div>${svg('chev')}</button>`;
-    }).join('')}</div></section>`).join('')}
-    <section class="section"><div class="section-head"><h3>旧版表达组</h3><span class="hint">v4 的内容，还没改成新结构；学习记录照常保留</span></div>
-      <div class="tiles">${oldThemes.map(t => `<button class="tile" type="button" data-go="topic:${esc(t)}"><h3>${esc(t)}</h3><span class="sub">${TOPIC_GROUPS.filter(g => g.topic === t).map(g => esc(g.name)).join(' · ')}</span></button>`).join('')}</div></section>`,
+    }).join('')}</div></section>`).join('')}`,
   };
 }
 
@@ -4390,7 +4229,7 @@ function t3TodayNew() {
     return `<div class="row white"><div class="body"><span class="title">${esc(tp.name)}</span><span class="meta"><span>${esc(tp.theme)}</span><span>${tp.args.length} 个论点 · 还没学 ${s.fresh} 个</span>${statusHTML(topicStatus(s))}</span></div>
       <div class="btn-row"><button class="btn btn-outline btn-sm" type="button" data-go="ttopic:${tp.id}">查看</button>${s.fresh ? `<button class="btn btn-primary btn-sm" type="button" data-go="tpick:${tp.id}">选论点开始</button>` : ''}</div></div>`;
   }).join('')}</div>
-  <p class="note-line">每次学一个话题里的 3 个论点（一篇作文的 3 个主体段）。旧版主题表达组在“主题表达”页底部。</p>`;
+  <p class="note-line">每次学一个话题里的 3 个论点（一篇作文的 3 个主体段）。</p>`;
 }
 
 /* ============================================================
@@ -4544,6 +4383,7 @@ function t3Settings() {
       ${defModeSettings()}
       ${example}
       <p class="note-line">“考前冲刺”（最后 7 天把所有内容平均排一遍）会在下一版加入。</p>
+      <a class="t-setrow s-setlink" href="../test/" style="text-decoration:none;color:inherit"><span class="txt"><b>测试台</b><small>验收新功能用：模拟日期、一键造场景。数据和正式版分开，平时用不到</small></span><span class="muted">打开 ›</span></a>
     </div>`,
   };
 }
@@ -4652,6 +4492,7 @@ function t3click(a, el) {
     case 't3learnck': S.t3.learn = null; checkin(); back(); return true;
     case 't3startall': {
       if (t3plan().n) { if (t3StartRev()) go({ v: 'trev' }); }
+      else if (sdDue().length || sd().rev) go({ v: sd().rev ? 'srev' : 'splan' });
       else startReview();
       return true;
     }
@@ -6219,7 +6060,7 @@ function vTodaySide() {
     ${revRow('topic', '主题表达', S.t3.rev ? '复习进行中，退出时已保存位置' : P.n ? `补练 ${P.mk.length} · 论点 ${P.args.length} 个 · 话题词汇 ${P.terms.length} · 共 ${P.n} 条` : '今天没有到期的', topicBtn)}
     ${P.n && !S.t3.rev ? `<details class="s-tplan"><summary>看主题表达的复习计划 ▾</summary><div class="s-tplan-in">${t3PlanHTML()}</div></details>` : ''}
     ${revRow('notes', '配菜 · 功能表达和我的笔记', D.rev ? '复习进行中，退出时已保存位置' : sdue.length ? `${sdByGroup(sdue).length} 组 · ${sdue.length} 条` : '今天没有到期的', sideBtn)}
-    ${oldN ? revRow('library', '旧版主题表达组', `${oldN} 条`, `<button class="btn btn-outline btn-sm" type="button" data-a="startreview">开始</button>`) : ''}
+    ${oldN ? revRow('library', '上一版的表达组', `${oldN} 条`, `<button class="btn btn-outline btn-sm" type="button" data-a="startreview">开始</button>`) : ''}
   </div>`;
   // ③ 配菜
   const units = sdByGroup(ids);
@@ -6237,7 +6078,7 @@ function vTodaySide() {
   else if (D.learn) sideRight = `<button class="btn btn-primary" type="button" data-go="slearn">继续</button>`;
   else sideRight = `<span class="btn-row"><button class="btn btn-outline" type="button" data-a="sdpick">挑选</button>${ids.length ? `<button class="btn ${curStep === 2 ? 'btn-primary' : 'btn-outline'}" type="button" data-a="sdlstart">开始</button>` : ''}</span>`;
   const sideInner = `<div class="s-card">${rows || `<p class="note-line" style="margin:6px 0">${D.today.done ? '今天的配菜已经学完了。' : '没有排配菜：设为“记忆”、还没学的卡都学完了。可以点“挑选”自己选，资料也能选进来。'}</p>`}${foot}</div>`;
-  const oldNew = S.newSession ? `<div class="row" style="background:var(--paper)"><div class="body"><span class="title">旧版新学进行中 · ${esc((GROUPS.get(S.newSession.gid) || {}).name || '')}</span><span class="meta">v4 的新学流程，继续做完或放弃</span></div><div class="btn-row"><button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="dropnew" data-confirm="确认放弃">放弃</button><button class="btn btn-outline btn-sm" type="button" data-a="resumenew">继续</button></div></div>` : '';
+  const oldNew = S.newSession ? `<div class="row" style="background:var(--paper)"><div class="body"><span class="title">上一版的新学还没做完 · ${esc((GROUPS.get(S.newSession.gid) || {}).name || '')}</span><span class="meta">v4 的新学流程，继续做完或放弃</span></div><div class="btn-row"><button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="dropnew" data-confirm="确认放弃">放弃</button><button class="btn btn-outline btn-sm" type="button" data-a="resumenew">继续</button></div></div>` : '';
   const ck = steps.every(Boolean) && canCheckin();
   return {
     title: '今日学习', crumb: [fmtMD(Date.now())],
@@ -6542,7 +6383,8 @@ function sdLearnFinish() {
     if (r === 'fgt') s.wrong = (s.wrong || 0) + 1;
     bumpLog('learned');
   });
-  D.today.done = true; D.learn = null;
+  if (!L.extra || sdList().every(id => studied(id))) D.today.done = true;
+  D.learn = null;
   save(); toast('配菜学完了，明天第一次复习'); goRoot({ v: 'today' });
 }
 
@@ -6636,6 +6478,12 @@ function sideClick(a, el) {
       ui.sdPick = null; save(); back(); return true;
     }
     case 'sdpickreset': D.today.list = null; D.today.custom = false; toast('已恢复系统推荐'); break;
+    case 'sdlgroup': {
+      if (D.learn) { toast('先把正在进行的配菜新学做完'); go({ v: 'slearn' }); return true; }
+      const G = GROUPS.get(id), ids = G ? G.ids.filter(x => sdMem(x) && !studied(x)) : [];
+      if (!ids.length) { toast('这一组没有待学的“记忆”内容'); return true; }
+      D.learn = Object.assign(sdNewSes(ids), { extra: true }); save(); go({ v: 'slearn' }); return true;
+    }
     case 'sdlstart': { const ids = sdList(); if (!ids.length) return true; D.learn = sdNewSes(ids); save(); go({ v: 'slearn' }); return true; }
     case 'sdlsel': D.learn.sel = id; break;
     case 'sdlwrite': { const L = D.learn; L.phase = 'write'; L.queue = L.units[L.ui].ids.slice(); L.qi = 0; L.q = {}; save(); render(true); return true; }
