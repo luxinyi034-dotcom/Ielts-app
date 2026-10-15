@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="写作表达">
+<meta name="apple-mobile-web-app-title" content="写作表达 v9">
 <meta name="theme-color" content="#EEEAE2">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -1434,6 +1434,40 @@ input.tg-name:focus { outline: none; border-bottom-style: solid; border-bottom-c
 .s-tplan summary { list-style: none; cursor: pointer; font-size: 13px; color: var(--sage-deep); padding: 4px 0; }
 .s-tplan summary::-webkit-details-marker { display: none; }
 .s-tplan-in { display: flex; flex-direction: column; gap: 12px; padding-top: 6px; }
+
+/* ---------- 考前冲刺（sprint.js） ---------- */
+.sp-banner { border-radius: 20px; background: var(--sage-soft); padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+.sp-banner-h { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.sp-banner-h b { font-family: var(--f-title); font-size: 19px; color: var(--ink); font-weight: 600; }
+.sp-banner-h small { font-size: 13px; color: var(--warm); }
+.sp-banner-h .t-link-btn { margin-left: auto; }
+.sp-days { display: flex; gap: 6px; }
+.sp-days i { flex: 1; height: 8px; border-radius: 999px; background: #fff; }
+.sp-days i.done { background: var(--sage-deep); } .sp-days i.cur { background: var(--sage); }
+.sp-paused { border-radius: 16px; border: 1px dashed var(--line); padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); flex-wrap: wrap; }
+.sp-paused span { flex: 1; }
+.s-dot.paused { background: var(--paper-2); color: var(--muted); border-style: dashed; }
+.s-tl.paused .title h3 { color: var(--muted); }
+.sp-plan { border-radius: var(--r-md); border: 1px solid var(--line); background: #fff; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.sp-plan-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.sp-plan-h b { font-size: 15px; color: var(--ink); }
+.sp-cnt { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--warm); }
+.sp-cnt svg { width: 14px; height: 14px; color: var(--sage-deep); }
+.sp-bars { display: flex; gap: 6px; align-items: flex-end; justify-content: space-between; overflow-x: auto; }
+.sp-col { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 4px; border-radius: 12px; min-width: 56px; flex: 1; }
+.sp-col.on { background: var(--sage-soft); }
+.sp-col.past { opacity: .5; }
+.sp-col b { font-size: 12.5px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sp-col small { font-size: 11.5px; color: var(--warm); white-space: nowrap; }
+.sp-stack { display: flex; flex-direction: column; justify-content: flex-end; width: 32px; height: 114px; gap: 2px; }
+.sp-stack i, .sp-legend i { display: block; border-radius: 4px; }
+.sp-stack i.arg, .sp-legend i.arg { background: var(--sage-deep); }
+.sp-stack i.term, .sp-legend i.term { background: var(--sage); }
+.sp-stack i.side, .sp-legend i.side { background: #CBD4C2; }
+.sp-legend { display: flex; gap: 14px; font-size: 12px; color: var(--warm); flex-wrap: wrap; align-items: center; }
+.sp-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.sp-legend i { width: 10px; height: 10px; border-radius: 3px; }
+.sp-rules { border-radius: 14px; background: var(--paper-2); padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--ink); }
 </style>
 </head>
 <body>
@@ -3312,8 +3346,8 @@ function stepStage(stage, r) {
 function sched(rec, r) { rec.stage = stepStage(rec.stage, r); rec.next = addDays(Date.now(), capDays(ladder()[rec.stage])); rec.last = Date.now(); }
 /* 题型：0 逐条默写 · 1 默写论点句 + 有原形的填空 · 3 只给中文的填空（7 天）· 2 只给中文论点、回忆全部（14 / 30 天） */
 const tierOf = stage => !stage ? 0 : stage === 1 ? 1 : stage === 2 ? 3 : 2;
-function argDue(id) { const r = S.t3.arg[id]; return !!(r && r.mode === 'memory' && r.stage != null && r.next <= dayStart()); }
-function termDue(id) { const r = S.t3.term[id]; return !!(r && r.mode === 'memory' && r.stage != null && r.next <= dayStart()); }
+function argDue(id) { const r = S.t3.arg[id]; return !!(r && r.mode === 'memory' && r.stage != null && r.next <= dayStart()) || spArgDue(id); }
+function termDue(id) { const r = S.t3.term[id]; return !!(r && r.mode === 'memory' && r.stage != null && r.next <= dayStart()) || spTermDue(id); }
 function mkDue(id) { const r = S.t3.it[id]; return !!(r && r.makeup != null && r.makeup <= dayStart() && !argDue(T.item.get(id).arg)); }
 const comboOf = id => S.t3.combos.find(c => c.args.includes(id));
 const worse = (a, b) => { const o = { rem: 0, vag: 1, fgt: 2 }; return (o[a] || 0) >= (o[b] || 0) ? a : b; };
@@ -4379,7 +4413,7 @@ function t3Settings() {
       </section>
       ${defModeSettings()}
       ${example}
-      <p class="note-line">“考前冲刺”（最后 7 天把所有内容平均排一遍）会在下一版加入。</p>
+      ${spSettingsHTML()}
       <a class="t-setrow s-setlink" href="../test/" style="text-decoration:none;color:inherit"><span class="txt"><b>测试台</b><small>验收新功能用：模拟日期、一键造场景。数据和正式版分开，平时用不到</small></span><span class="muted">打开 ›</span></a>
     </div>`,
   };
@@ -5986,7 +6020,7 @@ const sdKinds = () => sd().order.flatMap(c => c === 'fn' ? ['fn'] : sd().notes.o
 const sdGroupOrder = () => sdKinds().flatMap(sdGroups);
 const sdSort = ids => sdGroupOrder().flatMap(G => G.ids.filter(id => ids.includes(id)));
 const sdByGroup = ids => sdGroupOrder().map(G => ({ G, k: sdKindOfGroup(G), ids: G.ids.filter(id => ids.includes(id)) })).filter(u => u.ids.length);
-const sdDue = () => sdSort([...ITEMS.keys()].filter(id => { const it = ITEMS.get(id); return (it.lib === 'function' || it.lib === 'notes') && isDue(id); }));
+const sdDue = () => sdSort([...ITEMS.keys()].filter(id => { const it = ITEMS.get(id); return (it.lib === 'function' || it.lib === 'notes') && (isDue(id) || spSideDue(id)); }));
 function sdWeek() {
   const D = sd(), rows = [], taken = new Set(D.today.done ? [] : sdList());
   let ptr = D.ptr, nptr = D.notes.ptr;
@@ -6036,10 +6070,12 @@ function vTodaySide() {
   const tl = S.t3.learn, topicBusy = tl && tl.step !== 'done';
   const topicDone = !topicBusy && S.t3.combos.some(c => dayKey(c.created) === dayKey());
   const sideDone = D.today.done || (!ids.length && !D.learn);
-  const steps = [reviewDone, topicDone, sideDone];
-  const doneN = steps.filter(Boolean).length, curStep = steps.findIndex(x => !x);
+  const sp = spActive(), paused = spPaused() && !topicBusy && !D.learn;
+  const pz = [false, paused, paused];
+  const steps = [reviewDone, topicDone || paused, sideDone || paused];
+  const doneN = steps.filter((x, i) => x && !pz[i]).length, curStep = steps.findIndex(x => !x), totN = paused ? 1 : 3;
   const mins = Math.round((P.n + sdue.length + oldN) * 0.9 + (topicDone ? 0 : 22) + (sideDone ? 0 : ids.length * 1.3));
-  const tlRow = (i, title, sub, right, inner = '') => `<div class="s-tl ${steps[i] ? 'done' : ''}"><div class="rail"><span class="s-dot ${steps[i] ? 'done' : (i === curStep ? 'cur' : '')}">${steps[i] ? svg('check', 2.4) : i + 1}</span><span class="line"></span></div>
+  const tlRow = (i, title, sub, right, inner = '') => `<div class="s-tl ${steps[i] ? 'done' : ''} ${pz[i] ? 'paused' : ''}"><div class="rail"><span class="s-dot ${pz[i] ? 'paused' : steps[i] ? 'done' : (i === curStep ? 'cur' : '')}">${pz[i] ? '–' : steps[i] ? svg('check', 2.4) : i + 1}</span><span class="line"></span></div>
     <div class="body"><div class="title"><h3>${title}</h3><span class="note-line">${sub}</span><span class="r">${right}</span></div>${inner}</div></div>`;
   const doneTag = '<span class="note-line" style="color:var(--sage-deep)">已完成</span>';
   // ① 复习：主题表达 + 配菜
@@ -6080,12 +6116,13 @@ function vTodaySide() {
   return {
     title: '今日学习', crumb: [fmtMD(Date.now())],
     body: `<div class="s-wrap">
-      <div class="s-progress"><b>今天大约 ${mins} 分钟</b><span class="bar"><i style="width:${doneN / 3 * 100}%"></i></span><span class="note-line" style="color:var(--sage-deep)">已完成 ${doneN} / 3</span></div>
+      <div class="s-progress"><b>今天大约 ${mins} 分钟</b><span class="bar"><i style="width:${doneN / totN * 100}%"></i></span><span class="note-line" style="color:var(--sage-deep)">已完成 ${doneN} / ${totN}</span></div>
+      ${spBannerHTML()}
       ${oldNew}
       <div class="s-tls">
-      ${tlRow(0, '今日复习', reviewDone ? '' : '主题表达 + 配菜，按到期时间排', reviewDone ? doneTag : '', revInner)}
-      ${tlRow(1, '主菜 · 主题表达', '一次一个写作组合（3 个论点，约 12 条）', topicDone ? doneTag : '', `<div class="s-card s-main">${t3TodayNew()}</div>`)}
-      ${tlRow(2, sideTitle, ids.length ? `${ids.length} 条 · 约 ${Math.max(2, Math.round(ids.length * 1.3))} 分钟` : '', sideRight, sideInner)}
+      ${tlRow(0, sp ? '冲刺复习' : '今日复习', reviewDone ? '' : sp ? '今天分到的，加上本来今天到期的' : '主题表达 + 配菜，按到期时间排', reviewDone ? doneTag : '', revInner)}
+      ${paused ? tlRow(1, '主菜 · 主题表达', '冲刺期间暂停', '', spPausedCard('考前不学新的话题，把学过的复习牢。')) : tlRow(1, '主菜 · 主题表达', '一次一个写作组合（3 个论点，约 12 条）', topicDone ? doneTag : '', `<div class="s-card s-main">${t3TodayNew()}</div>`)}
+      ${paused ? tlRow(2, '配菜', '冲刺期间暂停', '', spPausedCard('功能表达、我的笔记也先不学新的。')) : tlRow(2, sideTitle, ids.length ? `${ids.length} 条 · 约 ${Math.max(2, Math.round(ids.length * 1.3))} 分钟` : '', sideRight, sideInner)}
       </div>
       ${ck ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="checkin">完成今天的学习并打卡</button></div>` : ''}
     </div>`,
@@ -6528,6 +6565,170 @@ T3VIEWS.splan = vSidePlan;
 T3VIEWS.srev = vSideRev;
 T3VIEWS.srevdone = vSideRevDone;
 
+/* ============================================================
+   考前冲刺（设计稿 CX、CY）：考前最后 7 天，把所有在记的内容至少复习一遍，平均分到这 7 天
+   - 冲刺开始那天把 7 天的安排定下来（S.t3.sprintPlan），之后不随评分变动
+   - 每天分到的内容算作“今天到期”，和本来到期的一起出现在今日复习里，不会重复
+   - 默认冲刺期间暂停新学；最后一天只复习薄弱的
+   ============================================================ */
+function spSet() {
+  const s = S.t3.set;
+  if (s.sprint == null) s.sprint = false;
+  if (!s.sprintNew) s.sprintNew = 'pause';
+  if (!s.sprintLast) s.sprintLast = 'weak';
+  return s;
+}
+function spWindow() {
+  const ex = examTs(); if (!ex) return null;
+  const start = addDays(ex, -7);
+  return { ex, start, days: [0, 1, 2, 3, 4, 5, 6].map(i => addDays(start, i)) };
+}
+function spActive() {
+  const s = spSet(), w = spWindow();
+  if (!s.sprint || !w) return null;
+  const t = dayStart();
+  if (t < w.start || t >= w.ex) return null;
+  return Object.assign(w, { n: w.days.indexOf(t) + 1, left: diffDays(w.ex) });
+}
+const spWeakR = r => r === 'vag' || r === 'fgt';
+// 要冲刺的单位：主题表达按写作组合、话题词汇按个、配菜按组
+function spUnits() {
+  const out = [], seen = new Set();
+  for (const id of T.arg.keys()) {
+    const r = S.t3.arg[id];
+    if (!r || r.mode !== 'memory' || r.stage == null || seen.has(id)) continue;
+    const c = comboOf(id), ids = (c ? c.args : [id]).filter(a => { const x = S.t3.arg[a]; return T.arg.has(a) && x && x.mode === 'memory' && x.stage != null; });
+    ids.forEach(a => seen.add(a));
+    const A0 = T.arg.get(ids[0]), tp = T.topic.get(A0.topic);
+    out.push({ key: 'c:' + ids[0], kind: 'arg', ids, n: ids.reduce((s, a) => s + T.arg.get(a).items.length, 0), weak: ids.some(a => spWeakR(S.t3.arg[a].lastR)), last: Math.max(...ids.map(a => S.t3.arg[a].last || 0)), name: tp.name + ' · ' + ids.map(a => '论点 ' + T.arg.get(a).n).join('、') });
+  }
+  for (const id of T.term.keys()) {
+    const r = S.t3.term[id];
+    if (!r || r.mode !== 'memory' || r.stage == null) continue;
+    out.push({ key: 't:' + id, kind: 'term', ids: [id], n: 1, weak: spWeakR(r.lastR), last: r.last || 0, name: T.term.get(id).en });
+  }
+  const gmap = new Map();
+  for (const [id, it] of ITEMS) {
+    if (!(it.lib === 'function' || it.lib === 'notes') || !active(id) || modeOf(id) !== 'memory' || !studied(id)) continue;
+    if (!gmap.has(it.gid)) gmap.set(it.gid, []);
+    gmap.get(it.gid).push(id);
+  }
+  const lastR = id => { const h = (S.items[id] || {}).hist || []; return (h[h.length - 1] || {}).r; };
+  for (const [gid, ids] of gmap) {
+    const G = GROUPS.get(gid); if (!G) continue;
+    out.push({ key: 'g:' + gid, kind: G.lib === 'function' ? 'fn' : 'notes', ids, n: ids.length, weak: ids.some(x => spWeakR(lastR(x))), last: Math.max(...ids.map(x => S.items[x].last || 0)), name: sdGName(G) });
+  }
+  return out;
+}
+// 排 7 天：薄弱的、很久没复习的在前，最近 3 天刚复习过的往后；每次放进目前最轻的一天
+function spMake() {
+  const w = spWindow(); if (!w) return null;
+  const s = spSet(), units = spUnits(), recent = addDays(Date.now(), -3);
+  units.sort((a, b) => (b.weak - a.weak) || ((a.last >= recent) - (b.last >= recent)) || (a.last - b.last));
+  const days = w.days.map(t => ({ t, keys: [], n: 0 }));
+  const weakLast = s.sprintLast === 'weak';
+  // 冲刺中途才打开：只排今天和以后的几天
+  const from = Math.max(0, Math.min(6, w.days.indexOf(dayStart())));
+  let pool = (weakLast ? days.slice(0, 6) : days).slice(from);
+  if (!pool.length) pool = [days[6]];
+  units.forEach(u => { const d = pool.reduce((m, x) => x.n < m.n ? x : m, pool[0]); d.keys.push(u.key); d.n += u.n; });
+  if (weakLast) units.filter(u => u.weak).forEach(u => { days[6].keys.push(u.key); days[6].n += u.n; });
+  const byKey = {}; units.forEach(u => { byKey[u.key] = { kind: u.kind, ids: u.ids, n: u.n, name: u.name, weak: u.weak }; });
+  return { exam: S.t3.set.exam, last: s.sprintLast, start: w.start, days, units: byKey, total: units.reduce((a, u) => a + u.n, 0) };
+}
+// 冲刺开始后定下来；改了考试日期或“最后一天”设置才重排
+function spPlan() {
+  const a = spActive();
+  if (!a) return spMake();
+  const P = S.t3.sprintPlan;
+  if (!P || P.exam !== S.t3.set.exam || P.last !== S.t3.set.sprintLast) { S.t3.sprintPlan = spMake(); save(); }
+  return S.t3.sprintPlan;
+}
+// 今天分到、冲刺里还没复习过的条目（最后一天的薄弱项照样再复习）
+let spCache = { k: '', v: null };
+function spToday() {
+  const a = spActive();
+  if (!a) return null;
+  const k = dayKey() + ':' + (S.t3.sprintPlan ? S.t3.sprintPlan.total : '') + ':' + S.t3.set.exam + ':' + S.t3.set.sprintLast;
+  if (spCache.k === k && spCache.v) return spCache.v;
+  const P = spPlan(), d = P.days[a.n - 1], lastDay = a.n === 7;
+  const v = { arg: new Set(), term: new Set(), side: new Set(), start: P.start, lastDay };
+  (d ? d.keys : []).forEach(key => { const u = P.units[key]; if (!u) return; const set = u.kind === 'arg' ? v.arg : u.kind === 'term' ? v.term : v.side; u.ids.forEach(id => set.add(id)); });
+  spCache = { k, v };
+  return v;
+}
+function spNeed(rec, v) { return !!rec && rec.mode !== 'paused' && (rec.last || 0) < dayStart() && (v.lastDay || (rec.last || 0) < v.start); }
+function spArgDue(id) { const v = spToday(); return !!v && v.arg.has(id) && spNeed(S.t3.arg[id], v); }
+function spTermDue(id) { const v = spToday(); return !!v && v.term.has(id) && spNeed(S.t3.term[id], v); }
+function spSideDue(id) { const v = spToday(); return !!v && v.side.has(id) && active(id) && spNeed(S.items[id], v); }
+const spPaused = () => !!spActive() && spSet().sprintNew === 'pause' && !ui.spLearn;
+// 冲刺还剩多少（今天和以后分到、冲刺里还没复习过的）
+function spLeft() {
+  const a = spActive(); if (!a) return 0;
+  const P = spPlan(), seen = new Set(); let n = 0;
+  P.days.slice(a.n - 1).forEach(d => d.keys.forEach(key => {
+    const u = P.units[key]; if (!u || seen.has(key)) return; seen.add(key);
+    u.ids.forEach(id => { const rec = u.kind === 'arg' ? S.t3.arg[id] : u.kind === 'term' ? S.t3.term[id] : S.items[id]; if ((rec && rec.last || 0) < P.start) n += u.kind === 'arg' ? T.arg.get(id).items.length : 1; });
+  }));
+  return n;
+}
+
+/* ---------- 图：7 天每天多少 ---------- */
+function spBars(P, todayIdx) {
+  const per = P.days.map(d => { const c = { arg: 0, term: 0, side: 0 }; d.keys.forEach(k => { const u = P.units[k]; if (u) c[u.kind === 'arg' ? 'arg' : u.kind === 'term' ? 'term' : 'side'] += u.n; }); return c; });
+  const mx = Math.max(1, ...per.map(c => c.arg + c.term + c.side));
+  return `<div class="sp-bars">${P.days.map((d, i) => { const c = per[i], tot = c.arg + c.term + c.side, h = v => Math.round(v / mx * 110); return `<div class="sp-col ${i === todayIdx ? 'on' : ''} ${todayIdx != null && i < todayIdx ? 'past' : ''}"><b>${tot}</b><span class="sp-stack"><i class="side" style="height:${h(c.side)}px"></i><i class="term" style="height:${h(c.term)}px"></i><i class="arg" style="height:${h(c.arg)}px"></i></span><small>${fmtMD(d.t).replace(' 月 ', '/').replace(' 日', '')}</small><small class="muted">周${WD[new Date(d.t).getDay()]}${i === 6 && P.last === 'weak' ? ' · 薄弱' : ''}</small></div>`; }).join('')}</div>
+    <div class="sp-legend"><span><i class="arg"></i>主题表达论点</span><span><i class="term"></i>话题词汇</span><span><i class="side"></i>配菜</span><span class="muted" style="margin-left:auto">当天本来到期的照常出现，不会重复</span></div>`;
+}
+function spCounts(P) {
+  const c = { arg: 0, argN: 0, term: 0, fn: 0, notes: 0 };
+  Object.values(P.units).forEach(u => { if (u.kind === 'arg') { c.arg += u.ids.length; c.argN += u.n; } else c[u.kind] += u.n; });
+  return c;
+}
+
+/* ---------- 设置页里的一块（CX） ---------- */
+function spSettingsHTML() {
+  const s = spSet(), ex = examTs(), w = spWindow(), a = spActive();
+  const sw = (on, dis) => `<button class="t-switch" type="button" role="switch" aria-checked="${on}" data-a="t3set" data-k="sprint" ${dis ? 'disabled' : ''} aria-label="考前冲刺"><i></i></button>`;
+  const seg = (k, opts) => `<span class="seg small" role="group">${opts.map(([v, t]) => `<button type="button" data-a="spset" data-k="${k}" data-v="${v}" aria-pressed="${s[k] === v}">${t}</button>`).join('')}</span>`;
+  let body = '';
+  if (w) {
+    const P = spPlan(), c = spCounts(P), per = Math.round(P.total / 7);
+    body = `<div class="sp-plan"><div class="sp-plan-h"><b>冲刺怎么排</b><small class="muted">${fmtMD(w.start)} – ${fmtMD(addDays(w.ex, -1))} · 共 ${P.total} 条 · 每天约 ${per} 条${a ? ` · 今天是第 ${a.n} 天，安排已经定下来了` : ''}</small></div>
+      <div class="sp-cnt">${svg('topic')}主题表达 ${c.arg} 个论点（${c.argN} 条） · 话题词汇 ${c.term} 个 · ${svg('fn')}功能表达 ${c.fn} 条 · ${svg('notes')}我的笔记 ${c.notes} 张</div>
+      ${P.total ? spBars(P, a ? a.n - 1 : null) : '<p class="note-line">现在还没有学过的“记忆”内容，冲刺开始时会按那时学过的来排。</p>'}
+      <div class="sp-rules"><b>排的规则</b><span>· 同一个写作组合的论点排在同一天；配菜同一组排在同一天。</span><span>· 薄弱的、很久没复习的排在前面；最近 3 天刚复习过的往后放。</span><span>· 冲刺里已经复习过的不会再排；最后一天${s.sprintLast === 'weak' ? '只复习薄弱的' : '和其他天一样'}。</span><span>· 冲刺复习也照常评分；考完以后恢复原来的间隔。</span></div></div>`;
+  }
+  return `<section class="t-setgroup"><span class="note-line">考前冲刺 · 考前最后 7 天把在记的内容平均排一遍</span>
+    <div class="t-setrow ${ex ? '' : 'dis'}"><span class="txt"><b>考前冲刺${ex ? '' : ' <span class="tag">需要先填考试日期</span>'}</b><small>${w ? `打开后，${fmtMD(w.start)} – ${fmtMD(addDays(w.ex, -1))} 这 7 天按冲刺安排` : '填了考试日期才能打开'}</small></span>${sw(!!(s.sprint && ex), !ex)}</div>
+    <div class="t-setrow"><span class="txt"><b>冲刺期间的新学</b><small>最后 7 天新内容记不牢，建议先停；今日学习里还是可以手动开始</small></span>${seg('sprintNew', [['pause', '暂停新学'], ['normal', '照常']])}</div>
+    <div class="t-setrow"><span class="txt"><b>考前最后一天</b><small>只看最近模糊、忘记过的，留出时间休息</small></span>${seg('sprintLast', [['weak', '只复习薄弱的'], ['even', '照常平均']])}</div>
+    ${body}</section>`;
+}
+
+/* ---------- 今日学习顶部（CY） ---------- */
+function spBannerHTML() {
+  const a = spActive(); if (!a) return '';
+  const left = spLeft();
+  return `<section class="sp-banner"><div class="sp-banner-h"><b>考前冲刺 · 第 ${a.n} / 7 天</b><small>距离考试 ${a.left} 天 · 冲刺还剩 ${left} 条</small><button class="t-link-btn" type="button" data-a="spweek">看 7 天安排 ›</button></div>
+    <div class="sp-days">${a.days.map((t, i) => `<i class="${i < a.n - 1 ? 'done' : i === a.n - 1 ? 'cur' : ''}"></i>`).join('')}</div></section>
+    ${ui.spWeek ? `<div class="s-scrim" data-a="spweekclose"><div class="s-sheet" role="dialog" aria-label="冲刺 7 天安排" data-a="sdnoop"><div class="s-sheet-h"><div><h3>冲刺 7 天安排</h3><span class="note-line">冲刺开始那天定下来的；今天是第 ${a.n} 天</span></div><button class="icon-btn" type="button" data-a="spweekclose" aria-label="关闭">×</button></div>${spBars(spPlan(), a.n - 1)}</div></div>` : ''}`;
+}
+function spPausedCard(what) {
+  return `<div class="sp-paused"><span>${what}</span><button class="t-link-btn" type="button" data-a="splearn">还是想学 ›</button></div>`;
+}
+function spClick(a, el) {
+  switch (a) {
+    case 'spset': S.t3.set[el.dataset.k] = el.dataset.v; S.t3.sprintPlan = null; spCache.k = ''; break;
+    case 'spweek': ui.spWeek = true; render(); return true;
+    case 'spweekclose': ui.spWeek = false; render(); return true;
+    case 'splearn': ui.spLearn = true; render(); return true;
+    default: return false;
+  }
+  save(); render();
+  return true;
+}
+
 
 const VIEWS = {
   home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
@@ -6603,6 +6804,7 @@ document.addEventListener('click', e => {
   if (a && (a.startsWith('imp') || a === 'tunrec') && (importClick(a, el) || flowClick(a, el) || histClick(a, el))) return;
   if (a && a.startsWith('iedit') && editClick(a, el)) return;
   if (a && a.startsWith('sd') && sideClick(a, el)) return;
+  if (a && a.startsWith('sp') && spClick(a, el)) return;
   switch (a) {
     case 'back': back(); break;
     case 'hidehint': S.user.hintClosed = true; save(); render(); break;
