@@ -3524,7 +3524,25 @@ function paraSpecs(A) {
   return [{ p: A.en, key: A.id + ':s', cls: 'sent' }]
     .concat(A.items.slice(1).map(id => ({ p: T.item.get(id).para, key: id, cls: 'exp' })))
     .concat(tp.terms.map(id => ({ p: T.term.get(id).en, key: id, cls: 'term' })))
-    .concat((A.links || []).map(p => ({ p, cls: 'link' })));
+    .concat(paraLinks(A));
+}
+/* 衔接：每次显示时按“现在”的功能表达库现场匹配（不再只用导入那一刻存下的 A.links），
+   所以先导入话题、后导入功能表达，范文里的衔接也能标出来；能找到对应条目时直接点进它的详情页 */
+function paraLinks(A) {
+  const low = A.para.toLowerCase(), seen = new Set(), out = [];
+  const norm = p => p.replace(/[,.\s]+$/, '').toLowerCase();
+  const fns = [...ITEMS.values()].filter(it => it.type === 'fn')
+    .map(it => ({ p: fixedPart(it.en), fid: it.id }))
+    .filter(x => x.p.length > 3)
+    .sort((a, b) => b.p.length - a.p.length);
+  for (const x of fns) {
+    const k = norm(x.p);
+    if (seen.has(k) || !low.includes(k)) continue;
+    seen.add(k); out.push({ p: x.p, cls: 'link', fid: x.fid });
+  }
+  // 测试台示例话题里手写的衔接，库里没有对应条目时照旧标出
+  for (const p of A.links || []) { const k = norm(p); if (!seen.has(k)) { seen.add(k); out.push({ p, cls: 'link' }); } }
+  return out;
 }
 function sentenceWith(text, phrase) {
   const parts = text.match(/[^.!?]+[.!?]+/g) || [text];
@@ -3646,7 +3664,8 @@ function t3Para(r) {
   const masked = ui.t3paraMask === A.id;
   const ranges = findRanges(A.para, paraSpecs(A));
   const used = ranges.filter(x => x.cls === 'term').map(x => x.key);
-  const links = ranges.filter(x => x.cls === 'link').map(x => x.p);
+  const links = ranges.filter(x => x.cls === 'link').map(x => ({ txt: A.para.slice(x.s, x.e), fid: x.fid }))
+    .filter((x, i, arr) => arr.findIndex(y => y.txt.toLowerCase() === x.txt.toLowerCase()) === i);
   const P = ui.t3pp && ui.t3pp.arg === A.id ? ui.t3pp : null;
   let left;
   if (P) {
@@ -3681,7 +3700,7 @@ function t3Para(r) {
         <div class="t-label">展开表达</div>
         <div class="t-box list">${A.items.slice(1).map(x => { const it = T.item.get(x); return `<button class="t-exp" type="button" data-go="texp:${x}" data-hk="${x}"><span class="role">${it.role}</span><span class="txt"><span class="en${mk()}"${P ? ' data-a="t3unmask"' : ''}>${esc(it.en)}</span><span class="zh">${esc(it.zh)}</span></span></button>`; }).join('')}</div>
         ${used.length ? `<div class="t-label">用到的话题词汇</div><div class="chips">${used.map(k => { const t = T.term.get(k); return `<button class="t-termchip" type="button" data-go="tterm:${k}" data-hk="${k}"><span class="en${mk()}"${P ? ' data-a="t3unmask"' : ''}>${esc(t.en)}</span> <small>${esc(t.zh)}</small></button>`; }).join('')}</div>` : ''}
-        ${links.length ? `<div class="t-label">衔接 · 点击查看功能表达</div><div class="chips">${links.map(l => `<button class="t-linkchip" type="button" data-nav="funcs">${esc(l.replace(/,$/, ''))} …</button>`).join('')}</div>` : ''}
+        ${links.length ? `<div class="t-label">衔接 · 点击查看功能表达</div><div class="chips">${links.map(l => `<button class="t-linkchip" type="button" ${l.fid ? `data-go="item:${esc(l.fid)}"` : 'data-nav="funcs"'}>${esc(l.txt.replace(/,$/, ''))} …</button>`).join('')}</div>` : ''}
       </aside></div>
       <div class="t-legend"><span><span class="t-u">下划线</span> 论点句</span><span><mark class="t-exp">浅绿底</mark> 展开表达</span><span><mark class="t-term">米色底虚线</mark> 话题词汇</span><span><span class="t-link">棕粉色字</span> 衔接（功能表达）</span></div>`,
   };
