@@ -1205,6 +1205,238 @@ input.tg-name:focus { outline: none; border-bottom-style: solid; border-bottom-c
   .t-unrec { flex-wrap: wrap; }
   .t-unrec-text { flex-basis: 100%; white-space: normal; }
 }
+
+/* ============================================================
+   配菜（side.js）：今日学习时间线、编排设置、挑选、配菜新学 / 复习
+   ============================================================ */
+.s-wrap { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.s-ico { width: 24px; height: 24px; border-radius: 8px; background: var(--sage-soft); color: var(--sage-deep); display: inline-grid; place-items: center; flex: none; }
+.s-ico svg { width: 14px; height: 14px; }
+.s-card { border-radius: var(--r-md); border: 1px solid var(--line); background: #fff; padding: 12px 18px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.s-progress { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 18px; background: var(--sage-soft); flex-wrap: wrap; }
+.s-progress b { font-family: var(--f-title); font-size: 18px; color: var(--ink); font-weight: 600; }
+.s-progress .bar { flex: 1 1 160px; height: 8px; border-radius: 999px; background: #fff; overflow: hidden; }
+.s-progress .bar i { display: block; height: 100%; background: var(--sage-deep); }
+.s-tls { display: flex; flex-direction: column; }
+.s-tl { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 14px; }
+.s-tl .rail { display: flex; flex-direction: column; align-items: center; }
+.s-tl .rail .line { flex: 1; width: 1.5px; background: var(--line); }
+.s-tl:last-child .rail .line { background: transparent; }
+.s-dot { width: 30px; height: 30px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 13px; border: 1.5px solid var(--line); background: var(--paper-2); color: var(--muted); flex: none; }
+.s-dot svg { width: 15px; height: 15px; }
+.s-dot.cur { border-color: var(--sage-deep); background: #fff; color: var(--sage-deep); }
+.s-dot.done { border-color: var(--sage-deep); background: var(--sage-deep); color: var(--on-accent); }
+.s-tl .body { padding-bottom: 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.s-tl .title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 30px; }
+.s-tl .title h3 { margin: 0; font-family: var(--f-title); font-size: 18px; font-weight: 600; color: var(--ink); }
+.s-tl .title .r { margin-left: auto; }
+.s-tl.done .title h3 { color: var(--muted); }
+.s-revcard { padding: 4px 16px; gap: 0; }
+.s-revrow { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFEBE3; flex-wrap: wrap; }
+.s-revrow:first-child { border-top: 0; }
+.s-revrow .txt { flex: 1 1 200px; display: flex; flex-direction: column; min-width: 0; }
+.s-revrow .txt b { font-size: 15px; color: var(--ink); font-weight: 600; }
+.s-revrow .txt small { font-size: 12.5px; color: var(--warm); }
+.s-revrow.warn { background: var(--wrong-soft); margin: 6px -10px 0; padding: 8px 10px; border-radius: 12px; border-top: 0; }
+.s-main .rows { gap: 8px; }
+.s-ghead { display: flex; align-items: center; gap: 8px; padding: 10px 0 2px; border-top: 1px solid #EFEBE3; flex-wrap: wrap; }
+.s-ghead:first-child { border-top: 0; padding-top: 4px; }
+.s-ghead b { font-size: 15px; color: var(--ink); font-weight: 600; }
+.s-srow { display: flex; flex-direction: column; text-align: left; border: 0; background: transparent; padding: 4px 0 4px 32px; border-radius: 10px; }
+.s-srow .en { font-size: 16px; color: var(--ink); }
+.s-srow small { font-size: 12.5px; color: var(--warm); }
+.s-srow:hover .en { text-decoration: underline; text-decoration-color: var(--sage); }
+.s-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); padding-top: 10px; margin-top: 6px; border-top: 1px solid #EFEBE3; }
+.s-chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 9px; border-radius: 999px; background: var(--paper-2); color: var(--muted); font-size: 12px; }
+.s-chip svg { width: 12px; height: 12px; }
+.s-chip.on { background: var(--sage-soft); color: var(--sage-deep); }
+.s-kchip { font-size: 11.5px; padding: 1px 9px; border-radius: 999px; background: var(--sage-soft); color: var(--sage-deep); white-space: nowrap; }
+/* 设置 */
+.s-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .s-modes { grid-template-columns: minmax(0, 1fr); } }
+.s-mode { text-align: left; border-radius: 18px; border: 1.5px solid var(--line); background: var(--paper); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.s-mode[aria-pressed="true"] { border-color: var(--sage-deep); background: #fff; }
+.s-mode .r { display: flex; align-items: center; gap: 10px; }
+.s-mode .radio { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--muted); display: inline-grid; place-items: center; flex: none; }
+.s-mode[aria-pressed="true"] .radio { border-color: var(--sage-deep); }
+.s-mode[aria-pressed="true"] .radio::after { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--sage-deep); }
+.s-mode b { font-size: 15.5px; color: var(--ink); }
+.s-mode small { font-size: 12.5px; color: var(--warm); padding-left: 28px; }
+.s-pic { display: flex; gap: 12px; padding-left: 28px; flex-wrap: wrap; }
+.s-pic > span { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10.5px; color: var(--muted); }
+.s-pic .cells { display: inline-flex; gap: 2px; }
+.s-pic i { display: inline-block; width: 13px; height: 10px; border-radius: 3px; background: #EFEBE3; }
+.s-pic i.t { background: var(--sage-deep); } .s-pic i.o { background: var(--sage); }
+.s-h { font-size: 15px; color: var(--ink); }
+.s-krow { display: grid; grid-template-columns: 22px 24px 110px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid #EFEBE3; }
+.s-krow b { font-size: 14px; color: var(--ink); }
+.s-krow small { font-size: 12px; color: var(--muted); }
+.s-krow.off b { color: var(--muted); }
+@media (max-width: 560px) { .s-krow { grid-template-columns: 22px 24px minmax(0, 1fr) auto; } .s-krow small { display: none; } }
+.s-check { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--muted); background: #fff; color: var(--on-accent); display: inline-grid; place-items: center; font-size: 13px; padding: 0; flex: none; }
+.s-check svg { width: 14px; height: 14px; }
+.s-check[aria-pressed="true"] { background: var(--sage-deep); border-color: var(--sage-deep); }
+.s-check.some { background: var(--sage-soft); border-color: var(--sage-deep); color: var(--sage-deep); }
+.s-check:disabled { opacity: .35; }
+.s-stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+.s-stepper button { border: 0; background: transparent; width: 36px; height: 34px; color: var(--muted); font-size: 17px; }
+.s-stepper b { min-width: 24px; text-align: center; font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.s-krow .unit { font-size: 12.5px; color: var(--muted); margin-left: 8px; }
+.s-orders { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid #EFEBE3; }
+.s-oh { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.s-oh b { font-size: 14px; color: var(--ink); } .s-oh small { font-size: 12px; color: var(--muted); }
+.s-order { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.s-ochip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-size: 13.5px; color: var(--ink); }
+.s-ochip svg:not(.s-check svg) { width: 14px; height: 14px; color: var(--sage-deep); }
+.s-ochip small { font-size: 11.5px; color: var(--muted); }
+.s-ochip.off { background: var(--paper-2); color: var(--muted); }
+.s-ochip .mv { border: 0; background: transparent; color: var(--muted); padding: 0 4px; font-size: 15px; min-height: 30px; }
+.s-summary { border-radius: 16px; background: var(--sage-soft); padding: 10px 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.s-summary b { font-size: 14px; color: var(--ink); }
+.s-summary .items { display: inline-flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--warm); }
+.s-summary .items span { display: inline-flex; align-items: center; gap: 4px; }
+.s-summary .items small { color: var(--muted); }
+.s-summary .items svg { width: 13px; height: 13px; color: var(--sage-deep); }
+.s-summary .t-link-btn { margin-left: auto; font-weight: 600; }
+.s-mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding-top: 6px; }
+.s-mgrid > div { display: flex; flex-direction: column; gap: 6px; }
+.s-mgrid b { font-size: 13.5px; color: var(--ink); }
+.s-setlink { width: 100%; text-align: left; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+/* 弹窗：7 天安排 */
+.s-scrim { position: fixed; inset: 0; background: rgba(40, 46, 41, .32); display: grid; place-items: center; padding: 20px; z-index: 50; }
+.s-sheet { width: min(860px, 100%); max-height: 88vh; overflow: auto; background: #fff; border-radius: 24px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); cursor: default; }
+.s-sheet-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.s-sheet-h h3 { margin: 0; font-family: var(--f-title); font-size: 20px; color: var(--ink); }
+.s-week-wrap { overflow-x: auto; }
+.s-week { display: grid; grid-template-columns: 110px repeat(3, minmax(110px, 1fr)); gap: 6px 8px; align-items: center; min-width: 520px; font-variant-numeric: tabular-nums; }
+.s-week .h { font-size: 12.5px; color: var(--sage-deep); display: inline-flex; align-items: center; gap: 4px; }
+.s-week .h svg { width: 13px; height: 13px; }
+.s-week .d { font-size: 13px; color: var(--warm); }
+.s-week .c { text-align: center; padding: 3px 0; border-radius: 8px; font-size: 13px; color: var(--line); }
+.s-week .c.y { background: var(--sage-soft); color: var(--sage-deep); font-weight: 600; }
+.s-week .c.t { background: #D7DECF; color: var(--sage-deep); font-weight: 600; }
+.s-week .c small { display: block; font-size: 11px; font-weight: 400; line-height: 1.3; padding: 0 4px; }
+/* 挑选 */
+.s-pg { border-radius: 18px; border: 1px solid var(--line); background: #fff; overflow: hidden; }
+.s-pg-h { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--paper-2); flex-wrap: wrap; }
+.s-pg-h b { font-size: 15px; color: var(--ink); }
+.s-pg-h small { font-size: 12px; color: var(--muted); }
+.s-pr { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 14px; border-top: 1px solid #EFEBE3; }
+.s-pr.off .en { color: var(--muted); }
+.s-plink { border: 0; background: transparent; padding: 0; text-align: left; display: flex; flex-direction: column; min-width: 0; }
+.s-plink .en { font-size: 16px; color: var(--ink); }
+.s-plink small { font-size: 12.5px; color: var(--warm); }
+/* 进度：一行，点开看全部 */
+.s-prog { border-radius: 14px; background: var(--paper-2); }
+.s-prog summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 8px 14px; cursor: pointer; flex-wrap: wrap; min-height: 44px; }
+.s-prog summary::-webkit-details-marker { display: none; }
+.s-pnow { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; min-width: 0; flex-wrap: wrap; }
+.s-pnow svg { width: 14px; height: 14px; color: var(--sage-deep); }
+.s-pnow b { color: var(--ink); font-weight: 600; }
+.s-pdots { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+.s-dots { display: inline-flex; gap: 3px; }
+.s-dots i { width: 14px; height: 6px; border-radius: 3px; background: var(--line); }
+.s-dots i.done { background: var(--sage); } .s-dots i.cur { background: var(--sage-deep); width: 22px; }
+.s-dsep { width: 1px; height: 10px; background: var(--line); }
+.s-pmore { font-size: 12.5px; color: var(--sage-deep); }
+.s-prog[open] .s-pmore { color: var(--muted); }
+.s-pfull { display: flex; flex-direction: column; gap: 8px; padding: 2px 14px 12px; }
+.s-pcat { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.s-pcat-h { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--sage-deep); min-width: 76px; padding-top: 6px; }
+.s-pcat-h svg { width: 13px; height: 13px; }
+.s-psegs { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.s-pseg { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 10px; background: #fff; font-size: 13px; color: var(--muted); border: 1.5px solid transparent; }
+.s-pseg .tk { font-size: 11px; padding: 0 6px; border-radius: 999px; background: var(--paper-2); }
+.s-pseg .n { font-size: 11.5px; }
+.s-pseg.cur { border-color: var(--sage-deep); color: var(--ink); font-weight: 600; }
+.s-pseg.done { color: var(--ink); } .s-pseg.done .n { color: var(--sage-deep); }
+/* 新学：左边列表，右边详情 */
+.s-split { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 18px; align-items: start; }
+@media (max-width: 820px) { .s-split { grid-template-columns: minmax(0, 1fr); } }
+.s-left { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.s-lrow { text-align: left; border: 1.5px solid var(--line); background: #fff; border-radius: 16px; padding: 10px 14px; display: flex; flex-direction: column; gap: 1px; }
+.s-lrow .en { font-size: 17px; color: var(--ink); }
+.s-lrow small { font-size: 12.5px; color: var(--warm); }
+.s-lrow .key { font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.s-lrow[aria-pressed="true"] { border-color: var(--sage-deep); background: var(--sage-soft); }
+.s-start { border-radius: 18px; background: var(--paper-2); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.s-detail { border-radius: 22px; background: #fff; border: 1px solid var(--line); padding: 16px 20px; box-shadow: var(--shadow-sm); position: sticky; top: 12px; min-width: 0; }
+.s-detail-h { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+.s-method { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--warm); }
+.s-boxbad { font-size: 19px; padding: 10px 14px; border-radius: 14px; background: #fff; border: 1.5px dashed var(--wrong); color: var(--ink); }
+.s-sent { font-size: 20px; line-height: 1.7; color: var(--ink); }
+.s-fbl { display: flex; justify-content: flex-end; }
+.s-done { display: flex; flex-direction: column; gap: 4px; border-radius: 16px; border: 1px solid var(--line); padding: 8px 16px; background: #fff; }
+.s-done > span { display: flex; align-items: center; gap: 10px; font-size: 13px; flex-wrap: wrap; }
+.s-done svg { width: 14px; height: 14px; color: var(--sage-deep); }
+.s-done .en { font-size: 15px; }
+.s-done small { color: var(--muted); }
+.s-done .t-link-btn { margin-left: auto; }
+/* 挑战 */
+.s-offer { border-radius: 22px; background: var(--paper-2); padding: 18px 22px; display: flex; flex-direction: column; gap: 12px; }
+.s-offer h3 { margin: 0; font-family: var(--f-title); font-size: 19px; color: var(--ink); }
+.s-offers { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.s-offers button { text-align: left; border-radius: 18px; border: 1.5px solid var(--line); background: #fff; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.s-offers button b { font-size: 15px; color: var(--ink); }
+.s-offers button small { font-size: 12.5px; color: var(--warm); }
+.s-offers button:hover { border-color: var(--sage-deep); }
+.s-crow { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+.s-crow .no { font-size: 12px; color: var(--muted); text-align: right; padding-top: 12px; }
+.s-crow > div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.s-crow .lab { font-size: 13px; color: var(--warm); }
+.s-crow .ok, .s-ctx .ok { color: var(--sage-deep); font-size: 13px; } .s-crow .bad, .s-ctx .bad { color: var(--wrong); font-size: 13px; }
+.s-disc { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #EFEBE3; }
+.s-disc:first-of-type { border-top: 0; padding-top: 0; }
+.s-opt { text-align: left; border-radius: 14px; border: 1.5px solid var(--line); background: var(--paper); padding: 9px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.s-opt .en { font-size: 17px; flex: 1; }
+.s-opt small { font-size: 12.5px; color: var(--warm); }
+.s-opt.right { border-color: var(--sage-deep); background: var(--sage-soft); }
+.s-opt.wrong { border-color: var(--wrong); background: var(--wrong-soft); }
+.ok-t { color: var(--sage-deep); } .bad-t { color: var(--wrong); }
+.s-ctx { font-size: 18px; line-height: 2.3; color: var(--ink); }
+.answer.s-inline { display: inline-block; padding: 4px 10px; font-size: 16px; min-height: 0; }
+.s-ref { border-radius: 16px; background: var(--gap-soft); padding: 10px 16px; font-size: 13.5px; display: flex; flex-direction: column; gap: 4px; }
+.s-ref b { color: var(--ink); }
+/* 分区卡片：复习计划、完成页 */
+.s-cat { display: flex; flex-direction: column; gap: 8px; }
+.s-cat-h { display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.s-cat-h small { font-weight: 400; color: var(--muted); font-size: 12.5px; }
+.s-gcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+.s-gcards1 { display: flex; flex-direction: column; gap: 10px; }
+.s-gcard { border-radius: 18px; border: 1px solid var(--line); background: #fff; padding: 4px 16px 6px; min-width: 0; }
+.s-gcard-h { display: flex; align-items: center; gap: 8px; padding: 9px 0 7px; flex-wrap: wrap; }
+.s-gcard-h b { font-family: var(--f-title); font-size: 16px; color: var(--ink); font-weight: 600; }
+.s-gcard-h .r { margin-left: auto; }
+.s-grow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid #EFEBE3; }
+.s-grow .t-plain.en { font-size: 15.5px; color: var(--ink); text-align: left; }
+.s-grow b.rem { color: var(--sage-deep); } .s-grow b.vag { color: var(--gap); } .s-grow b.fgt { color: var(--wrong); }
+@media (max-width: 560px) { .s-grow { grid-template-columns: minmax(0, 1fr) auto; } .s-grow .rseg { grid-column: 1 / -1; justify-self: start; } }
+.s-tier { font-size: 12px; padding: 1px 10px; border-radius: 999px; background: var(--paper-2); color: var(--warm); white-space: nowrap; }
+.s-red { font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--wrong-soft); color: var(--wrong); white-space: nowrap; }
+.s-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.s-stats > div { border-radius: 16px; padding: 10px 16px; display: flex; flex-direction: column; background: var(--paper-2); }
+.s-stats .rem { background: var(--sage-soft); } .s-stats .vag { background: var(--gap-soft); } .s-stats .fgt { background: var(--wrong-soft); }
+.s-stats b { font-family: var(--f-title); font-size: 24px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.s-stats small { color: var(--warm); }
+.s-detail .d-word { font-size: clamp(24px, 3vw, 30px); }
+.s-main { padding: 8px; }
+.s-main > .rows { display: flex; flex-direction: column; gap: 8px; }
+.s-main > .note-line { padding: 4px 8px 2px; }
+@media (max-width: 640px) {
+  .s-tl { grid-template-columns: 24px minmax(0, 1fr); gap: 10px; }
+  .s-dot { width: 24px; height: 24px; font-size: 12px; }
+  .s-tl .title h3 { font-size: 16.5px; }
+  .s-card { padding: 10px 12px; }
+  .s-main { padding: 4px; }
+  .s-main .row { flex-wrap: wrap; }
+  .s-main .row .btn-row { width: 100%; }
+  .s-srow { padding-left: 4px; }
+  .s-pr { grid-template-columns: 22px minmax(0, 1fr); } .s-pr > small { grid-column: 2; }
+}
+.s-tplan { border-top: 1px dashed #EFEBE3; padding: 6px 0 8px 36px; }
+.s-tplan summary { list-style: none; cursor: pointer; font-size: 13px; color: var(--sage-deep); padding: 4px 0; }
+.s-tplan summary::-webkit-details-marker { display: none; }
+.s-tplan-in { display: flex; flex-direction: column; gap: 12px; padding-top: 6px; }
 </style>
 </head>
 <body>
@@ -1931,7 +2163,7 @@ function applyRating(id, r, prompt) {
 function dueQueue() {
   const map = new Map();
   for (const [id, it] of ITEMS) {
-    if (!isDue(id)) continue;
+    if (!isDue(id) || it.lib !== 'topic') continue; // 功能表达、写作笔记归“配菜复习”（side.js）
     if (!map.has(it.gid)) map.set(it.gid, []);
     map.get(it.gid).push(id);
   }
@@ -1944,7 +2176,7 @@ function dueQueue() {
   arr.sort((a, b) => a.minNext - b.minNext || b.wrong - a.wrong);
   return arr;
 }
-const dueCount = () => dueQueue().reduce((a, g) => a + g.ids.length, 0) + t3DueCount();
+const dueCount = () => dueQueue().reduce((a, g) => a + g.ids.length, 0) + t3DueCount() + sdDue().length;
 function todayLog() { return S.log[dayKey()] || {}; }
 function canCheckin() {
   const l = todayLog();
@@ -4074,7 +4306,7 @@ function t3RevDone() {
         ${t3PendRows(pend)}<span class="note-line">从头开始：明天从逐条默写重新开始。先不：按模糊处理，只退一格。</span></section>` : ''}
       ${D && D.wrong.length ? `<section class="t-panel row-like"><span class="txt"><b>再练一次错题</b><span class="warm">今天写错的 ${D.wrong.length} 条再写一遍。只是巩固，不改变评分和复习日期</span></span><button class="btn btn-outline" type="button" data-a="t3prac">再练一次</button></section>` : ''}
       <div class="btn-row">
-        ${oldN ? `<button class="btn btn-primary" type="button" data-a="startreview">继续其他复习（功能表达 / 写作笔记 ${oldN} 条）</button>` : ck ? '<button class="btn btn-primary" type="button" data-a="t3revck">完成复习并打卡</button>' : l.checked ? '<span class="tag core">今天已打卡</span>' : ''}
+        ${sdDue().length || sd().rev ? `<button class="btn btn-primary" type="button" data-go="${sd().rev ? 'srev' : 'splan'}">继续配菜复习（功能表达 / 我的笔记 ${sdDue().length} 条）</button>` : oldN ? `<button class="btn btn-primary" type="button" data-a="startreview">继续旧版主题表达组复习（${oldN} 条）</button>` : ck ? '<button class="btn btn-primary" type="button" data-a="t3revck">完成复习并打卡</button>' : l.checked ? '<span class="tag core">今天已打卡</span>' : ''}
         <button class="btn btn-ghost" type="button" data-a="t3revclose">返回</button>
         <span class="note-line">明天预计：${tmr} 条</span></div>
     </div>`,
@@ -4142,7 +4374,7 @@ function t3PlanHTML() {
       ${waiting.length ? `<span class="note-line">${waiting.map(esc).join('；')}</span>` : ''}</div>`;
   }).join('')}</section>`;
   if (P.terms.length) html += `<section class="t-plansec">${step('话题词汇', '每个词单独安排')}<div class="chips">${P.terms.map(id => { const t = T.term.get(id), n = ((S.t3.term[id] || {}).n || 0) + 1; return `<button class="t-tchip" type="button" data-go="tterm:${id}"><span class="en">${esc(t.en)}</span> <small>· ${n % 2 ? '写英文' : '例句填空'}</small></button>`; }).join('')}</div></section>`;
-  if (oldN) html += `<section class="t-plansec">${step('其他表达组', '功能表达、写作笔记里到期的内容，按组复习')}<div class="rows">${q.map(g => { const G = GROUPS.get(g.gid); return `<button class="row tap" type="button" data-go="group:${esc(G.id)}"><span class="title">${esc(G.name)}</span><span class="meta">${esc(groupCrumb(G)[0])}</span><span class="num" style="margin-left:auto">${g.ids.length} 条</span></button>`; }).join('')}</div></section>`;
+  if (oldN) html += `<section class="t-plansec">${step('旧版主题表达组', 'v4 的主题表达组里到期的内容，按组复习')}<div class="rows">${q.map(g => { const G = GROUPS.get(g.gid); return `<button class="row tap" type="button" data-go="group:${esc(G.id)}"><span class="title">${esc(G.name)}</span><span class="meta">${esc(groupCrumb(G)[0])}</span><span class="num" style="margin-left:auto">${g.ids.length} 条</span></button>`; }).join('')}</div></section>`;
   html += `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="t3startall">开始今日复习</button><span class="note-line">共 ${P.n + oldN} 条 · 从${P.mk.length ? '补练' : P.n ? '论点' : '第 1 组'}开始；每完成一个论点会显示它的结果，可以随时退出</span></div>`;
   return html;
 }
@@ -4293,6 +4525,7 @@ function t3Settings() {
       <section class="panel sage"><span class="note-line" style="color:var(--sage-deep)">默认的复习节点（不用设置，一直生效）</span>
         <div class="t-ladder">${['次日', '3 天', '7 天', '14 天', '30 天'].concat(st.extend ? ['60 天'] : []).map(x => `<span>${x}</span>`).join('<i>→</i>')}</div>
         <p class="warm">记得往后走一格，模糊退一格，忘记回到次日。下面的选项默认全部关闭，打开后才会改变安排。</p></section>
+      <button class="t-setrow s-setlink" type="button" data-go="sset"><span class="txt"><b>每天新学怎么编排</b><small>主题表达每天一个写作组合；配菜（功能表达、我的笔记）混合或轮换、每天几组、默写方式</small></span><span class="muted">${sd().mode === 'rot' ? '轮换' : '混合'} ›</span></button>
       <section class="t-setgroup"><span class="note-line">可选 · 和考试有关</span>
         <div class="t-setrow"><span class="txt"><b>考试日期</b><small>${ex ? (left >= 0 ? `距离考试 ${left} 天，首页会显示倒计时。` : '考试日期已经过了。') : '填了以后，首页显示倒计时；下面一项才能打开。不确定可以先不填，之后随时改。'}</small></span>
           <span class="btn-row"><input class="t-date" type="date" data-t3exam value="${esc(st.exam)}" aria-label="考试日期">${st.exam ? '<button class="btn btn-ghost btn-sm" type="button" data-a="t3clearexam">清除</button>' : ''}</span></div>
@@ -5831,6 +6064,625 @@ T3VIEWS.impconfirm = vImpFlow;
 T3VIEWS.impdone = vImportDoneZ;
 T3VIEWS.imphist = vImportHistCA;
 
+/* ============================================================
+   配菜：功能表达 + 我的笔记（表达卡 · 句型卡 · 语法卡）
+   今日学习时间线（复习 → 主菜 → 配菜）、编排设置（混合 / 轮换，按组）、
+   挑选、配菜新学（同一组放一页看，再连着写）、配菜复习、挑战（不计分）
+   ============================================================ */
+const SD_CAT = { fn: { name: '功能表达', icon: 'fn' }, notes: { name: '我的笔记', icon: 'notes' } };
+const SD_KIND = { fn: '功能表达', expr: '表达卡', pattern: '句型卡', grammar: '语法卡' };
+const SD_METHOD = {
+  fn: [['zh', '看中文'], ['ex', '在例句里']],
+  expr: [['zh', '看中文'], ['ex', '在例句里']],
+  pattern: [['zh', '看中文'], ['ex', '在例句里']],
+  grammar: [['short', '改短句'], ['full', '改整句']],
+};
+const SD_TIER = ['次日', '3 天', '7 天', '14 天', '30 天'];
+const sdCatOf = k => k === 'fn' ? 'fn' : 'notes';
+const sdWord = k => k === 'fn' ? '条' : '张';
+const sdMethodName = (k, m) => (SD_METHOD[k].find(x => x[0] === m) || SD_METHOD[k][0])[1];
+
+function sd() {
+  if (!S.side) S.side = {
+    mode: 'rot', order: ['fn', 'notes'], on: { fn: true, notes: true }, ptr: 0,
+    notes: { order: ['expr', 'pattern', 'grammar'], on: { expr: true, pattern: true, grammar: true }, ptr: 0 },
+    g: { rot: 1, fn: 1, notes: 1 },
+    method: { fn: 'zh', expr: 'zh', pattern: 'zh', grammar: 'short' },
+    today: { day: '', list: null, cat: null, custom: false, done: false },
+    learn: null, rev: null, revDone: null,
+  };
+  const D = S.side, k = dayKey();
+  if (D.today.day !== k) {
+    // 换了一天：昨天学了配菜，轮换才往后走
+    if (D.today.done && D.today.list) {
+      if (D.mode === 'rot' && D.today.cat) D.ptr = (D.order.indexOf(D.today.cat) + 1) % D.order.length;
+      const nk = D.today.list.map(id => ITEMS.get(id)).filter(Boolean).map(sdKindOfItem).find(x => x !== 'fn');
+      if (nk) D.notes.ptr = (D.notes.order.indexOf(nk) + 1) % D.notes.order.length;
+    }
+    D.today = { day: k, list: null, cat: null, custom: false, done: false };
+    if (D.learn && D.learn.day !== k) D.learn = null;
+    if (D.revDone && D.revDone.day !== k) D.revDone = null;
+  }
+  return D;
+}
+const sdKindOfItem = it => it.type === 'fn' ? 'fn' : it.type;
+const sdKindOfGroup = G => G.lib === 'function' ? 'fn' : G.kind;
+function sdGroups(k) {
+  return [...GROUPS.values()].filter(G => (G.lib === 'function' || (G.lib === 'notes' && (noteSet(G.setId) || {}).confirmed)) && sdKindOfGroup(G) === k);
+}
+const sdMem = id => active(id) && modeOf(id) === 'memory';
+// 一组就是一个单位；组里超过 6 张没学的，按原来的顺序分成几份
+function sdUnits(k, taken = new Set()) {
+  const out = [];
+  sdGroups(k).forEach(G => {
+    const ids = G.ids.filter(id => sdMem(id) && !studied(id) && !taken.has(id));
+    for (let i = 0; i < ids.length; i += 6) out.push({ G, ids: ids.slice(i, i + 6) });
+  });
+  return out;
+}
+function sdNoteKind(nptr, taken) {
+  const D = sd(), o = D.notes.order;
+  for (let i = 0; i < o.length; i++) { const k = o[(nptr + i) % o.length]; if (D.notes.on[k] && sdUnits(k, taken).length) return k; }
+  return null;
+}
+const sdCatKind = (cat, nptr, taken) => cat === 'fn' ? (sdUnits('fn', taken).length ? 'fn' : null) : sdNoteKind(nptr, taken);
+function sdCatFrom(ptr, nptr, taken) {
+  const D = sd();
+  for (let i = 0; i < D.order.length; i++) { const c = D.order[(ptr + i) % D.order.length]; if (D.on[c] && sdCatKind(c, nptr, taken)) return c; }
+  return null;
+}
+function sdRecommend() {
+  const D = sd();
+  let ids = [], cat = null;
+  if (D.mode === 'rot') { cat = sdCatFrom(D.ptr, D.notes.ptr); if (cat) ids = sdUnits(sdCatKind(cat, D.notes.ptr)).slice(0, D.g.rot).flatMap(u => u.ids); }
+  else D.order.forEach(c => { if (!D.on[c]) return; const k = sdCatKind(c, D.notes.ptr); if (k) ids.push(...sdUnits(k).slice(0, D.g[c]).flatMap(u => u.ids)); });
+  return { ids, cat };
+}
+function sdList() {
+  const D = sd();
+  if (!D.today.list) { const r = sdRecommend(); Object.assign(D.today, { list: r.ids, cat: r.cat, custom: false }); save(); }
+  D.today.list = D.today.list.filter(id => ITEMS.has(id));
+  return D.today.list;
+}
+const sdKinds = () => sd().order.flatMap(c => c === 'fn' ? ['fn'] : sd().notes.order);
+const sdGroupOrder = () => sdKinds().flatMap(sdGroups);
+const sdSort = ids => sdGroupOrder().flatMap(G => G.ids.filter(id => ids.includes(id)));
+const sdByGroup = ids => sdGroupOrder().map(G => ({ G, k: sdKindOfGroup(G), ids: G.ids.filter(id => ids.includes(id)) })).filter(u => u.ids.length);
+const sdDue = () => sdSort([...ITEMS.keys()].filter(id => { const it = ITEMS.get(id); return (it.lib === 'function' || it.lib === 'notes') && isDue(id); }));
+function sdWeek() {
+  const D = sd(), rows = [], taken = new Set(D.today.done ? [] : sdList());
+  let ptr = D.ptr, nptr = D.notes.ptr;
+  if (D.mode === 'rot' && D.today.cat) ptr = (D.order.indexOf(D.today.cat) + 1) % D.order.length;
+  const tk = sdList().map(id => sdKindOfItem(ITEMS.get(id))).find(k => k !== 'fn'); if (tk) nptr = (D.notes.order.indexOf(tk) + 1) % 3;
+  for (let d = 1; d <= 7; d++) {
+    const r = { t: addDays(Date.now(), d), n: {}, names: {} };
+    const take = (cat, gN) => { const k = sdCatKind(cat, nptr, taken); if (!k) return; const us = sdUnits(k, taken).slice(0, gN); us.flatMap(u => u.ids).forEach(id => taken.add(id)); r.n[cat] = us.reduce((a, u) => a + u.ids.length, 0); r.names[cat] = (cat === 'notes' ? SD_KIND[k] + ' · ' : '') + us.map(u => u.G.name).join('、'); if (cat === 'notes') nptr = (D.notes.order.indexOf(k) + 1) % 3; };
+    if (D.mode === 'rot') { const c = sdCatFrom(ptr, nptr, taken); if (c) { take(c, D.g.rot); ptr = (D.order.indexOf(c) + 1) % D.order.length; } }
+    else D.order.forEach(c => { if (D.on[c]) take(c, D.g[c]); });
+    rows.push(r);
+  }
+  return rows;
+}
+
+/* ---------- 共享片段 ---------- */
+const sdIco = (k, cls = '') => `<span class="s-ico ${cls}">${svg(k)}</span>`;
+const sdKindLabel = k => k === 'fn' ? '功能表达' : '我的笔记 · ' + SD_KIND[k];
+const sdGName = G => G.lib === 'function' ? G.fn : (G.ids.length < 2 ? '独立卡片' : G.name);
+const sdDetail = id => `<button class="t-link-btn" type="button" data-go="item:${esc(id)}">看详情页 ›</button>`;
+const sdSeg = (act, opts, cur, extra = '') => `<span class="seg small" role="group">${opts.map(([v, t]) => `<button type="button" data-a="${act}" data-v="${v}" ${extra} aria-pressed="${v === cur}">${t}</button>`).join('')}</span>`;
+// 按大类分区、每组一张卡
+function sdSections(units, headRight, rowOf, grid) {
+  return sd().order.filter(c => units.some(u => sdCatOf(u.k) === c)).map(c => {
+    const us = units.filter(u => sdCatOf(u.k) === c), n = us.reduce((a, u) => a + u.ids.length, 0);
+    return `<div class="s-cat"><div class="s-cat-h">${sdIco(SD_CAT[c].icon)}${SD_CAT[c].name}<small>${us.length} 组 · ${n} ${c === 'fn' ? '条' : '张'}</small></div>
+      <div class="${grid ? 's-gcards' : 's-gcards1'}">${us.map(u => `<div class="s-gcard"><div class="s-gcard-h">${c === 'notes' ? `<span class="s-kchip">${SD_KIND[u.k]}</span>` : ''}<b>${esc(sdGName(u.G))}</b><span class="r">${headRight(u)}</span></div>${u.ids.map(rowOf).join('')}</div>`).join('')}</div></div>`;
+  }).join('');
+}
+// 顶部一行紧凑进度：当前这组 + 小圆点；点开看全部
+function sdProg(ses, doneAll) {
+  const st = i => doneAll || i < ses.ui ? 'done' : (i === ses.ui ? 'cur' : '');
+  const u = ses.units[Math.min(ses.ui, ses.units.length - 1)];
+  const cats = sd().order.filter(c => ses.units.some(x => sdCatOf(x.k) === c));
+  const dots = cats.map(c => `<span class="s-dots">${ses.units.map((x, i) => sdCatOf(x.k) !== c ? '' : `<i class="${st(i)}"></i>`).join('')}</span>`).join('<span class="s-dsep"></span>');
+  const cur = doneAll ? '<b>全部完成</b>' : `${svg(SD_CAT[sdCatOf(u.k)].icon)}<span class="muted">${SD_CAT[sdCatOf(u.k)].name}</span>${u.k !== 'fn' ? `<span class="s-kchip">${SD_KIND[u.k]}</span>` : ''}<b>${esc(sdGName(u.G))}</b><span class="muted">第 ${ses.ui + 1} / ${ses.units.length} 组</span>`;
+  const full = cats.map(c => `<div class="s-pcat"><span class="s-pcat-h">${svg(SD_CAT[c].icon)}${SD_CAT[c].name}</span><div class="s-psegs">${ses.units.map((x, i) => sdCatOf(x.k) !== c ? '' : `<span class="s-pseg ${st(i)}">${x.k !== 'fn' ? `<span class="tk">${SD_KIND[x.k]}</span>` : ''}${esc(sdGName(x.G))}<span class="n">${st(i) === 'done' ? '✓' : x.ids.length}</span></span>`).join('')}</div></div>`).join('');
+  return `<details class="s-prog"><summary><span class="s-pnow">${cur}</span><span class="s-pdots">${dots}</span><span class="s-pmore">全部 ▾</span></summary><div class="s-pfull">${full}</div></details>`;
+}
+
+/* ---------- 今日学习：时间线（复习 → 主菜 → 配菜） ---------- */
+function vTodaySide() {
+  const D = sd(), ids = sdList();
+  const P = t3plan(), pend = t3Pend(), sdue = sdDue();
+  const oldQ = dueQueue(), oldN = oldQ.reduce((a, g) => a + g.ids.length, 0);
+  const reviewDone = !P.n && !S.t3.rev && !pend.length && !sdue.length && !D.rev && !oldN;
+  const tl = S.t3.learn, topicBusy = tl && tl.step !== 'done';
+  const topicDone = !topicBusy && S.t3.combos.some(c => dayKey(c.created) === dayKey());
+  const sideDone = D.today.done || (!ids.length && !D.learn);
+  const steps = [reviewDone, topicDone, sideDone];
+  const doneN = steps.filter(Boolean).length, curStep = steps.findIndex(x => !x);
+  const mins = Math.round((P.n + sdue.length + oldN) * 0.9 + (topicDone ? 0 : 22) + (sideDone ? 0 : ids.length * 1.3));
+  const tlRow = (i, title, sub, right, inner = '') => `<div class="s-tl ${steps[i] ? 'done' : ''}"><div class="rail"><span class="s-dot ${steps[i] ? 'done' : (i === curStep ? 'cur' : '')}">${steps[i] ? svg('check', 2.4) : i + 1}</span><span class="line"></span></div>
+    <div class="body"><div class="title"><h3>${title}</h3><span class="note-line">${sub}</span><span class="r">${right}</span></div>${inner}</div></div>`;
+  const doneTag = '<span class="note-line" style="color:var(--sage-deep)">已完成</span>';
+  // ① 复习：主题表达 + 配菜
+  const revRow = (icon, name, sub, btn) => `<div class="s-revrow">${sdIco(icon)}<span class="txt"><b>${name}</b><small>${sub}</small></span>${btn}</div>`;
+  let topicBtn;
+  if (S.t3.rev) topicBtn = `<button class="btn btn-primary btn-sm" type="button" data-a="t3resumerev">继续</button>`;
+  else if (P.n) topicBtn = `<button class="btn ${curStep === 0 ? 'btn-primary' : 'btn-outline'} btn-sm" type="button" data-a="t3startall">开始</button>`;
+  else topicBtn = S.t3.revDone ? `<button class="btn btn-ghost btn-sm" type="button" data-go="trevdone">看结果</button>` : '';
+  let sideBtn;
+  if (D.rev) sideBtn = `<button class="btn btn-primary btn-sm" type="button" data-go="srev">继续</button>`;
+  else if (sdue.length) sideBtn = `<button class="btn ${curStep === 0 && !P.n ? 'btn-primary' : 'btn-outline'} btn-sm" type="button" data-go="splan">开始</button>`;
+  else sideBtn = D.revDone ? `<button class="btn btn-ghost btn-sm" type="button" data-go="srevdone">看结果</button>` : '';
+  const revInner = `<div class="s-card s-revcard">
+    ${pend.length ? `<div class="s-revrow warn"><span class="txt"><b>${pend.length} 个论点评为忘记，等你确认是否从头开始</b><small>确认后才能打卡</small></span><button class="btn btn-outline btn-sm" type="button" data-go="trevdone">去确认</button></div>` : ''}
+    ${revRow('topic', '主题表达', S.t3.rev ? '复习进行中，退出时已保存位置' : P.n ? `补练 ${P.mk.length} · 论点 ${P.args.length} 个 · 话题词汇 ${P.terms.length} · 共 ${P.n} 条` : '今天没有到期的', topicBtn)}
+    ${P.n && !S.t3.rev ? `<details class="s-tplan"><summary>看主题表达的复习计划 ▾</summary><div class="s-tplan-in">${t3PlanHTML()}</div></details>` : ''}
+    ${revRow('notes', '配菜 · 功能表达和我的笔记', D.rev ? '复习进行中，退出时已保存位置' : sdue.length ? `${sdByGroup(sdue).length} 组 · ${sdue.length} 条` : '今天没有到期的', sideBtn)}
+    ${oldN ? revRow('library', '旧版主题表达组', `${oldN} 条`, `<button class="btn btn-outline btn-sm" type="button" data-a="startreview">开始</button>`) : ''}
+  </div>`;
+  // ③ 配菜
+  const units = sdByGroup(ids);
+  const rows = units.map(u => `<div class="s-ghead">${sdIco(SD_CAT[sdCatOf(u.k)].icon)}<b>${esc(sdGName(u.G))}</b><span class="note-line">${sdKindLabel(u.k)} · ${u.ids.length} ${sdWord(u.k)}${u.ids.length < u.G.ids.length ? `（这组共 ${u.G.ids.length}）` : ''}</span></div>` + u.ids.map(id => { const it = ITEMS.get(id); return `<button class="s-srow" type="button" data-go="item:${esc(id)}"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)}</small></button>`; }).join('')).join('');
+  const nk = units.map(u => u.k).find(k => k !== 'fn');
+  let sideTitle;
+  if (D.today.custom) sideTitle = '配菜 · 自己挑的';
+  else if (D.mode === 'rot') sideTitle = D.today.cat ? `配菜 · 今天轮到${SD_CAT[D.today.cat].name}${D.today.cat === 'notes' && nk ? '（' + SD_KIND[nk] + '）' : ''}` : '配菜';
+  else sideTitle = '配菜 · 功能表达 + 我的笔记';
+  const nextCat = D.mode === 'rot' && D.today.cat ? sdCatFrom((D.order.indexOf(D.today.cat) + 1) % 2, D.notes.ptr, new Set(ids)) : null;
+  const chips = D.mode === 'rot' ? D.order.map(c => `<span class="s-chip ${c === D.today.cat ? 'on' : ''}">${svg(SD_CAT[c].icon)}${SD_CAT[c].name}${c === D.today.cat ? ' · 今天' : c === nextCat ? ' · 明天' : ''}</span>`).join('') : '';
+  const foot = `<div class="s-foot"><span>编排：${D.mode === 'rot' ? `轮换 · 每天 ${D.g.rot} 组` : `混合 · 功能表达 ${D.g.fn} 组、我的笔记 ${D.g.notes} 组`}</span>${chips}${D.today.custom ? '<span class="s-chip on">你自己挑的</span><button class="t-link-btn" type="button" data-a="sdpickreset">恢复推荐</button>' : ''}<button class="t-link-btn" style="margin-left:auto" type="button" data-go="sset">改编排 ›</button></div>`;
+  let sideRight;
+  if (D.today.done) sideRight = doneTag;
+  else if (D.learn) sideRight = `<button class="btn btn-primary" type="button" data-go="slearn">继续</button>`;
+  else sideRight = `<span class="btn-row"><button class="btn btn-outline" type="button" data-a="sdpick">挑选</button>${ids.length ? `<button class="btn ${curStep === 2 ? 'btn-primary' : 'btn-outline'}" type="button" data-a="sdlstart">开始</button>` : ''}</span>`;
+  const sideInner = `<div class="s-card">${rows || `<p class="note-line" style="margin:6px 0">${D.today.done ? '今天的配菜已经学完了。' : '没有排配菜：设为“记忆”、还没学的卡都学完了。可以点“挑选”自己选，资料也能选进来。'}</p>`}${foot}</div>`;
+  const oldNew = S.newSession ? `<div class="row" style="background:var(--paper)"><div class="body"><span class="title">旧版新学进行中 · ${esc((GROUPS.get(S.newSession.gid) || {}).name || '')}</span><span class="meta">v4 的新学流程，继续做完或放弃</span></div><div class="btn-row"><button class="btn btn-ghost btn-sm btn-danger" type="button" data-a="dropnew" data-confirm="确认放弃">放弃</button><button class="btn btn-outline btn-sm" type="button" data-a="resumenew">继续</button></div></div>` : '';
+  const ck = steps.every(Boolean) && canCheckin();
+  return {
+    title: '今日学习', crumb: [fmtMD(Date.now())],
+    body: `<div class="s-wrap">
+      <div class="s-progress"><b>今天大约 ${mins} 分钟</b><span class="bar"><i style="width:${doneN / 3 * 100}%"></i></span><span class="note-line" style="color:var(--sage-deep)">已完成 ${doneN} / 3</span></div>
+      ${oldNew}
+      <div class="s-tls">
+      ${tlRow(0, '今日复习', reviewDone ? '' : '主题表达 + 配菜，按到期时间排', reviewDone ? doneTag : '', revInner)}
+      ${tlRow(1, '主菜 · 主题表达', '一次一个写作组合（3 个论点，约 12 条）', topicDone ? doneTag : '', `<div class="s-card s-main">${t3TodayNew()}</div>`)}
+      ${tlRow(2, sideTitle, ids.length ? `${ids.length} 条 · 约 ${Math.max(2, Math.round(ids.length * 1.3))} 分钟` : '', sideRight, sideInner)}
+      </div>
+      ${ck ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="checkin">完成今天的学习并打卡</button></div>` : ''}
+    </div>`,
+  };
+}
+
+/* ---------- 编排设置 ---------- */
+function vSideSet() {
+  const D = sd(), rot = D.mode === 'rot';
+  const pic = r => `<span class="s-pic">${[0, 1, 2, 3].map(d => `<span><span class="cells">${[0, 1, 2].map(i => `<i class="${i === 0 ? 't' : ((!r || i === 1 + d % 2) ? 'o' : '')}"></i>`).join('')}</span>第 ${d + 1} 天</span>`).join('')}</span>`;
+  const stepper = (a, v, k = '') => `<span class="s-stepper"><button type="button" data-a="${a}" data-k="${k}" data-d="-1" aria-label="减少">−</button><b>${v}</b><button type="button" data-a="${a}" data-k="${k}" data-d="1" aria-label="增加">+</button></span>`;
+  const chk = (a, k, on) => `<button class="s-check" type="button" data-a="${a}" data-k="${k}" aria-pressed="${on}" aria-label="参加">${on ? svg('check', 2.6) : ''}</button>`;
+  const chips = (list, onMap, a, nameOf, iconOf, extra) => list.map((k, i) => `<span class="s-ochip ${onMap[k] ? '' : 'off'}"><button class="mv" type="button" data-a="${a}move" data-k="${k}" data-d="-1" aria-label="往前">‹</button>${chk(a + 'on', k, onMap[k])}${iconOf(k)}${nameOf(k)}${extra ? `<small>${extra(k)}</small>` : ''}<button class="mv" type="button" data-a="${a}move" data-k="${k}" data-d="1" aria-label="往后">›</button></span>${i < list.length - 1 ? '<span class="muted">→</span>' : '<span class="muted">→ 回到第一个</span>'}`).join('');
+  const counts = rot
+    ? `<div class="s-krow"><span></span>${sdIco('topic')}<b>主题表达</b><small>每天一个写作组合（3 个论点）</small><span></span></div>
+       <div class="s-krow"><span></span>${sdIco('today')}<b>轮到的那一类</b><small>每天只学这一类，整组学</small><span>${stepper('sdg', D.g.rot, 'rot')}<span class="unit">组</span></span></div>`
+    : `<div class="s-krow"><span></span>${sdIco('topic')}<b>主题表达</b><small>每天一个写作组合（3 个论点）</small><span></span></div>
+       ${D.order.map(c => `<div class="s-krow ${D.on[c] ? '' : 'off'}">${chk('sdcaton', c, D.on[c])}${sdIco(SD_CAT[c].icon)}<b>${SD_CAT[c].name}</b><small>每天都有</small><span>${stepper('sdg', D.g[c], c)}<span class="unit">组</span></span></div>`).join('')}`;
+  const wk = sdWeek(), first = wk[0];
+  const tomorrowN = first ? Object.values(first.n).reduce((a, b) => a + b, 0) : 0;
+  const sum = rot ? wk.slice(0, 4).map((r, i) => { const c = Object.keys(r.n)[0]; return `<span><small>${['明天', '后天'][i] || '周' + WD[new Date(r.t).getDay()]}</small>${c ? svg(SD_CAT[c].icon) + esc(r.names[c]) : '没有新卡'}</span>`; }).join('')
+    : D.order.filter(c => D.on[c] && first && first.n[c]).map(c => `<span>${svg(SD_CAT[c].icon)}${esc(first.names[c])} <b>${first.n[c]}</b></span>`).join('');
+  return {
+    title: '每天新学怎么编排', crumb: ['设置'],
+    body: `<div class="s-wrap">
+      <p class="warm" style="margin:0;max-width:72ch">主题表达每天都学。配菜分两类：功能表达、我的笔记（表达卡、句型卡、语法卡）。可以每天两类都学一点（混合），也可以一天只学一类、第二天换另一类（轮换）。都按组学，一组 2–6 张。</p>
+      <div class="s-modes">
+        <button class="s-mode" type="button" data-a="sdmode" data-v="mix" aria-pressed="${!rot}"><span class="r"><span class="radio"></span><b>混合</b></span><small>主题表达 + 功能表达 + 我的笔记，每天都有</small>${pic(false)}</button>
+        <button class="s-mode" type="button" data-a="sdmode" data-v="rot" aria-pressed="${rot}"><span class="r"><span class="radio"></span><b>轮换（默认）</b></span><small>主题表达每天都有，功能表达和我的笔记一天一类，轮着来</small>${pic(true)}</button>
+      </div>
+      <section class="s-card"><b class="s-h">每天学几组</b>${counts}
+        <div class="s-orders">
+          <div class="s-oh"><b>顺序</b><small>新学、复习都按这个顺序${rot ? '；轮换也按这个顺序轮' : ''}</small></div>
+          <div class="s-order">${chips(D.order, D.on, 'sdcat', c => SD_CAT[c].name, c => svg(SD_CAT[c].icon))}</div>
+          <div class="s-oh"><b>我的笔记里轮着挑</b><small>学“我的笔记”的那天，按这个顺序挑一种的组</small></div>
+          <div class="s-order">${chips(D.notes.order, D.notes.on, 'sdnk', k => SD_KIND[k], () => '', k => sdUnits(k).length + ' 组没学')}</div>
+        </div></section>
+      <div class="s-summary"><b>明天 ${tomorrowN} 条配菜</b><span class="items">${sum || '没有可学的新卡'}</span><button class="t-link-btn" type="button" data-a="sdweek">查看未来 7 天安排 ›</button></div>
+      <section class="s-card"><b class="s-h">默写方式</b><small class="note-line">每组开始默写时也可以换，下次会记住你最后选的。</small>
+        <div class="s-mgrid">${['fn', 'expr', 'pattern', 'grammar'].map(k => `<div><b>${SD_KIND[k]}</b>${sdSeg('sdsetm', SD_METHOD[k], D.method[k], `data-k="${k}"`)}</div>`).join('')}</div></section>
+      <p class="note-line">只有设为“记忆”的卡会排进新学；“资料”只在详情页看（挑选时也能选进来），“暂缓”先放着，已有的复习进度保留。改了设置，今天还没开始的配菜会按新的排。</p>
+      ${ui.sdWeek ? sdWeekModal(wk) : ''}
+    </div>`,
+  };
+}
+function sdWeekModal(wk) {
+  const D = sd();
+  const cell = (v, name) => `<span class="c ${v ? 'y' : ''}">${v || '—'}${name ? `<small>${esc(name)}</small>` : ''}</span>`;
+  return `<div class="s-scrim" data-a="sdweekclose"><div class="s-sheet" role="dialog" aria-label="未来 7 天的新学安排" data-a="sdnoop">
+    <div class="s-sheet-h"><div><h3>未来 7 天的新学安排</h3><span class="note-line">编排：${D.mode === 'rot' ? '轮换' : '混合'} · 按现在的设置和还没学的卡算出来</span></div><button class="icon-btn" type="button" data-a="sdweekclose" aria-label="关闭">×</button></div>
+    <div class="s-week-wrap"><div class="s-week"><span></span><span class="h">${svg('topic')}主题表达</span>${D.order.map(c => `<span class="h">${svg(SD_CAT[c].icon)}${SD_CAT[c].name}</span>`).join('')}
+    ${wk.map(r => `<span class="d">${fmtMD(r.t)} 周${WD[new Date(r.t).getDay()]}</span><span class="c t">3 个论点</span>${D.order.map(c => cell(r.n[c] || 0, r.names[c])).join('')}`).join('')}</div></div>
+    <p class="note-line">某一类没有新卡了会跳过；哪天没学配菜，轮换顺序不往后走。</p></div></div>`;
+}
+
+/* ---------- 挑选今天的配菜 ---------- */
+function vSidePick() {
+  const D = sd();
+  if (!ui.sdPick) return { redirect: { v: 'today' } };
+  const sel = new Set(ui.sdPick), rec = new Set(sdRecommend().ids), k = ui.sdPickKind || sdKinds()[0];
+  const n = sel.size, per = sdKinds().map(x => [x, [...sel].filter(id => sdKindOfItem(ITEMS.get(id)) === x).length]).filter(x => x[1]);
+  const can = id => active(id) && !studied(id) && modeOf(id) !== 'paused';
+  const groups = sdGroups(k).filter(G => G.ids.some(active));
+  return {
+    title: '挑选今天的配菜', crumb: ['今日学习'],
+    body: `<div class="s-wrap">
+      <p class="warm" style="margin:0">系统推荐的已经勾好。可以整组勾，也可以只勾组里的几张。“资料”也能选，选了会改成“记忆”；学过的卡灰着，不能再选。点英文看详情页。</p>
+      <span class="seg small" role="tablist" style="align-self:flex-start;flex-wrap:wrap">${sdKinds().map(x => { const c = [...sel].filter(id => sdKindOfItem(ITEMS.get(id)) === x).length; return `<button type="button" data-a="sdpkind" data-v="${x}" aria-pressed="${x === k}">${x === 'fn' ? '功能表达' : '笔记 · ' + SD_KIND[x]}${c ? ' · ' + c : ''}</button>`; }).join('')}</span>
+      ${groups.length ? groups.map(G => { const open = G.ids.filter(can); const on = open.filter(id => sel.has(id)).length; const state = !open.length ? 'none' : on === open.length ? 'all' : on ? 'some' : 'none';
+        return `<div class="s-pg"><div class="s-pg-h"><button class="s-check ${state === 'some' ? 'some' : ''}" type="button" data-a="sdpgroup" data-id="${esc(G.id)}" aria-pressed="${state === 'all'}" ${open.length ? '' : 'disabled'} aria-label="整组">${state === 'all' ? svg('check', 2.6) : state === 'some' ? '–' : ''}</button><b>${esc(sdGName(G))}</b><small>${G.ids.filter(active).length} ${sdWord(k)} · 还没学 ${open.length}</small>${G.ids.some(id => rec.has(id)) ? '<span class="s-kchip">推荐</span>' : ''}</div>
+          ${G.ids.filter(active).map(id => { const it = ITEMS.get(id), m = modeOf(id), s = S.items[id]; const right = studied(id) ? `已学 · ${SD_TIER[Math.min(s.stage || 0, 4)]}档` : m === 'reference' ? '资料' : m === 'paused' ? '暂缓' : ''; return `<div class="s-pr ${can(id) ? '' : 'off'}"><button class="s-check" type="button" data-a="sdpone" data-id="${esc(id)}" aria-pressed="${sel.has(id)}" ${can(id) ? '' : 'disabled'} aria-label="选这一张">${sel.has(id) ? svg('check', 2.6) : ''}</button><button class="s-plink" type="button" data-go="item:${esc(id)}"><span class="en">${esc(it.en)}</span><small>${esc(it.zh)}</small></button><small class="muted">${right}</small></div>`; }).join('')}</div>`; }).join('')
+        : `<div class="empty"><h3>这一种还没有卡</h3><p>导入笔记、确认整理后会出现在这里。</p><button class="btn btn-soft" type="button" data-go="import">导入</button></div>`}
+      <div class="sticky-bar"><span class="summary">已选 <b>${n}</b> 条${per.length ? ' · ' + per.map(([x, c]) => SD_KIND[x] + ' ' + c).join(' · ') : ''}${n ? ' · 约 ' + Math.max(2, Math.round(n * 1.3)) + ' 分钟' : ''}</span>
+        <div class="btn-row"><button class="btn btn-ghost" type="button" data-a="sdprec">恢复推荐</button><button class="btn btn-primary" type="button" data-a="sdpok">确定</button></div></div>
+    </div>`,
+  };
+}
+
+/* ---------- 默写题 ---------- */
+function sdGrammarShort(it) {
+  const w = String(it.wrong || '').trim(), r = String(it.en || '').trim();
+  if (!w) return { box: '', ans: r };
+  const ww = w.split(/\s+/), rw = r.split(/\s+/);
+  if (ww.length <= 6) return { box: w, ans: r };
+  // 整句时只截出改动的地方，前后各留两个词
+  let s = 0; while (s < ww.length && s < rw.length && ww[s].toLowerCase() === rw[s].toLowerCase()) s++;
+  let e1 = ww.length - 1, e2 = rw.length - 1; while (e1 > s && e2 > s && ww[e1].toLowerCase() === rw[e2].toLowerCase()) { e1--; e2--; }
+  const a = Math.max(0, s - 2), clean = x => x.replace(/[.!?,;]+$/, '');
+  return { box: clean(ww.slice(a, Math.min(ww.length, e1 + 3)).join(' ')), ans: clean(rw.slice(a, Math.min(rw.length, e2 + 3)).join(' ')) };
+}
+function sdGrammarFull(it) {
+  const w = String(it.wrong || '').trim(), r = String(it.en || '').trim();
+  if (w.split(/\s+/).length > 6) return { box: w, ans: r };
+  const ex = String(it.ex || '').split(/[；;]/)[0].trim();
+  if (ex && r && ex.toLowerCase().includes(r.toLowerCase())) { const i = ex.toLowerCase().indexOf(r.toLowerCase()); return { box: ex.slice(0, i) + w + ex.slice(i + r.length), ans: ex }; }
+  return null;
+}
+function sdSpec(it) {
+  const k = sdKindOfItem(it), m = sd().method[k];
+  if (k === 'grammar') {
+    const f = m === 'full' && sdGrammarFull(it);
+    if (f) return { how: '把自己原来写错的整句改对', box: f.box, ans: f.ans, ph: '改好的整句' };
+    const s = sdGrammarShort(it);
+    return { how: '把写错的地方改对', box: s.box, ans: s.ans, ph: '改好的短句', note: m === 'full' ? '这张卡没有整句，先改短句' : '' };
+  }
+  if (m === 'ex' && it.ex) {
+    const ex = it.ex.split(/[；;]/)[0].trim();
+    const ph = k === 'pattern' || k === 'fn' ? fixedPart(it.en) : exHL(ex, it)[0];
+    const i = ex.toLowerCase().indexOf(ph.toLowerCase());
+    if (i >= 0) return { how: '把例句里挖掉的部分填回去', sent: esc(ex.slice(0, i)) + '<span class="blank"></span>' + esc(ex.slice(i + ph.length)), note: it.zh ? '中文：' + it.zh : '', ans: ex.slice(i, i + ph.length), ph: '填空' };
+  }
+  const fall = m === 'ex' ? '这张卡没有例句，改成看中文' : '';
+  if (k === 'pattern') return { how: '看中文和用途，写出句型的固定部分', prompt: it.zh, note: [it.scene ? '用途：' + it.scene : '', fall].filter(Boolean).join(' · '), ans: fixedPart(it.en), ph: '写出句型' };
+  if (k === 'fn') return { how: '看中文和语气，写出表达', prompt: it.zh, note: [[(GROUPS.get(it.gid) || {}).fn, it.tone, it.syntax ? '后面接 ' + it.syntax : ''].filter(Boolean).join(' · '), sdSameZh(it), fall].filter(Boolean).join(' · '), ans: fixedPart(it.en), ph: '写出表达' };
+  return { how: '看中文，写出英文', prompt: it.zh, note: [sdSameZh(it), fall].filter(Boolean).join(' · '), ans: it.en, ph: '写出英文' };
+}
+// 同一组里中文一样时，多给一条提示，避免写成另一张
+function sdSameZh(it) {
+  const G = GROUPS.get(it.gid); if (!G || !it.zh) return '';
+  const twin = G.ids.map(x => ITEMS.get(x)).filter(o => o && o.id !== it.id && o.zh && o.zh.trim() === it.zh.trim());
+  return twin.length ? `同组的 ${twin.map(o => fixedPart(o.en)).join('、')} 中文一样，这里要的不是${twin.length > 1 ? '它们' : '它'}` : '';
+}
+function sdQ(it, ses, mode) {
+  const sp = sdSpec(it), q = ses.q, k = sdKindOfItem(it), fb = q.fb;
+  let html = `<div class="s-method"><span>这组怎么写</span>${sdSeg('sdqm', SD_METHOD[k], sd().method[k], fb ? 'disabled' : '')}</div>
+    <div class="qtype"><span class="tag expr">${sdMethodName(k, sd().method[k])}</span><span>${sp.how}</span></div>`;
+  if (sp.box) html += `<div class="prompt-zh" style="font-size:20px">下面有错，改对它</div><div class="s-boxbad en">${esc(sp.box)}</div>`;
+  if (sp.sent) html += `<div class="s-sent en">${sp.sent}</div>`;
+  if (sp.prompt) html += `<div class="prompt-zh">${esc(sp.prompt)}</div>`;
+  if (sp.note) html += `<p class="note-line" style="margin:0">${esc(sp.note)}</p>`;
+  if (!fb) {
+    html += `<form data-form="sans" class="form" autocomplete="off">${q.hinted ? `<div class="t-hint">提示：<span class="en">${esc(firstLetters(sp.ans))}</span></div>` : ''}
+      <input class="answer" name="answer" type="text" placeholder="${sp.ph}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="输入答案">
+      <div class="btn-row"><button class="btn btn-primary" type="submit">提交</button><button class="btn btn-ghost" type="button" data-a="sdhint" ${q.hinted ? 'disabled' : ''}>看提示</button><button class="btn btn-ghost" type="button" data-a="sdshow">看答案</button></div></form>`;
+  } else {
+    html += `<input class="answer" type="text" value="${esc(fb.input || '')}" readonly aria-label="你的答案">` + t3fb(fb, sp.ans, mode === 'learn') + `<div class="s-fbl">${sdDetail(it.id)}</div>`;
+    html += mode === 'learn'
+      ? `<div class="btn-row">${fb.g === 'rem' ? `<button class="btn btn-primary" type="button" data-a="sdlnext" data-enter>下一条</button>` : `<button class="btn btn-outline" type="button" data-a="sdlretry" data-enter>稍后重写</button><button class="btn btn-ghost" type="button" data-a="sdlskip">跳过</button>`}</div>`
+      : `<div class="btn-row"><span class="note-line">预选，可以改</span>${rseg('sdrr', it.id, q.r)}<span style="flex:1"></span><button class="btn btn-primary" type="button" data-a="sdrnext" data-enter>下一条</button></div>`;
+  }
+  return `<div class="qcard">${html}</div>`;
+}
+function sdSubmit(f) {
+  const ses = ui.sdSes(); if (!ses || ses.q.fb) return;
+  const it = sdCurItem(ses); const sp = sdSpec(it);
+  const input = f ? f.querySelector('.answer').value : '';
+  const a = grade(input, sp.ans, !f);
+  a.input = input; a.hinted = ses.q.hinted;
+  ses.q.fb = a; ses.q.r = a.g;
+  if (a.g !== 'rem' && input.trim()) { const s = st(it.id); (s.wrongs = s.wrongs || []).push({ t: Date.now(), input, r: a.g }); if (s.wrongs.length > 20) s.wrongs.shift(); }
+  save(); render();
+}
+ui.sdSes = () => { const v = cur().v; return v === 'slearn' ? sd().learn : v === 'srev' ? sd().rev : null; };
+function sdCurItem(ses) { return ITEMS.get(ses.phase === 'write' && ses.queue ? ses.queue[ses.qi] : ses.units[ses.ui].ids[ses.qi]); }
+
+/* ---------- 挑战（不改评分） ---------- */
+const sdChalTypes = k => k === 'grammar' ? [] : k === 'fn' ? ['whole', 'disc', 'ctx'] : ['whole'];
+const SD_CHAL = { whole: ['整组默写', '一次写出这一组的全部表达；可以选给不给提示'], disc: ['近义辨析', '每个例句选出最合适的那一个，选完看为什么'], ctx: ['同一语境整组默写', '把这组的例句排在一起，一页填完'] };
+const sdAns = it => it.type === 'fn' || it.type === 'pattern' ? fixedPart(it.en) : it.en;
+function sdChalMembers(ses, u) { return u.G.ids.filter(id => active(id) && (studied(id) || ses.all.includes(id))).map(id => ITEMS.get(id)); }
+function sdExBlank(it) {
+  if (!it.ex) return null;
+  const ex = it.ex.split(/[；;]/)[0].trim(), ph = it.type === 'pattern' || it.type === 'fn' ? fixedPart(it.en) : exHL(ex, it)[0];
+  const i = ex.toLowerCase().indexOf(ph.toLowerCase());
+  return i < 0 ? null : { pre: ex.slice(0, i), ans: ex.slice(i, i + ph.length), post: ex.slice(i + ph.length) };
+}
+function sdOffer(ses, u, next) {
+  const types = sdChalTypes(u.k).filter(t => t !== 'disc' || sdChalMembers(ses, u).filter(sdExBlank).length && sdChalMembers(ses, u).length >= 2).filter(t => t !== 'ctx' || sdChalMembers(ses, u).some(sdExBlank));
+  const done = ses.chalDone[u.G.id] || [];
+  return `<section class="s-offer"><h3>“${esc(sdGName(u.G))}”这一组写完了</h3><p class="note-line" style="margin:0">要不要挑战一下？挑战结果不改复习评分，只在完成页列出还没记牢的，给你参考。</p>
+    <div class="s-offers">${types.map(t => `<button type="button" data-a="sdchal" data-v="${t}"><b>${SD_CHAL[t][0]}${done.includes(t) ? ' · 做过了' : ''}</b><small>${SD_CHAL[t][1]}</small></button>`).join('')}</div>
+    <div class="btn-row"><button class="btn btn-primary" type="button" data-a="${next}">${ses.ui < ses.units.length - 1 ? '不用了，下一组' : '不用了，看结果'}</button></div></section>`;
+}
+function sdChal(ses, u) {
+  const C = ses.chal, mem = sdChalMembers(ses, u);
+  const back = `<button class="btn ${C.done ? 'btn-primary' : 'btn-ghost'}" type="button" data-a="sdchalback">${C.done ? '完成挑战' : '不做了'}</button>`;
+  const inp = (id, v, w) => `<input class="answer s-inline" id="${id}" value="${esc(v || '')}" ${C.done ? 'readonly' : ''} style="${w ? 'width:auto;min-width:' + w + 'px' : ''}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">`;
+  if (C.type === 'whole') {
+    const rows = mem.map((it, i) => { const r = C.fb && C.fb[i]; const lab = C.hint === 'zh' ? esc(it.zh) : C.hint === 'letters' ? `<span class="en">${esc(firstLetters(sdAns(it)))}</span>` : ''; return `<div class="s-crow"><span class="no">${i + 1}</span><div>${lab ? `<span class="lab">${lab}</span>` : ''}${inp('w' + i, (C.vals || [])[i])}${r ? `<span class="${r.ok ? 'ok' : 'bad'}">${r.ok ? '✓' : '✗ 应该是 '}<span class="en">${esc(r.ans)}</span></span>` : ''}</div></div>`; }).join('');
+    return `<div class="qcard"><div class="qtype"><span class="tag expr">整组默写</span><span>“${esc(sdGName(u.G))}” · ${mem.length} 条${C.hint === 'none' ? '，顺序不限' : ''}</span></div>
+      <div class="s-method"><span>提示</span>${sdSeg('sdchint', [['none', '不给提示'], ['zh', '给中文'], ['letters', '给首字母']], C.hint, C.done ? 'disabled' : '')}</div>${rows}
+      ${C.done ? `<div class="fb ${C.missed.length ? 'bad' : 'ok'}"><div class="verdict">${C.missed.length ? `还没记牢 ${C.missed.length} 条` : '整组都写对了'}</div></div>` : `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="sdcsubmit">提交</button></div>`}
+      <div class="btn-row">${back}</div></div>`;
+  }
+  if (C.type === 'disc') {
+    const items = mem.filter(sdExBlank);
+    const opts = it => { const pool = mem.filter(o => o.id !== it.id); const k = items.indexOf(it); const two = pool.slice(k % Math.max(1, pool.length)).concat(pool).slice(0, 2); return [it, ...two].sort((a, b) => (a.id + k).localeCompare(b.id + k)); };
+    return `<div class="qcard"><div class="qtype"><span class="tag expr">近义辨析</span><span>选出最合适的那一个</span></div>
+      ${items.map((it, i) => { const b = sdExBlank(it), pick = C.picks[it.id]; return `<div class="s-disc"><div class="s-sent en">${esc(b.pre)}<span class="blank"></span>${esc(b.post)}</div>
+        ${opts(it).map(o => `<button class="s-opt ${pick !== undefined ? (o.id === it.id ? 'right' : o.id === pick ? 'wrong' : '') : ''}" type="button" data-a="sddpick" data-id="${esc(it.id)}" data-v="${esc(o.id)}" ${pick !== undefined ? 'disabled' : ''}><span class="en">${esc(o.en)}</span>${pick !== undefined ? `<small>${o.id === pick ? '你选的 · ' : ''}${esc([o.syntax ? '后面接 ' + o.syntax : '', o.tone].filter(Boolean).join(' · '))}</small>` : ''}</button>`).join('')}
+        ${pick !== undefined ? `<p class="note-line" style="margin:0"><b class="${pick === it.id ? 'ok-t' : 'bad-t'}">${pick === it.id ? '选对了' : '选错了'}</b>　这里要的是 <span class="en">${esc(fixedPart(it.en))}</span>${it.syntax ? '，后面接 ' + esc(it.syntax) : ''}${it.tone ? '，' + esc(it.tone) : ''}。</p>` : ''}</div>`; }).join('')}
+      <div class="btn-row">${Object.keys(C.picks).length === items.length ? `<button class="btn btn-primary" type="button" data-a="sddone">完成挑战</button>` : back}</div></div>`;
+  }
+  const items = mem.filter(sdExBlank);
+  return `<div class="qcard"><div class="qtype"><span class="tag expr">同一语境整组默写</span><span>这一组的例句排在一起，一次填完</span></div>
+    <div class="s-ctx en">${items.map((it, i) => { const b = sdExBlank(it); return `${esc(b.pre)}${inp('c' + i, (C.vals || [])[i], 150)}${C.fb ? `<small class="${C.fb[i] ? 'ok' : 'bad'}"> ${C.fb[i] ? '✓' : '✗ ' + esc(b.ans)}</small>` : ''}${esc(b.post)}`; }).join(' ')}</div>
+    ${C.done ? `<div class="fb ${C.fb.every(Boolean) ? 'ok' : 'bad'}"><div class="verdict">${C.fb.every(Boolean) ? '全部填对了' : `填对 ${C.fb.filter(Boolean).length} / ${C.fb.length}`}</div></div>` : `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="sdcsubmit">提交</button></div>`}
+    <div class="btn-row">${back}</div></div>`;
+}
+function sdChalSubmit(ses, u) {
+  const C = ses.chal, mem = sdChalMembers(ses, u), ok = (v, a) => grade(v, a).g === 'rem';
+  if (C.type === 'whole') {
+    C.vals = mem.map((_, i) => ($('#w' + i) || {}).value || '');
+    if (C.hint === 'none') {
+      const left = mem.slice(); C.fb = C.vals.map(v => { const hit = left.find(it => ok(v, sdAns(it))); if (hit) left.splice(left.indexOf(hit), 1); return { ok: !!hit, ans: hit ? sdAns(hit) : '' }; });
+      let j = 0; C.fb.forEach(r => { if (!r.ok) r.ans = left[j] ? sdAns(left[j++]) : ''; });
+      C.missed = left.map(it => it.id);
+    } else { C.fb = mem.map((it, i) => ({ ok: ok(C.vals[i], sdAns(it)), ans: sdAns(it) })); C.missed = mem.filter((it, i) => !C.fb[i].ok).map(it => it.id); }
+    sdAddRef(ses, u, 'whole', C.missed);
+  } else {
+    const items = mem.filter(sdExBlank);
+    C.vals = items.map((_, i) => ($('#c' + i) || {}).value || '');
+    C.fb = items.map((it, i) => ok(C.vals[i], sdExBlank(it).ans));
+    sdAddRef(ses, u, 'ctx', items.filter((it, i) => !C.fb[i]).map(it => it.id));
+  }
+  C.done = true;
+}
+function sdAddRef(ses, u, type, missed) {
+  ses.refs = (ses.refs || []).filter(r => !(r.g === u.G.id && r.type === type));
+  ses.refs.push({ g: u.G.id, type, missed });
+  const d = ses.chalDone[u.G.id] || (ses.chalDone[u.G.id] = []); if (!d.includes(type)) d.push(type);
+}
+function sdRefBox(ses) {
+  if (!ses.refs || !ses.refs.length) return '';
+  return `<section class="s-ref"><b>挑战参考（不改评分）</b>${ses.refs.map(r => { const G = GROUPS.get(r.g); return `<span>${esc(G ? sdGName(G) : '')} · ${SD_CHAL[r.type][0]}：${r.missed.length ? '还没记牢 ' + r.missed.filter(id => ITEMS.has(id)).map(id => `<button class="t-plain en" type="button" data-go="item:${esc(id)}">${esc(ITEMS.get(id).en)}</button>`).join('、') : '全部写对'}</span>`; }).join('')}</section>`;
+}
+
+/* ---------- 新学 ---------- */
+const sdNewSes = ids => ({ day: dayKey(), units: sdByGroup(ids).map(u => ({ gid: u.G.id, k: u.k, ids: u.ids })), all: ids.slice(), ui: 0, phase: 'look', sel: null, queue: null, qi: 0, q: {}, res: {}, chal: null, chalDone: {}, refs: [] });
+const sdUnitsOf = ses => ses.units.map(u => Object.assign({}, u, { G: GROUPS.get(u.gid) })).filter(u => u.G);
+function vSideLearn() {
+  const L = sd().learn; if (!L) return { redirect: { v: 'today' } };
+  const ses = Object.assign({}, L, { units: sdUnitsOf(L) });
+  if (L.phase === 'done') return sdLearnDone(ses);
+  const u = ses.units[L.ui], k = u.k;
+  const top = sdProg(ses);
+  const head = { title: `${sdGName(u.G)}`, crumb: ['今日学习', '配菜 · ' + sdKindLabel(k)], focus: true, actions: `<button class="btn btn-outline btn-sm" type="button" data-a="back">退出并保存</button>` };
+  if (L.phase === 'look') {
+    const sel = L.sel && u.ids.includes(L.sel) ? L.sel : u.ids[0], it = ITEMS.get(sel), G = GROUPS.get(it.gid);
+    const keyLine = x => x.type === 'grammar' ? (x.wrong ? x.wrong + ' → ' + x.en : x.zh) : x.type === 'fn' ? [x.tone, x.syntax ? '后面接 ' + x.syntax : ''].filter(Boolean).join(' · ') : x.type === 'pattern' ? (x.scene || x.ex || '') : (x.ex || x.col || '');
+    return Object.assign(head, { body: `<div class="s-wrap">${top}
+      <div class="s-split"><div class="s-left">
+        <p class="note-line" style="margin:0">先看完这一组（${u.ids.length} ${sdWord(k)}），点左边的卡，右边看它的详情。</p>
+        ${u.ids.map(id => { const x = ITEMS.get(id); return `<button class="s-lrow" type="button" data-a="sdlsel" data-id="${esc(id)}" aria-pressed="${id === sel}"><span class="en">${esc(x.en)}</span><small>${esc(x.zh)}</small>${keyLine(x) ? `<span class="key">${esc(keyLine(x))}</span>` : ''}</button>`; }).join('')}
+        <div class="s-start"><div class="s-method"><span>这组怎么写</span>${sdSeg('sdsetm', SD_METHOD[k], sd().method[k], `data-k="${k}"`)}</div>
+        <button class="btn btn-primary" type="button" data-a="sdlwrite">开始写这 ${u.ids.length} ${sdWord(k)}</button></div>
+      </div>
+      <div class="s-detail"><div class="s-detail-h"><span class="s-kchip">${sdKindLabel(k)}</span><button class="t-link-btn" type="button" data-go="item:${esc(sel)}">打开完整详情页 ›</button></div><div class="d-main">${it.lib === 'function' ? fnMain(it, G) : noteMain(it, G)}</div></div></div></div>` });
+  }
+  if (L.phase === 'offer') return Object.assign(head, { body: `<div class="s-wrap">${top}${sdOffer(ses, u, 'sdlnextunit')}</div>` });
+  if (L.phase === 'chal') return Object.assign(head, { body: `<div class="s-wrap">${top}${sdChal(L, u)}</div>` });
+  const it = ITEMS.get(L.queue[L.qi]);
+  const doneHere = u.ids.filter(x => L.res[x] && L.res[x].done);
+  return Object.assign(head, { title: `${sdGName(u.G)} · 写 ${Math.min(doneHere.length + 1, u.ids.length)} / ${u.ids.length}`, body: `<div class="s-wrap">${top}${sdQ(it, L, 'learn')}
+    ${doneHere.length ? `<div class="s-done">${doneHere.map(x => `<span>${svg('check', 2.4)}<span class="en">${esc(ITEMS.get(x).en)}</span><small>${{ ok: '一次写对', retry: '重写过', skip: '跳过' }[L.res[x].first]}</small>${sdDetail(x)}</span>`).join('')}</div>` : ''}</div>` });
+}
+function sdLearnDone(ses) {
+  const L = sd().learn, all = ses.units.flatMap(u => u.ids), okN = all.filter(id => (L.res[id] || {}).first === 'ok').length;
+  const label = { ok: '一次写对', retry: '重写过', skip: '跳过' };
+  return {
+    title: '配菜 · 完成', crumb: ['今日学习'], focus: true,
+    body: `<div class="s-wrap">${sdProg(ses, true)}
+      <div class="s-stats"><div><b>${all.length}</b><small>条学完</small></div><div><b>${okN}</b><small>一次写对</small></div><div><b>明天</b><small>第一次复习</small></div></div>
+      ${sdSections(ses.units, () => '', id => `<div class="s-grow"><button class="t-plain en" type="button" data-go="item:${esc(id)}">${esc(ITEMS.get(id).en)}</button><small class="muted">${label[(L.res[id] || {}).first] || ''}</small>${rseg('sdlrate', id, (L.res[id] || {}).r)}</div>`)}
+      <p class="note-line" style="margin:0">按这次写的结果预选，可以改；决定明天复习的先后。点英文看详情页。</p>
+      ${sdRefBox(L)}
+      <div class="btn-row"><button class="btn btn-primary" type="button" data-a="sdlfinish">完成配菜新学</button><button class="btn btn-ghost" type="button" data-a="back">稍后再确认</button></div>
+    </div>`,
+  };
+}
+function sdLearnAdvance() {
+  const L = sd().learn; L.q = {}; L.qi++;
+  if (L.qi >= L.queue.length) {
+    const u = sdUnitsOf(L)[L.ui];
+    if (sdChalTypes(u.k).length) L.phase = 'offer'; else return sdLearnNextUnit();
+  }
+  save(); render(true);
+}
+function sdLearnNextUnit() {
+  const L = sd().learn;
+  if (L.ui < L.units.length - 1) Object.assign(L, { ui: L.ui + 1, phase: 'look', sel: null, queue: null, qi: 0, chal: null, q: {} });
+  else { L.units.flatMap(u => u.ids).forEach(id => { const r = L.res[id] || (L.res[id] = { first: 'skip' }); r.r = r.first === 'ok' ? 'rem' : r.first === 'retry' ? 'vag' : 'fgt'; }); L.phase = 'done'; }
+  save(); render(true);
+}
+function sdLearnFinish() {
+  const D = sd(), L = D.learn, now = Date.now();
+  L.units.flatMap(u => u.ids).forEach(id => {
+    const s = st(id), r = (L.res[id] || {}).r || 'fgt';
+    if (modeOf(id) !== 'memory') s.mode = 'memory';
+    s.stage = 0; s.next = addDays(now, 1); s.last = now;
+    s.hist.push({ r, t: now, p: 'new' });
+    if (r === 'fgt') s.wrong = (s.wrong || 0) + 1;
+    bumpLog('learned');
+  });
+  D.today.done = true; D.learn = null;
+  save(); toast('配菜学完了，明天第一次复习'); goRoot({ v: 'today' });
+}
+
+/* ---------- 复习 ---------- */
+function vSidePlan() {
+  const D = sd(), ids = sdDue(), us = sdByGroup(ids);
+  return {
+    title: '配菜复习', crumb: ['今日学习'],
+    body: `<div class="s-wrap">
+      <p class="warm" style="margin:0">功能表达和我的笔记里今天到期的卡，按组连着复习。复习间隔和主题表达一样（次日 → 3 → 7 → 14 → 30 天），记得进一格、模糊退一格、忘记回到次日。每组开始时可以换默写方式。</p>
+      ${us.length ? sdSections(us, u => `<span class="note-line">默写：${sdMethodName(u.k, D.method[u.k])}</span>`, id => { const s = S.items[id], last = (s.hist || []).filter(h => h.p !== 'new').slice(-1)[0] || (s.hist || []).slice(-1)[0]; return `<div class="s-grow"><button class="t-plain en" type="button" data-go="item:${esc(id)}">${esc(ITEMS.get(id).en)}</button>${last && last.r !== 'rem' ? `<small class="s-red">上次${RL3[last.r]}</small>` : '<span></span>'}<span class="s-tier">${SD_TIER[Math.min(s.stage || 0, 4)]}档</span></div>`; }, true)
+        : '<div class="empty"><h3>今天没有到期的配菜</h3></div>'}
+      ${us.length ? `<div class="btn-row"><button class="btn btn-primary" type="button" data-a="sdrstart">开始复习 · ${ids.length} 条</button></div>` : ''}
+    </div>`,
+  };
+}
+function vSideRev() {
+  const R = sd().rev; if (!R) return { redirect: { v: 'today' } };
+  const ses = Object.assign({}, R, { units: sdUnitsOf(R) });
+  const u = ses.units[R.ui];
+  if (!u) { R.phase = 'done'; }
+  const head = { crumb: ['今日复习', '配菜 · ' + (u ? sdKindLabel(u.k) : '')], focus: true, actions: `<button class="btn btn-outline btn-sm" type="button" data-a="back">退出并保存</button>` };
+  if (R.phase === 'offer') return Object.assign(head, { title: sdGName(u.G) + ' · 复习完了', body: `<div class="s-wrap">${sdProg(ses)}${sdOffer(ses, u, 'sdrnextunit')}</div>` });
+  if (R.phase === 'chal') return Object.assign(head, { title: sdGName(u.G) + ' · 挑战', body: `<div class="s-wrap">${sdProg(ses)}${sdChal(R, u)}</div>` });
+  if (R.phase === 'done') return { redirect: { v: 'srevdone' } };
+  const it = ITEMS.get(u.ids[R.qi]), s = S.items[it.id] || {};
+  return Object.assign(head, { title: `${sdGName(u.G)} · ${R.qi + 1} / ${u.ids.length}`, body: `<div class="s-wrap">${sdProg(ses)}<p class="note-line" style="margin:0">${SD_TIER[Math.min(s.stage || 0, 4)]}档</p>${sdQ(it, R, 'review')}</div>` });
+}
+function sdNextStage(stage, r) { return r === 'rem' ? Math.min(4, stage + 1) : r === 'vag' ? Math.max(0, stage - 1) : 0; }
+function vSideRevDone() {
+  const D = sd(), R = D.rev, X = R || D.revDone;
+  if (!X) return { redirect: { v: 'today' } };
+  const ses = Object.assign({}, X, { units: sdUnitsOf(X) });
+  const all = ses.units.flatMap(u => u.ids), cnt = r => all.filter(id => (X.res[id] || {}).r === r).length;
+  const editable = !!R;
+  return {
+    title: '配菜复习完成', crumb: ['今日复习'], focus: true,
+    body: `<div class="s-wrap">${editable ? sdProg(ses, true) : ''}
+      <div class="s-stats"><div class="rem"><b>${cnt('rem')}</b><small>记得</small></div><div class="vag"><b>${cnt('vag')}</b><small>模糊</small></div><div class="fgt"><b>${cnt('fgt')}</b><small>忘记 · 明天再练</small></div></div>
+      ${sdSections(ses.units, () => '', id => { const from = X.from[id] || 0, r = (X.res[id] || {}).r || 'fgt', to = sdNextStage(from, r); return `<div class="s-grow g3"><button class="t-plain en" type="button" data-go="item:${esc(id)}">${esc(ITEMS.get(id).en)}${r === 'fgt' ? ' <small class="s-red">明天再练</small>' : ''}</button><small class="muted">${SD_TIER[from]} → <b class="${r}">${SD_TIER[to]}</b></small>${editable ? rseg('sdrdrate', id, r) : rchip(r)}</div>`; })}
+      <p class="note-line" style="margin:0">${editable ? '按这次写的结果预选，可以改；改了下一档跟着变。点英文看详情页。' : '已经记进复习安排。'}</p>
+      ${sdRefBox(X)}
+      <div class="btn-row">${editable ? `<button class="btn btn-primary" type="button" data-a="sdrfinish">完成复习</button>` : ''}<button class="btn btn-ghost" type="button" data-a="sdrclose">返回今日学习</button></div>
+    </div>`,
+  };
+}
+function sdRevNextUnit() {
+  const R = sd().rev;
+  if (R.ui < R.units.length - 1) Object.assign(R, { ui: R.ui + 1, qi: 0, q: {}, phase: 'write', chal: null });
+  else R.phase = 'done';
+  save(); R.phase === 'done' ? replaceRoute({ v: 'srevdone' }) : render(true);
+}
+function sdRevFinish() {
+  const D = sd(), R = D.rev, now = Date.now();
+  R.units.flatMap(u => u.ids).forEach(id => {
+    const s = st(id), r = (R.res[id] || {}).r || 'fgt', to = sdNextStage(R.from[id] || 0, r);
+    s.stage = to; s.next = addDays(now, r === 'fgt' ? 1 : LADDER[to]); s.last = now;
+    s.hist.push({ r, t: now, p: 'side' });
+    if (r === 'fgt') s.wrong = (s.wrong || 0) + 1;
+    bumpLog(r);
+  });
+  D.revDone = { day: dayKey(), units: R.units, from: R.from, res: R.res, refs: R.refs };
+  D.rev = null;
+  save(); toast('配菜复习完成'); render(true);
+}
+
+/* ---------- 操作 ---------- */
+function sideClick(a, el) {
+  const D = sd(), id = el.dataset.id, v = el.dataset.v, k = el.dataset.k;
+  const reList = () => { if (!D.today.done && !D.today.custom && !D.learn) D.today.list = null; };
+  const ses = ui.sdSes();
+  switch (a) {
+    case 'sdmode': D.mode = v; reList(); break;
+    case 'sdg': D.g[k] = Math.max(1, Math.min(4, D.g[k] + +el.dataset.d)); reList(); break;
+    case 'sdcaton': D.on[k] = !D.on[k]; reList(); break;
+    case 'sdcatmove': case 'sdnkmove': { const o = a === 'sdcatmove' ? D.order : D.notes.order, i = o.indexOf(k), j = i + +el.dataset.d; if (j >= 0 && j < o.length) { [o[i], o[j]] = [o[j], o[i]]; reList(); } break; }
+    case 'sdnkon': D.notes.on[k] = !D.notes.on[k]; reList(); break;
+    case 'sdsetm': D.method[k] = v; break;
+    case 'sdweek': ui.sdWeek = true; break;
+    case 'sdweekclose': ui.sdWeek = false; break;
+    case 'sdnoop': return true;
+    case 'sdpick': ui.sdPick = sdList().slice(); ui.sdPickKind = ui.sdPick[0] ? sdKindOfItem(ITEMS.get(ui.sdPick[0])) : sdKinds()[0]; go({ v: 'spick' }); return true;
+    case 'sdpkind': ui.sdPickKind = v; break;
+    case 'sdpone': ui.sdPick = ui.sdPick.includes(id) ? ui.sdPick.filter(x => x !== id) : ui.sdPick.concat(id); break;
+    case 'sdpgroup': { const G = GROUPS.get(id), open = G.ids.filter(x => active(x) && !studied(x) && modeOf(x) !== 'paused'); const all = open.every(x => ui.sdPick.includes(x)); ui.sdPick = all ? ui.sdPick.filter(x => !open.includes(x)) : ui.sdPick.concat(open.filter(x => !ui.sdPick.includes(x))); break; }
+    case 'sdprec': ui.sdPick = sdRecommend().ids; toast('已恢复系统推荐'); break;
+    case 'sdpok': {
+      const ids = sdSort(ui.sdPick), rec = sdRecommend(), same = ids.length === rec.ids.length && ids.every(x => rec.ids.includes(x));
+      ids.forEach(x => { if (modeOf(x) === 'reference') st(x).mode = 'memory'; });
+      Object.assign(D.today, { list: ids, custom: !same, cat: same ? rec.cat : (new Set(ids.map(x => sdCatOf(sdKindOfItem(ITEMS.get(x))))).size === 1 ? sdCatOf(sdKindOfItem(ITEMS.get(ids[0]))) : D.today.cat) });
+      ui.sdPick = null; save(); back(); return true;
+    }
+    case 'sdpickreset': D.today.list = null; D.today.custom = false; toast('已恢复系统推荐'); break;
+    case 'sdlstart': { const ids = sdList(); if (!ids.length) return true; D.learn = sdNewSes(ids); save(); go({ v: 'slearn' }); return true; }
+    case 'sdlsel': D.learn.sel = id; break;
+    case 'sdlwrite': { const L = D.learn; L.phase = 'write'; L.queue = L.units[L.ui].ids.slice(); L.qi = 0; L.q = {}; save(); render(true); return true; }
+    case 'sdqm': { const it = sdCurItem(ses); D.method[sdKindOfItem(it)] = v; ses.q = {}; break; }
+    case 'sdhint': ses.q.hinted = true; break;
+    case 'sdshow': sdSubmit(null); return true;
+    case 'sdlnext': case 'sdlretry': case 'sdlskip': {
+      const L = D.learn, cid = L.queue[L.qi], r = L.res[cid] || (L.res[cid] = {});
+      if (!r.first) r.first = a === 'sdlnext' ? 'ok' : a === 'sdlretry' ? 'retry' : 'skip';
+      if (a === 'sdlretry') L.queue.push(cid); else r.done = true;
+      sdLearnAdvance(); return true;
+    }
+    case 'sdlnextunit': sdLearnNextUnit(); return true;
+    case 'sdlrate': D.learn.res[id].r = el.dataset.r; break;
+    case 'sdlfinish': sdLearnFinish(); return true;
+    case 'sdchal': ses.chal = { type: v, hint: 'none', vals: [], fb: null, picks: {}, done: false }; ses.phase = 'chal'; save(); render(true); return true;
+    case 'sdchint': ses.chal.hint = v; break;
+    case 'sdcsubmit': sdChalSubmit(ses, sdUnitsOf(ses)[ses.ui]); break;
+    case 'sddpick': ses.chal.picks[id] = v; break;
+    case 'sddone': { const u = sdUnitsOf(ses)[ses.ui]; sdAddRef(ses, u, 'disc', Object.entries(ses.chal.picks).filter(([x, p]) => p !== x).map(([x]) => x)); ses.phase = 'offer'; ses.chal = null; save(); render(true); return true; }
+    case 'sdchalback': ses.phase = 'offer'; ses.chal = null; save(); render(true); return true;
+    case 'sdrstart': { const ids = sdDue(); if (!ids.length) return true; const from = {}; ids.forEach(x => { from[x] = Math.min((S.items[x] || {}).stage || 0, 4); }); D.rev = { day: dayKey(), units: sdByGroup(ids).map(u => ({ gid: u.G.id, k: u.k, ids: u.ids })), all: ids, from, ui: 0, qi: 0, q: {}, res: {}, phase: 'write', chal: null, chalDone: {}, refs: [] }; save(); replaceRoute({ v: 'srev' }); return true; }
+    case 'sdrr': ses.q.r = el.dataset.r; break;
+    case 'sdrnext': {
+      const R = D.rev, u = R.units[R.ui], cid = u.ids[R.qi];
+      R.res[cid] = { r: R.q.r || 'fgt' }; R.q = {}; R.qi++;
+      if (R.qi >= u.ids.length) { if (sdChalTypes(u.k).length) R.phase = 'offer'; else return sdRevNextUnit(), true; }
+      save(); render(true); return true;
+    }
+    case 'sdrnextunit': sdRevNextUnit(); return true;
+    case 'sdrdrate': D.rev.res[id].r = el.dataset.r; break;
+    case 'sdrfinish': sdRevFinish(); return true;
+    case 'sdrclose': goRoot({ v: 'today' }); return true;
+    default: return false;
+  }
+  save(); render();
+  return true;
+}
+
+T3VIEWS.today = vTodaySide;
+T3VIEWS.sset = vSideSet;
+T3VIEWS.spick = vSidePick;
+T3VIEWS.slearn = vSideLearn;
+T3VIEWS.splan = vSidePlan;
+T3VIEWS.srev = vSideRev;
+T3VIEWS.srevdone = vSideRevDone;
+
 
 const VIEWS = {
   home: vHome, today: vToday, learn: vLearn, review: vReview, practice: vPractice, quick: vQuick,
@@ -5905,6 +6757,7 @@ document.addEventListener('click', e => {
   if (a && a.startsWith('d') && detailClick(a, el)) return;
   if (a && (a.startsWith('imp') || a === 'tunrec') && (importClick(a, el) || flowClick(a, el) || histClick(a, el))) return;
   if (a && a.startsWith('iedit') && editClick(a, el)) return;
+  if (a && a.startsWith('sd') && sideClick(a, el)) return;
   switch (a) {
     case 'back': back(); break;
     case 'hidehint': S.user.hintClosed = true; save(); render(); break;
@@ -6027,6 +6880,7 @@ document.addEventListener('submit', e => {
   const kind = f.dataset.form;
   if (kind && kind.startsWith('t3')) { t3submit(kind, f); return; }
   if (kind === 'iedit') { editSubmit(f); return; }
+  if (kind === 'sans') { sdSubmit(f); return; }
   if (kind === 'answer') {
     const inp = f.querySelector('.answer');
     if (inp.readOnly) return;
@@ -6401,6 +7255,22 @@ render(true);
       A.save(); A.goRoot({ v: 'notes' }); A.go({ v: 'item', id: expr.id }); close();
       flash('已导入一份示例笔记：表达卡（已收藏、有备注和写错记录）、句型卡、语法卡。功能表达在左边“功能表达”里');
     },
+    side: function () {
+      reset();
+      var S = A.S(), now = Date.now();
+      S.notes = { sets: [], groups: [], items: [] }; S.items = {}; S.side = null; S.newSession = null; S.reviewSession = null;
+      var sm = A.samples();
+      A.createNoteSet(sm[0] + '\n\n' + sm[1] + '\n- Due to the fact that ... 由于……\n  - 后面接：+ 完整句子\n  - 语气：中性\n  - 例句：Due to the fact that rents are rising, many graduates live with their parents.', '测试 · 配菜', { confirmed: true }); A.assemble();
+      var items = S.notes.items, byType = function (t) { return items.filter(function (n) { return n.type === t; }); };
+      items.forEach(function (n) { S.items[n.id] = { mode: 'memory', hist: [], wrong: 0 }; });
+      // 每一种先学过一张，今天到期复习
+      ['fn', 'expr', 'pattern', 'grammar'].forEach(function (t, i) {
+        var n = byType(t)[0]; if (!n) return;
+        S.items[n.id] = { mode: 'memory', stage: [2, 1, 3, 1][i], next: today(), last: now - 3 * DAY, wrong: i === 3 ? 1 : 0, hist: [{ r: 'rem', t: now - 10 * DAY, p: 'new' }, { r: i === 3 ? 'vag' : 'rem', t: now - 3 * DAY, p: 'side' }] };
+      });
+      A.save(); A.goRoot({ v: 'today' }); close();
+      flash('已导入示例笔记和功能表达，全部设为“记忆”；每一种有一张今天到期复习。默认轮换：今天是功能表达');
+    },
     importDemo: function (kind) {
       reset();
       var S = A.S();
@@ -6511,6 +7381,7 @@ render(true);
       '<button class="b" data-tb="sc" data-s="afterLearn">刚学完，等明天复习<small>再点“前进 1 天”</small></button>' +
       '<button class="b" data-tb="sc" data-s="paraPractice">范文默写练习<small>不记录，可换难度</small></button>' +
       '<button class="b p" data-tb="sc" data-s="records">学习记录<small style="color:#E5E9DF">造一批数据，看 4 个分页</small></button>' +
+      '<button class="b p" data-tb="sc" data-s="side">配菜新学和复习<small style="color:#E5E9DF">今日学习时间线、编排、挑选</small></button>' +
       '<button class="b" data-tb="sc" data-s="importNotes">导入 · 写作笔记<small>表达卡、句型卡、语法卡</small></button>' +
       '<button class="b" data-tb="sc" data-s="importFn">导入 · 功能表达<small>并进“原因与解释”</small></button>' +
       '<button class="b" data-tb="sc" data-s="importTopic">导入 · 话题<small>城市交通与拥堵</small></button>' +
