@@ -4235,6 +4235,7 @@ function t3Settings() {
       ${example}
       ${spSettingsHTML()}
       ${dataSettingsHTML()}
+      ${window.__DEMO ? '' : deviceDataHTML()}
       <a class="t-setrow s-setlink" href="../test/" style="text-decoration:none;color:inherit"><span class="txt"><b>测试台</b><small>验收新功能用：模拟日期、一键造场景。数据和正式版分开，平时用不到</small></span><span class="muted">打开 ›</span></a>
     </div>`,
   };
@@ -6661,7 +6662,6 @@ function emptyLibHTML(kind) {
 function dataSettingsHTML() {
   const n = (S.notes.items || []).length + T.topics.length;
   return `<section class="t-setgroup"><span class="note-line">数据 · 只存在这台设备上，建议添加到主屏幕使用并时常导出备份</span>
-    ${legacySettingsRow()}
     <div class="t-setrow"><span class="txt"><b>导出备份</b><small>把全部内容和学习进度存成一个 .json 文件；换设备或清空后可以恢复</small></span><button class="btn btn-outline btn-sm" type="button" data-a="datexport">导出</button></div>
     <div class="t-setrow"><span class="txt"><b>从备份恢复</b><small>用导出的 .json 文件替换现在的全部数据</small></span><label class="btn btn-outline btn-sm file-btn">选择文件<input type="file" id="backup-file" accept=".json,application/json"></label></div>
     <button class="t-setrow s-setlink" type="button" data-go="impguide"><span class="txt"><b>导入格式说明</b><small>三种内容各写什么、怎么写；可以下载模板</small></span><span class="muted">查看 ›</span></button>
@@ -6672,7 +6672,7 @@ function dataSettingsHTML() {
 function guideClick(a, el) {
   if (a === 'tpldl') { const K = TPL_KIND.find(x => x[0] === el.dataset.k); saveFile(K[3], IMPORT_TPL[K[0]]); toast(`已下载${K[1]}模板（${K[3]}）`); return true; }
   if (a === 'tplfill') { ui.impText = IMPORT_TPL[el.dataset.k]; ui.impTitle = ''; go({ v: 'import', id: el.dataset.k }); return true; }
-  if (a === 'datlegacy') { legacyRecover(); return true; }
+  if (a === 'datlegacy') { legacyRecover(el.dataset.k); return true; }
   if (a === 'datlegacyno') { S.legacy = 'dismissed'; save(); render(); toast('以后可以在“复习设置 → 数据”里找回'); return true; }
   if (a === 'datexport') { saveFile(`ielts-writing-backup-${dayKey()}.json`, JSON.stringify(S), 'application/json'); toast('已导出备份'); return true; }
   if (a === 'datclear') { try { localStorage.removeItem(KEY); } catch (e) {} location.hash = ''; location.reload(); return true; }
@@ -6707,13 +6707,22 @@ const LEGACY_TOPIC = {
   online: { name: '线上学习的利与弊', theme: '教育', concepts: ['灵活安排', '学习资源', '自律', '社交互动'], base: 4, st: { 好处: '线上学习不受时间地点限制，资源也更丰富', 坏处: '没有老师和同学在身边，很多人难以坚持，也缺少交流' } },
 };
 
-function legacyRead() {
-  if (window.__DEMO) return null; // 测试台不管以前的数据
-  try { const r = JSON.parse(localStorage.getItem(LEGACY_KEY)); return r && r.v === 2 && r.notes ? r : null; } catch (e) { return null; }
+// 可以找回的地方：v1–v8 和更新前的 v9 共用一个；测试台单独一个（测试台的演示内容和以前自带的一样，转换方法相同）
+const LEGACY_SRC = [
+  { key: LEGACY_KEY, name: 'v1–v8 和更新前的 v9' },
+  { key: 'ielts-writing-test.v1', name: '测试台' },
+];
+function legacyRead(key = LEGACY_KEY) {
+  if (window.__DEMO) return null; // 测试台里不做找回
+  try { const r = JSON.parse(localStorage.getItem(key)); return r && r.v === 2 && r.notes ? r : null; } catch (e) { return null; }
+}
+/* 每个地方里自己导入的内容；没有内容的不列 */
+function legacyFound() {
+  return LEGACY_SRC.map(src => { const r = legacyRead(src.key); const c = r && legacyCounts(r); return c ? Object.assign({}, src, { c }) : null; }).filter(Boolean);
 }
 const legacyExtHas = e => (e.stances || []).some(s => (s.args || []).length) || (e.terms || []).length;
 /* 旧数据里有多少自己导入的内容（不算自带的示例笔记） */
-function legacyCounts(r = legacyRead()) {
+function legacyCounts(r) {
   if (!r) return null;
   const sample = new Set((r.notes.sets || []).filter(s => s.source === LEGACY_SAMPLE).map(s => s.id));
   const its = (r.notes.items || []).filter(i => !sample.has(i.setId));
@@ -6726,6 +6735,11 @@ function legacyCounts(r = legacyRead()) {
     imports: (r.imports || []).length,
   };
   c.total = c.topics + c.fn + c.notes;
+  // 让人认得出是哪一份：几个名字 + 最近一次活动的日期
+  c.allNames = [...new Set((imp.topics || []).map(t => t.name).concat((r.notes.groups || []).filter(g => !sample.has(g.setId) && its.some(i => i.gid === g.id)).map(g => LEGACY_FN[g.id] || g.name)).filter(Boolean))];
+  c.names = c.allNames.slice(0, 4);
+  const ts = (r.notes.sets || []).map(x => x.created).concat((r.imports || []).map(x => x.at), ((r.t3 && r.t3.combos) || []).map(x => x.created), Object.keys(r.log || {}).map(k => Date.parse(k))).filter(x => x > 0);
+  c.last = ts.length ? Math.max(...ts) : 0;
   return c.total ? c : null;
 }
 const legacyLine = c => [c.topics && `${c.topics} 个话题`, c.fn && `${c.fn} 条功能表达`, c.notes && `${c.notes} 张笔记卡`].filter(Boolean).join('、');
@@ -6809,22 +6823,38 @@ function legacyPrune() {
   save();
 }
 
-/* 首页提示 + 设置里的一行 */
+/* 首页提示 + 设置里的“这台设备上的数据” */
+const legacyDesc = f => `${legacyLine(f.c)}${f.c.imports ? `，${f.c.imports} 次导入` : ''}${f.c.last ? ` · 最近 ${fmtMD(f.c.last)}` : ''}${f.c.names.length ? `（${f.c.names.map(esc).join('、')}${f.c.allNames.length > f.c.names.length ? ' 等' : ''}）` : ''}`;
+const legacyBtn = (f, cls) => `<button class="btn ${cls} btn-sm" type="button" data-a="datlegacy" data-k="${esc(f.key)}" ${libEmpty() ? '' : 'data-confirm="会替换 v9 现在的内容，再点一次确认"'}>找回</button>`;
 function legacyBannerHTML() {
   if (S.legacy) return '';
-  const c = legacyCounts();
-  if (!c) return '';
-  return `<section class="g-legacy"><div><b>找到 v9 更新前导入的内容</b><small>${legacyLine(c)}${c.imports ? `，${c.imports} 次导入记录` : ''}，连同学习进度都还在。可以把它们找回到现在的 v9 里（v8 不受影响）。</small></div>
-    <span class="btn-row"><button class="btn btn-ghost btn-sm" type="button" data-a="datlegacyno">不用了</button><button class="btn btn-primary btn-sm" type="button" data-a="datlegacy" ${libEmpty() ? '' : 'data-confirm="会替换 v9 现在的内容，再点一次确认"'}>找回</button></span></section>`;
+  const found = legacyFound();
+  if (!found.length) return '';
+  return `<section class="g-legacy"><div><b>找到以前导入的内容</b>${found.map(f => `<small><b>${f.name}</b>：${legacyDesc(f)}</small>`).join('')}<small>连同学习进度都还在，可以找回到现在的 v9 里（原来的数据不受影响）。</small></div>
+    <span class="btn-row"><button class="btn btn-ghost btn-sm" type="button" data-a="datlegacyno">不用了</button>${found.length === 1 ? legacyBtn(found[0], 'btn-primary') : '<button class="btn btn-primary btn-sm" type="button" data-go="tsettings">去选择找回哪一份</button>'}</span></section>`;
 }
-function legacySettingsRow() {
-  const c = legacyCounts();
-  if (!c) return '';
-  return `<div class="t-setrow"><span class="txt"><b>找回 v9 更新前的数据</b><small>${legacyLine(c)}，连同学习进度。会替换 v9 现在的内容${libEmpty() ? '' : '，建议先导出备份'}；以前的数据原样保留</small></span><button class="btn btn-outline btn-sm" type="button" data-a="datlegacy" data-confirm="再点一次，确认找回">找回</button></div>`;
+/* 列出这台设备（这个浏览器 / 主屏幕 App）里所有的数据，看得出内容在哪里 */
+function deviceDataHTML() {
+  let keys = [];
+  try { for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i)); } catch (e) {}
+  const label = { [KEY]: '现在的 v9', [LEGACY_KEY]: 'v1–v8 和更新前的 v9', 'ielts-writing-test.v1': '测试台' };
+  keys = keys.filter(k => label[k] || /ielts|writing/i.test(k));
+  [KEY, LEGACY_KEY, 'ielts-writing-test.v1'].forEach(k => { if (!keys.includes(k)) keys.push(k); });
+  const rows = keys.map(k => {
+    let raw = null; try { raw = localStorage.getItem(k); } catch (e) {}
+    const size = raw ? `${Math.max(1, Math.round(raw.length / 1024))} KB` : '没有数据';
+    let desc = '';
+    if (raw && k === KEY) { const n = T.topics.length, f = [...ITEMS.values()].filter(i => i.type === 'fn').length, m = S.notes.items.filter(i => i.type !== 'fn').length; desc = n + f + m ? legacyLine({ topics: n, fn: f, notes: m }) : '空的'; }
+    else if (raw) { let r = null; try { r = JSON.parse(raw); } catch (e) {} const c = r && r.v === 2 && r.notes ? legacyCounts(r) : null; desc = c ? legacyDesc({ c }) : '没有自己导入的内容'; }
+    const src = LEGACY_SRC.find(x => x.key === k), f = src && legacyFound().find(x => x.key === k);
+    return `<div class="t-setrow"><span class="txt"><b>${esc(label[k] || k)}</b><small>${size}${desc ? ' · ' + desc : ''}</small></span>${f ? legacyBtn(f, 'btn-outline') : ''}</div>`;
+  }).join('');
+  return `<section class="t-setgroup"><span class="note-line">这台设备上的数据 · 只算现在这个入口：主屏幕上的 App 和 Safari 里的网页各存各的</span>${rows}
+    <p class="note-line" style="padding:4px 2px">找回会把那一份复制到现在的 v9（替换 v9 现在的内容），原来的数据原样保留。都显示“没有数据”时，换另一个入口（主屏幕 App ↔ Safari）打开 v9 再看。</p></section>`;
 }
-function legacyRecover() {
-  const r = legacyRead();
-  if (!r) { toast('没有找到以前的数据'); return; }
+function legacyRecover(key = LEGACY_KEY) {
+  const r = legacyRead(key);
+  if (!r) { toast('没有找到这份数据'); return; }
   try { localStorage.setItem(KEY, JSON.stringify(legacyConvert(r))); } catch (e) { toast('找回失败：存储空间不够'); return; }
   try { sessionStorage.setItem('__legacyok', '1'); } catch (e) {}
   location.hash = ''; location.reload();
