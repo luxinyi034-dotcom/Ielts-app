@@ -1508,6 +1508,10 @@ input.tg-name:focus { outline: none; border-bottom-style: solid; border-bottom-c
   .g-start-card small { min-height: 0; }
   .g-table td:first-child { white-space: normal; }
 }
+.g-legacy { border-radius: var(--r-lg); display: flex; align-items: center; gap: 16px; justify-content: space-between; flex-wrap: wrap; padding: 16px 20px; margin-bottom: 18px; background: var(--sage-soft); }
+.g-legacy > div { display: flex; flex-direction: column; gap: 4px; flex: 1 1 320px; }
+.g-legacy b { color: var(--ink); font-size: 16px; }
+.g-legacy small { color: var(--warm); font-size: 13.5px; }
 </style>
 </head>
 <body>
@@ -2571,6 +2575,7 @@ function vHome() {
     title: S.user.name ? `${greet}，${S.user.name}` : greet,
     crumb: [fmtMD(Date.now()) + ' · 星期' + WD[new Date().getDay()]],
     body: `${installHint()}
+      ${legacyBannerHTML()}
       ${libEmpty() ? emptyLibHTML() : ''}
       <section class="zone zone-learn" ${libEmpty() ? 'hidden' : ''}>
         <div class="zone-head"><h2>今天的学习</h2><span class="hint">${examTs() && diffDays(examTs()) >= 0 ? `距离考试 <b>${diffDays(examTs())}</b> 天 · ` : ''}复习节点：次日 · 3 天 · 7 天 · 14 天 · 30 天${S.t3.set.extend ? ' · 60 天' : ''}</span></div>
@@ -6945,6 +6950,7 @@ function emptyLibHTML(kind) {
 function dataSettingsHTML() {
   const n = (S.notes.items || []).length + T.topics.length;
   return `<section class="t-setgroup"><span class="note-line">数据 · 只存在这台设备上，建议添加到主屏幕使用并时常导出备份</span>
+    ${legacySettingsRow()}
     <div class="t-setrow"><span class="txt"><b>导出备份</b><small>把全部内容和学习进度存成一个 .json 文件；换设备或清空后可以恢复</small></span><button class="btn btn-outline btn-sm" type="button" data-a="datexport">导出</button></div>
     <div class="t-setrow"><span class="txt"><b>从备份恢复</b><small>用导出的 .json 文件替换现在的全部数据</small></span><label class="btn btn-outline btn-sm file-btn">选择文件<input type="file" id="backup-file" accept=".json,application/json"></label></div>
     <button class="t-setrow s-setlink" type="button" data-go="impguide"><span class="txt"><b>导入格式说明</b><small>三种内容各写什么、怎么写；可以下载模板</small></span><span class="muted">查看 ›</span></button>
@@ -6955,6 +6961,8 @@ function dataSettingsHTML() {
 function guideClick(a, el) {
   if (a === 'tpldl') { const K = TPL_KIND.find(x => x[0] === el.dataset.k); saveFile(K[3], IMPORT_TPL[K[0]]); toast(`已下载${K[1]}模板（${K[3]}）`); return true; }
   if (a === 'tplfill') { ui.impText = IMPORT_TPL[el.dataset.k]; ui.impTitle = ''; go({ v: 'import', id: el.dataset.k }); return true; }
+  if (a === 'datlegacy') { legacyRecover(); return true; }
+  if (a === 'datlegacyno') { S.legacy = 'dismissed'; save(); render(); toast('以后可以在“复习设置 → 数据”里找回'); return true; }
   if (a === 'datexport') { saveFile(`ielts-writing-backup-${dayKey()}.json`, JSON.stringify(S), 'application/json'); toast('已导出备份'); return true; }
   if (a === 'datclear') { try { localStorage.removeItem(KEY); } catch (e) {} location.hash = ''; location.reload(); return true; }
   return false;
@@ -6972,6 +6980,143 @@ function guideChange(t) {
   };
   reader.readAsText(t.files[0]);
   return true;
+}
+
+/* ============================================================
+   找回 v9 更新前的数据
+   v9 改成从空白开始以前，导入的内容存在 ielts-writing-app.v2（和 v8 共用）。
+   这里把其中自己导入的内容和学习进度复制到 v9；旧数据原样留着，v8 照常能用。
+   ============================================================ */
+const LEGACY_KEY = 'ielts-writing-app.v2';
+const LEGACY_SAMPLE = '示例笔记，可删除';
+// 以前 App 自带的功能和话题：导入的内容可能并进了它们，现在要给它们一个自己的组 / 话题
+const LEGACY_FN = { 'fn-opinion': '表达观点', 'fn-main': '引出主要观点', 'fn-add': '补充信息', 'fn-contrast': '转折与对比', 'fn-concession': '让步', 'fn-cause': '原因与解释', 'fn-result': '结果与影响', 'fn-example': '举例与证据', 'fn-emphasis': '强调与限定', 'fn-sequence': '顺序与展开', 'fn-conclusion': '总结与结论' };
+const LEGACY_TOPIC = {
+  med: { name: '医疗科技与监管', theme: '科技', concepts: ['监管审批', '临床试验', '患者安全', '数据隐私', '医疗创新'], base: 4, st: { 支持: '新技术未经检验就使用，会威胁患者的安全和隐私', '反对 / 让步': '监管太严会拖慢创新，反而耽误需要治疗的人' } },
+  online: { name: '线上学习的利与弊', theme: '教育', concepts: ['灵活安排', '学习资源', '自律', '社交互动'], base: 4, st: { 好处: '线上学习不受时间地点限制，资源也更丰富', 坏处: '没有老师和同学在身边，很多人难以坚持，也缺少交流' } },
+};
+
+function legacyRead() {
+  if (window.__DEMO) return null; // 测试台不管以前的数据
+  try { const r = JSON.parse(localStorage.getItem(LEGACY_KEY)); return r && r.v === 2 && r.notes ? r : null; } catch (e) { return null; }
+}
+const legacyExtHas = e => (e.stances || []).some(s => (s.args || []).length) || (e.terms || []).length;
+/* 旧数据里有多少自己导入的内容（不算自带的示例笔记） */
+function legacyCounts(r = legacyRead()) {
+  if (!r) return null;
+  const sample = new Set((r.notes.sets || []).filter(s => s.source === LEGACY_SAMPLE).map(s => s.id));
+  const its = (r.notes.items || []).filter(i => !sample.has(i.setId));
+  const imp = (r.t3 && r.t3.imp) || {};
+  const own = new Set((imp.topics || []).map(t => t.id));
+  const c = {
+    topics: own.size + Object.keys(imp.ext || {}).filter(k => !own.has(k) && LEGACY_TOPIC[k] && legacyExtHas(imp.ext[k])).length,
+    fn: its.filter(i => i.type === 'fn').length,
+    notes: its.filter(i => i.type !== 'fn').length,
+    imports: (r.imports || []).length,
+  };
+  c.total = c.topics + c.fn + c.notes;
+  return c.total ? c : null;
+}
+const legacyLine = c => [c.topics && `${c.topics} 个话题`, c.fn && `${c.fn} 条功能表达`, c.notes && `${c.notes} 张笔记卡`].filter(Boolean).join('、');
+
+/* 把旧数据变成 v9 能用的样子 */
+function legacyConvert(r) {
+  const S2 = JSON.parse(JSON.stringify(r));
+  const N = S2.notes;
+  N.sets = N.sets || []; N.groups = N.groups || []; N.items = N.items || [];
+  // 1. 去掉以前自带的示例笔记
+  const sample = new Set(N.sets.filter(s => s.source === LEGACY_SAMPLE).map(s => s.id));
+  N.sets = N.sets.filter(s => !sample.has(s.id));
+  N.groups = N.groups.filter(g => !sample.has(g.setId));
+  N.items = N.items.filter(i => !sample.has(i.setId));
+  // 2. 并进自带功能的功能表达：建一个同名的功能组，组 id 不变，进度不丢
+  const gids = new Set(N.groups.map(g => g.id));
+  for (const it of N.items) if (it.type === 'fn' && !gids.has(it.gid) && LEGACY_FN[it.gid]) {
+    N.groups.push({ id: it.gid, setId: it.setId, kind: 'fn', name: LEGACY_FN[it.gid] }); gids.add(it.gid);
+  }
+  // 3. 补进自带话题的论点：变成自己的话题（id 不变），论点从 1 开始编号，进度跟着改过去
+  const t3 = S2.t3;
+  if (t3 && t3.imp) {
+    t3.imp.topics = t3.imp.topics || []; t3.imp.ext = t3.imp.ext || {};
+    const own = new Set(t3.imp.topics.map(t => t.id));
+    for (const [tid, ext] of Object.entries(t3.imp.ext)) {
+      const B = LEGACY_TOPIC[tid];
+      if (own.has(tid) || !B) continue;
+      delete t3.imp.ext[tid];
+      if (!legacyExtHas(ext)) continue;
+      const stances = [], orig = [];
+      (ext.stances || []).forEach(es => {
+        let s = stances.find(x => x.name === es.name);
+        if (!s) stances.push(s = { name: es.name, idea: es.idea || B.st[es.name] || '', args: [] });
+        (es.args || []).forEach(a => { s.args.push(a); orig.push(a); });
+      });
+      const newN = new Map(); let n = 0;
+      stances.forEach(s => s.args.forEach(a => newN.set(a, ++n)));
+      const ren = {};
+      orig.forEach((a, k) => { ren[`a:${tid}:${B.base + k + 1}`] = `a:${tid}:${newN.get(a)}`; });
+      t3.imp.topics.push({ id: tid, theme: B.theme, name: B.name, concepts: B.concepts.slice(), stances, terms: ext.terms || [] });
+      legacyRename(S2, tid, ren);
+    }
+  }
+  S2.seeded = true;
+  if (S2.user && S2.user.name === 'Emily') S2.user.name = ''; // 以前的默认名字
+  S2.legacy = 'done';
+  S2.needPrune = true;
+  return S2;
+}
+/* 论点改了编号：所有用论点 id 记的东西都跟着改；原来自带的论点直接去掉 */
+function legacyRename(S2, tid, ren) {
+  const rk = k => {
+    const m = String(k).match(/^(a:([^:]+):\d+)(.*)$/);
+    if (!m || m[2] !== tid) return k;
+    return ren[m[1]] ? ren[m[1]] + m[3] : null;
+  };
+  const remap = o => { if (!o) return o; const out = {}; for (const [k, v] of Object.entries(o)) { const nk = rk(k); if (nk) out[nk] = v; } return out; };
+  const t3 = S2.t3;
+  ['arg', 'it', 'fav', 'over'].forEach(f => { t3[f] = remap(t3[f]); });
+  t3.combos = (t3.combos || []).map(c => c.topic !== tid ? c : Object.assign(c, { args: (c.args || []).map(rk).filter(Boolean) })).filter(c => c.topic !== tid || c.args.length);
+  if (t3.learn && t3.learn.topic === tid) t3.learn = null;
+  t3.rev = null;
+  (S2.imports || []).forEach(rec => { rec.ids = (rec.ids || []).map(rk).filter(Boolean); });
+}
+/* 找回以后第一次打开：去掉指向已经不存在的内容的记录 */
+function legacyPrune() {
+  if (!S.needPrune) return;
+  delete S.needPrune;
+  const keep = (o, has) => { for (const k of Object.keys(o || {})) if (!has(k)) delete o[k]; };
+  keep(S.items, k => ITEMS.has(k));
+  const t3 = S.t3;
+  keep(t3.arg, k => T.arg.has(k)); keep(t3.it, k => T.item.has(k)); keep(t3.term, k => T.term.has(k));
+  keep(t3.fav, k => T.arg.has(k) || T.item.has(k) || T.term.has(k) || ITEMS.has(k));
+  t3.combos = (t3.combos || []).filter(c => T.topic.has(c.topic)).map(c => Object.assign(c, { args: (c.args || []).filter(id => T.arg.has(id)) })).filter(c => c.args.length);
+  if (t3.learn && !T.topic.has(t3.learn.topic)) t3.learn = null;
+  if (t3.rev && !(t3.rev.queue || []).every(q => T.arg.has(q.id) || T.item.has(q.id) || T.term.has(q.id))) t3.rev = null;
+  t3.revDone = null; t3.sprintPlan = null; t3.impDraft = null; t3.impFlow = null;
+  if (S.side) { S.side.today = { day: '', list: null, cat: null, custom: false, done: false }; S.side.learn = null; S.side.rev = null; S.side.revDone = null; }
+  if (S.newSession && !GROUPS.has(S.newSession.gid)) S.newSession = null;
+  if (S.reviewSession && !GROUPS.has(S.reviewSession.gid)) S.reviewSession = null;
+  save();
+}
+
+/* 首页提示 + 设置里的一行 */
+function legacyBannerHTML() {
+  if (S.legacy) return '';
+  const c = legacyCounts();
+  if (!c) return '';
+  return `<section class="g-legacy"><div><b>找到 v9 更新前导入的内容</b><small>${legacyLine(c)}${c.imports ? `，${c.imports} 次导入记录` : ''}，连同学习进度都还在。可以把它们找回到现在的 v9 里（v8 不受影响）。</small></div>
+    <span class="btn-row"><button class="btn btn-ghost btn-sm" type="button" data-a="datlegacyno">不用了</button><button class="btn btn-primary btn-sm" type="button" data-a="datlegacy" ${libEmpty() ? '' : 'data-confirm="会替换 v9 现在的内容，再点一次确认"'}>找回</button></span></section>`;
+}
+function legacySettingsRow() {
+  const c = legacyCounts();
+  if (!c) return '';
+  return `<div class="t-setrow"><span class="txt"><b>找回 v9 更新前的数据</b><small>${legacyLine(c)}，连同学习进度。会替换 v9 现在的内容${libEmpty() ? '' : '，建议先导出备份'}；以前的数据原样保留</small></span><button class="btn btn-outline btn-sm" type="button" data-a="datlegacy" data-confirm="再点一次，确认找回">找回</button></div>`;
+}
+function legacyRecover() {
+  const r = legacyRead();
+  if (!r) { toast('没有找到以前的数据'); return; }
+  try { localStorage.setItem(KEY, JSON.stringify(legacyConvert(r))); } catch (e) { toast('找回失败：存储空间不够'); return; }
+  try { sessionStorage.setItem('__legacyok', '1'); } catch (e) {}
+  location.hash = ''; location.reload();
 }
 
 
@@ -7341,11 +7486,13 @@ fillSampleDetails();
 assemble();
 t3init();
 t3assemble();
+legacyPrune();
 // 测试台（test.html）用：正式版不设 __TEST__，这里不会执行
 if (window.__TEST__) window.__app = { S: () => S, items: () => ITEMS, assemble, createNoteSet, t3assemble, samples: () => [SAMPLE_NOTE, SAMPLE_FN, SAMPLE_TOPIC], save, render, go, goRoot, cur, ui, T, AR, IR, TR, t3plan, t3StartRev, dayStart, addDays, dayKey, fmtMD, STAGE_LABEL, RL3, TIER_LABEL, tierOf, ctxAnswer: () => { try { const c = t3ctx(); return c ? c.ans : null; } catch (e) { return null; } } };
 const startHash = (location.hash || '').slice(1);
 if (VIEWS[startHash] && ['home', 'today', 'topics', 'funcs', 'notes', 'favs', 'records', 'library', 'tsettings', 'imphist'].includes(startHash)) stack = [{ v: startHash }];
 render(true);
+try { if (sessionStorage.getItem('__legacyok')) { sessionStorage.removeItem('__legacyok'); toast('已找回更新前的内容和学习进度'); } } catch (e) {}
 })();
 </script>
 <script>
